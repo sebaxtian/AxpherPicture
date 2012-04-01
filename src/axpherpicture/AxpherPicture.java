@@ -4,6 +4,8 @@
  */
 package axpherpicture;
 
+import imagen.Imagen;
+
 /**
  * Clase Main del proyecto AxpherPicture
  * 
@@ -20,5 +22,7 @@ public class AxpherPicture {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        String rutaImagen = "ImgFuente/PGM.pgm";
+        Imagen objImagen = new Imagen(rutaImagen);
     }
 }

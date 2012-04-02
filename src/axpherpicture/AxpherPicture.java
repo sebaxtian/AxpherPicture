@@ -22,7 +22,10 @@ public class AxpherPicture {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        String rutaImagen = "ImgFuente/PGM.pgm";
+        String rutaImagen = "ImgFuente/lena.ppm";
         Imagen objImagen = new Imagen(rutaImagen);
+        objImagen.guardarImagen("ImgProcesado/lenaCopia.ppm");
+        Imagen objImagenGrises = objImagen.getEscalaGrises();
+        objImagenGrises.guardarImagen("ImgProcesado/lenaGrises.pgm");
     }
 }

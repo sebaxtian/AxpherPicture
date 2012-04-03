@@ -298,6 +298,9 @@ public class Scalar {
     }
 
 
+    public static void main(String []arg){
+        JOptionPane.showMessageDialog(null, "jhon");
+    }
  
 
     /**

@@ -20,35 +20,43 @@ import javax.swing.JOptionPane;
 
 public class Scalar {
 
-    private int [][] imagenEscalada;
-    private int [][] imagenOriginal;
+    // para imagenes tipo P2
+    private short [][] matrizEscalada;
+    private short [][] matrizOriginal;
+    //para imagenes tipo P3
+    private short matrizR[][];
+    private short matrizG[][];
+    private short matrizB[][];
+    
+    //*************************
     private double factor = 1.0;
- 
+    private Imagen imagenEscalada;
+    private char constructor;
+    
     /**
      * Metodo constructor por defecto 1,
      * Asigina el tamaño de los atributos
      * de la nueva imagen escalada y la 
      * imagen original, a la matriz de la
      * imagen escalada se llena con valores 0
-     * @param imagen matriz de la imagen (tipo entero) que se quiere redimencionar
+     * @param imagen matriz de la imagen (tipo short) que se quiere redimencionar
      * @param escalar factor de porcentaje (tipo double) que se desea escalar (0.0 - 1.0 --> 0 % - 100%, > 1.0 porcentaje de ampliacion)
-     */
-    
-    public Scalar(int [][] imagen, double escalar){
+     */ 
+    public Scalar(short [][] imagen, double escalar){
         if(escalar<=0)
             JOptionPane.showMessageDialog(null, "El escalar debe ser mayor a cero");
         else{            
-            imagenEscalada = new int [(int)Math.floor(escalar*imagen.length)][(int)Math.floor(escalar*imagen[0].length)];
-            for (int i=0; i<imagenEscalada.length; i++){
-                for(int j=0; j<imagenEscalada[0].length;j++)
-                    imagenEscalada[i][j]=0;
+            this.matrizEscalada = new short [(int)Math.floor(escalar*imagen.length)][(int)Math.floor(escalar*imagen[0].length)];
+            for (int i=0; i<this.matrizEscalada.length; i++){
+                for(int j=0; j<this.matrizEscalada[0].length;j++)
+                    this.matrizEscalada[i][j]=0;
             }
-            this.imagenOriginal = imagen;
+            this.matrizOriginal = imagen;
             this.factor = escalar;
+            this.constructor='1';
         }
     }
-    
-        
+           
      /**
      * Metodo constructor por defecto 2,
      * Asigina el tamaño de los atributos
@@ -58,11 +66,10 @@ public class Scalar {
      * @param imagen matriz de la imagen original 
      * (tipo entero) que se quiere redimencionar
      * @param pixeles tamaño que tendra en pixeles
-     * la nueva imagen escalada (tipo entero)
+     * la nueva imagen escalada (tipo short)
      * siendo pixeles el tamaño de cada lado (tamaño: pixeles*pixeles)
-     */
-    
-    public Scalar(int [][] imagen, int pixeles){
+     */  
+    public Scalar(short [][] imagen, int pixeles){
         if(pixeles<=0)
             JOptionPane.showMessageDialog(null, "los pixeles deben ser mayores a cero");
         else{
@@ -80,15 +87,75 @@ public class Scalar {
                 escalar = mayorPixeles/pixeles;
             }
                 
-            imagenEscalada = new int [(int)Math.floor(escalar*imagen.length)][(int)Math.floor(escalar*imagen[0].length)];
-            for (int i=0; i<imagenEscalada.length; i++){
-                for(int j=0; j<imagenEscalada[0].length;j++)
-                    imagenEscalada[i][j]=0;
+            this.matrizEscalada = new short [(int)Math.floor(escalar*imagen.length)][(int)Math.floor(escalar*imagen[0].length)];
+            for (int i=0; i<this.matrizEscalada.length; i++){
+                for(int j=0; j<this.matrizEscalada[0].length;j++)
+                    this.matrizEscalada[i][j]=0;
             }
-            this.imagenOriginal = imagen;
+            this.matrizOriginal = imagen;
             this.factor = escalar;
+            this.constructor='1';
         }
     }
+    
+        /**
+     * Metodo constructor por defecto 3,
+     * Asigina el tamaño de los atributos
+     * de la nueva imagen escalada y la 
+     * imagen original, a la matriz o matrices de la
+     * imagen escalada se llena con valores 0
+     * @param imagen imagen (tipo Imagen) que se quiere redimencionar
+     * @param escalar factor de porcentaje (tipo double) que se desea escalar (0.0 - 1.0 --> 0 % - 100%, > 1.0 porcentaje de ampliacion)
+     */ 
+    public Scalar(Imagen imagen, double escalar){
+        if(escalar<=0)
+            JOptionPane.showMessageDialog(null, "El escalar debe ser mayor a cero");
+        else{
+             //si el formato de la imagen es PGM
+            if(imagen.getFormato().equals("P2")) {
+                this.matrizEscalada = new short [(int)Math.floor (escalar * imagen.getMatrizGris().length)][(int)Math.floor(escalar*imagen.getMatrizGris()[0].length)];
+                for (int i=0; i<this.matrizEscalada.length; i++){
+                    for(int j=0; j<this.matrizEscalada[0].length;j++)
+                        this.matrizEscalada[i][j]=0;
+                }
+                
+                this.matrizOriginal = imagen.getMatrizGris();
+                this.factor = escalar;
+                this.constructor='1';
+            }
+            //si el formato de la imagen es PPM
+            else if(imagen.getFormato().equals("P3")) {
+                this.matrizR = new short[(int) Math.floor(escalar * imagen.getMatrizR().length)][(int) Math.floor(escalar * imagen.getMatrizR()[0].length)];
+                for (int i = 0; i < this.matrizR.length; i++) {
+                    for (int j = 0; j < this.matrizR[0].length; j++) {
+                        this.matrizR[i][j] = 0;
+                    }
+                }
+                
+                this.matrizG = new short[(int) Math.floor(escalar * imagen.getMatrizG().length)][(int) Math.floor(escalar * imagen.getMatrizG()[0].length)];
+                for (int i = 0; i < this.matrizG.length; i++) {
+                    for (int j = 0; j < this.matrizG[0].length; j++) {
+                        this.matrizG[i][j] = 0;
+                    }
+                }
+                
+                this.matrizB = new short[(int) Math.floor(escalar * imagen.getMatrizB().length)][(int) Math.floor(escalar * imagen.getMatrizB()[0].length)];
+                for (int i = 0; i < this.matrizB.length; i++) {
+                    for (int j = 0; j < this.matrizB[0].length; j++) {
+                        this.matrizB[i][j] = 0;
+                    }
+                }
+                
+                this.factor = escalar;
+                this.constructor='2';
+            }else
+                JOptionPane.showMessageDialog(null, "Error formato");
+            
+        }
+    }
+    
+    
+    
     
     public static void escalarM(int [][] entrada, double escalar){
         //el escalar debe ser mayor que 0
@@ -236,24 +303,45 @@ public class Scalar {
     /**
      * @return the imagenEscalada
      */
-    public int[][] getImagenEscalada() {
-        return imagenEscalada;
+    public short[][] getImagenEscalada() {
+        return matrizEscalada;
     }
 
     /**
      * @param imagenEscalada the imagenEscalada to set
      */
-    public void setImagenEscalada(int[][] imagenEscalada) {
-        this.imagenEscalada = imagenEscalada;
+    public void setImagenEscalada(short[][] imagenEscalada) {
+        this.matrizEscalada = imagenEscalada;
     }
 
     /**
      * @return the imagenOriginal
      */
-    public int[][] getImagenOriginal() {
-        return imagenOriginal;
+    public short[][] getImagenOriginal() {
+        return matrizOriginal;
     }
 
+    /**
+     * @return the matrizR
+     */
+    public short[][] getMatrizR() {
+        return matrizR;
+    }
 
+    /**
+     * @return the matrizG
+     */
+    public short[][] getMatrizG() {
+        return matrizG;
+    }
+
+    /**
+     * @return the matrizB
+     */
+    public short[][] getMatrizB() {
+        return matrizB;
+    }
+
+ 
 
 }

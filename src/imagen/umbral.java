@@ -9,7 +9,7 @@ package imagen;
  *
  * @author Jhon
  */
-public class umbral {
+public class Umbral {
 
 
     /**

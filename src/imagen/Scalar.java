@@ -22,6 +22,9 @@ public class Scalar {
  * @Fecha lun abr  2 22:31:13 COT 2012
  * @version 0.1
  */
+    private int [][] imagenEscalada;
+    private int [][] imagenOriginal;
+    
     public static void escalarM(int [][] entrada, double escalar){
         //el escalar debe ser mayor que 0
         int [][] salida = null;
@@ -211,6 +214,27 @@ public class Scalar {
 
         System.out.println("t = " +t);
         return t;
+    }
+
+    /**
+     * @return the imagenEscalada
+     */
+    public int[][] getImagenEscalada() {
+        return imagenEscalada;
+    }
+
+    /**
+     * @param imagenEscalada the imagenEscalada to set
+     */
+    public void setImagenEscalada(int[][] imagenEscalada) {
+        this.imagenEscalada = imagenEscalada;
+    }
+
+    /**
+     * @return the imagenOriginal
+     */
+    public int[][] getImagenOriginal() {
+        return imagenOriginal;
     }
 
 

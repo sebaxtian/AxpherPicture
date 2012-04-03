@@ -61,4 +61,14 @@ public class umbral {
         System.out.println("t = " +t);
         return t;
     }
+    
+        public static void isoData(int [] entrada){
+        int u=0; //variable que almacena la media del histograma
+        //calculo de la media
+        for(int i=0; i<entrada.length; i++){
+            u+=entrada[i];
+        }
+        u/=entrada.length;
+        System.out.println("u : " +u);
+    }
 }

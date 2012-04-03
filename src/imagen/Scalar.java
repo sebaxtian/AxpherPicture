@@ -11,7 +11,17 @@ import javax.swing.JOptionPane;
  * @author Administrador
  */
 public class Scalar {
-    
+    /**
+ * Definicion de la clase Scalar
+ * Permite la reducion o ampliacion
+ * por factor (%) para una imagen
+ * Los valores del tamaño de la imagen
+ * por pixel son almacenados en una matriz.
+ * 
+ * @author Jhon Javier Cardona Muñoz
+ * @Fecha lun abr  2 22:31:13 COT 2012
+ * @version 0.1
+ */
     public static void escalarM(int [][] entrada, double escalar){
         //el escalar debe ser mayor que 0
         int [][] salida = null;
@@ -204,13 +214,5 @@ public class Scalar {
     }
 
 
-    public static void isoData(int [] entrada){
-        int u=0; //variable que almacena la media del histograma
-        //calculo de la media
-        for(int i=0; i<entrada.length; i++){
-            u+=entrada[i];
-        }
-        u/=entrada.length;
-        System.out.println("u : " +u);
-    }
+
 }

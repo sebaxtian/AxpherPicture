@@ -4,6 +4,7 @@
  */
 package axpherpicture;
 
+import imagen.Histograma;
 import imagen.Imagen;
 
 /**
@@ -22,10 +23,30 @@ public class AxpherPicture {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        String rutaImagen = "ImgFuente/lena.ppm";
-        Imagen objImagen = new Imagen(rutaImagen);
-        objImagen.guardarImagen("ImgProcesado/lenaCopia.ppm");
-        Imagen objImagenGrises = objImagen.getEscalaGrises();
-        objImagenGrises.guardarImagen("ImgProcesado/lenaGrises.pgm");
+        
+        /**
+         * Imagen en formato PGM
+         */
+        String rutaImgPGM = "ImgFuente/lena.pgm";
+        Imagen imgPGM = new Imagen(rutaImgPGM);
+        imgPGM.guardarImagen("ImgProcesado/lenaCopia.pgm");
+        //calcula el histograma
+        Histograma histogramaImgPGM = new Histograma(imgPGM);
+        Imagen imgHistogramaPGM = histogramaImgPGM.getImagenHistograma();
+        imgHistogramaPGM.guardarImagen("ImgProcesado/histogramaLena.pgm");
+        
+        /**
+         * Imagen en formato PPM
+         */
+        String rutaImgPPM = "ImgFuente/lena.ppm";
+        Imagen imgPPM = new Imagen(rutaImgPPM);
+        imgPPM.guardarImagen("ImgProcesado/lenaCopia.ppm");
+        //calcula escala de grises
+        Imagen imgGrises = imgPPM.getEscalaGrises();
+        imgGrises.guardarImagen("ImgProcesado/lenaGrises.pgm");
+        //calcula el histograma
+        Histograma histogramaImgPPM = new Histograma(imgPPM);
+        Imagen imgHistogramaPPM = histogramaImgPPM.getImagenHistograma();
+        imgHistogramaPPM.guardarImagen("ImgProcesado/histogramaLena.ppm");
     }
 }

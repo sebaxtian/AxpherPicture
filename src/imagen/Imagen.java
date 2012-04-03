@@ -20,7 +20,7 @@ import java.util.Date;
  * imagenes a color consta de tres matrices,
  * una por cada canal de color RGB.
  * 
- * @author sebaxtian
+ * @author Juan Sebastian Rios Sabogal
  * @Fecha sab mar 31 21:10:21 COT 2012
  * @version 0.1
  */

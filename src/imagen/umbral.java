@@ -9,14 +9,20 @@ package imagen;
  *
  * @author Jhon
  */
-public class Umbral {
-
+public class umbral {
 
     /**
- *
- * @author Jhon
  * @entrada : arreglo con con la frecuencia de todos los pixeles (histograma)
- */
+ * Definicion de la clase Scalar
+ * Permite la reducion o ampliacion
+ * por factor (%) para una imagen
+ * Los valores del tamaño de la imagen
+ * por pixel son almacenados en una matriz.
+ * 
+ * @author Jhon Javier Cardona Muñoz
+ * @Fecha lun abr  2 22:31:13 COT 2012
+ * @version 0.1
+*/
     public static int calculoDosPicos(int[] entrada){
        //calculo de la posicion del histograma con el mayor dato
         int hk=0; //esta variable hace referencia al valor mas alto H(k)
@@ -71,4 +77,6 @@ public class Umbral {
         u/=entrada.length;
         System.out.println("u : " +u);
     }
+
+public static void  main(String []arg){}
 }

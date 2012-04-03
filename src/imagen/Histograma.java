@@ -21,6 +21,8 @@ public class Histograma {
     
     //Atributos de clase
     private Imagen imagen;
+    private String formato;
+    private int maxIntensidad;
     private int histogramaGris[];
     private int histogramaR[];
     private int histogramaG[];
@@ -37,11 +39,13 @@ public class Histograma {
     
     public Histograma(Imagen imagen) {
         this.imagen = imagen;
+        formato = imagen.getFormato();
+        maxIntensidad = imagen.getNivelIntensidad();
         //calcula histograma segun la imagen
-        if(imagen.getFormato().equals("P2")) {
+        if(formato.equals("P2")) {
             calcularHistogramaGris();
         }
-        if(imagen.getFormato().equals("P3")) {
+        if(formato.equals("P3")) {
             calcularHistogramaRGB();
         }
     }
@@ -355,5 +359,19 @@ public class Histograma {
      */
     public int getNivelDominanteB() {
         return nivelDominanteB;
+    }
+    
+    /**
+     * @return the formato
+     */
+    public String getFormato() {
+        return formato;
+    }
+    
+    /**
+     * @return the maxIntensidad
+     */
+    public int getMaxIntensidad() {
+        return maxIntensidad;
     }
 }

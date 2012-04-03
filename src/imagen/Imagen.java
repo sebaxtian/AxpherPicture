@@ -31,9 +31,9 @@ public class Imagen {
     //Atributos de clase
     private File archivoImagen;
     private String formato;
-    private short n;
-    private short m;
-    private short nivelIntensidad;
+    private int n;
+    private int m;
+    private int nivelIntensidad;
     private short matrizGris[][];
     private short matrizR[][];
     private short matrizG[][];
@@ -298,42 +298,42 @@ public class Imagen {
     /**
      * @return the n
      */
-    public short getN() {
+    public int getN() {
         return n;
     }
 
     /**
      * @param n the n to set
      */
-    public void setN(short n) {
+    public void setN(int n) {
         this.n = n;
     }
 
     /**
      * @return the m
      */
-    public short getM() {
+    public int getM() {
         return m;
     }
 
     /**
      * @param m the m to set
      */
-    public void setM(short m) {
+    public void setM(int m) {
         this.m = m;
     }
 
     /**
      * @return the nivelIntensidad
      */
-    public short getNivelIntensidad() {
+    public int getNivelIntensidad() {
         return nivelIntensidad;
     }
 
     /**
      * @param nivelIntensidad the nivelIntensidad to set
      */
-    public void setNivelIntensidad(short nivelIntensidad) {
+    public void setNivelIntensidad(int nivelIntensidad) {
         this.nivelIntensidad = nivelIntensidad;
     }
 

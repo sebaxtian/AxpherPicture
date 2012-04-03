@@ -22,6 +22,73 @@ public class Scalar {
 
     private int [][] imagenEscalada;
     private int [][] imagenOriginal;
+    private double factor = 1.0;
+ 
+    /**
+     * Metodo constructor por defecto 1,
+     * Asigina el tamaño de los atributos
+     * de la nueva imagen escalada y la 
+     * imagen original, a la matriz de la
+     * imagen escalada se llena con valores 0
+     * @param imagen matriz de la imagen (tipo entero) que se quiere redimencionar
+     * @param escalar factor de porcentaje (tipo double) que se desea escalar (0.0 - 1.0 --> 0 % - 100%, > 1.0 porcentaje de ampliacion)
+     */
+    
+    public Scalar(int [][] imagen, double escalar){
+        if(escalar<=0)
+            JOptionPane.showMessageDialog(null, "El escalar debe ser mayor a cero");
+        else{            
+            imagenEscalada = new int [(int)Math.floor(escalar*imagen.length)][(int)Math.floor(escalar*imagen[0].length)];
+            for (int i=0; i<imagenEscalada.length; i++){
+                for(int j=0; j<imagenEscalada[0].length;j++)
+                    imagenEscalada[i][j]=0;
+            }
+            this.imagenOriginal = imagen;
+            this.factor = escalar;
+        }
+    }
+    
+        
+     /**
+     * Metodo constructor por defecto 2,
+     * Asigina el tamaño de los atributos
+     * de la nueva imagen escalada y la 
+     * imagen original, a la matriz de la
+     * imagen escalada se llena con valores 0
+     * @param imagen matriz de la imagen original 
+     * (tipo entero) que se quiere redimencionar
+     * @param pixeles tamaño que tendra en pixeles
+     * la nueva imagen escalada (tipo entero)
+     * siendo pixeles el tamaño de cada lado (tamaño: pixeles*pixeles)
+     */
+    
+    public Scalar(int [][] imagen, int pixeles){
+        if(pixeles<=0)
+            JOptionPane.showMessageDialog(null, "los pixeles deben ser mayores a cero");
+        else{
+            double escalar;     
+            //se asume que la imagen original es de n x n
+            if(imagen.length==imagen[0].length)
+                escalar = imagen.length/pixeles;
+            //en caso contrario se toma la fila o columna que sea contenga mas pixeles
+            else{
+                int mayorPixeles;
+                if(imagen.length > imagen[0].length)
+                    mayorPixeles = imagen.length;
+                else
+                    mayorPixeles = imagen[0].length;
+                escalar = mayorPixeles/pixeles;
+            }
+                
+            imagenEscalada = new int [(int)Math.floor(escalar*imagen.length)][(int)Math.floor(escalar*imagen[0].length)];
+            for (int i=0; i<imagenEscalada.length; i++){
+                for(int j=0; j<imagenEscalada[0].length;j++)
+                    imagenEscalada[i][j]=0;
+            }
+            this.imagenOriginal = imagen;
+            this.factor = escalar;
+        }
+    }
     
     public static void escalarM(int [][] entrada, double escalar){
         //el escalar debe ser mayor que 0
@@ -164,55 +231,7 @@ public class Scalar {
     }
 
 
- /**
- *
- * @author Jhon
- * @entrada : arreglo con con la frecuencia de todos los pixeles (histograma)
- */
-    public static int calculoDosPicos(int[] entrada){
-       //calculo de la posicion del histograma con el mayor dato
-        int hk=0; //esta variable hace referencia al valor mas alto H(k)
-        int k=0; //hace referencia al punto mas alto de los picos
-        for(int i=0; i<entrada.length; i++)
-            if(entrada[i]>k){
-                k=i;
-                hk=entrada[i];
-            }
-        System.out.println("h = " +k);
-
-        //******** calculo la posicion(j) donde esta el 2 pico mas lejano
-        int hi=0;//esta variable hace referencia al segundo valor mas alto H(j)
-        int j=0; // hace referencia al segundo punto mas alto de los picos
-        for(int i=0; i<entrada.length; i++){
-            int aux = ((int)Math.pow(i-k,2))*(entrada[i]);
-            if(aux>hi){
-                j=i;
-                hi=aux;
-            }
-        }
-        System.out.println("j = " +j);
-
-
-        //********calculo el minimo valor entre los 2 mayores picos
-
-        int menor=k, mayor=j;
-        if(k>j){
-            mayor = k;
-            menor = j;
-        }
-
-        int t=j; // hace referencia al punto mas bajo entre los 2 picos
-        int ht = hk; //esta variable hace referencia al valor mas bajo(H(h)), entre  H(k) y H(j)
-        for(int i = menor+1; i < mayor-1; i++)
-            if(entrada[i]<ht){
-                t=i;
-                ht=entrada[i];
-                //System.out.println(" OJO ht "+ht);
-            }
-
-        System.out.println("t = " +t);
-        return t;
-    }
+ 
 
     /**
      * @return the imagenEscalada

@@ -13,12 +13,12 @@ public class umbral {
 
     /**
  * @entrada : arreglo con con la frecuencia de todos los pixeles (histograma)
- * Definicion de la clase Scalar
- * Permite la reducion o ampliacion
- * por factor (%) para una imagen
- * Los valores del tamaño de la imagen
- * por pixel son almacenados en una matriz.
- * 
+ * Definicion de la clase Umbral
+ * Calcula el umbral de una imagen apartir
+ * De un histograma generado por la imagen
+ * retornado un numero entero, el cual
+ * hace referencia a la parte del histograma
+ * seleccionado para aplicar el umbral
  * @author Jhon Javier Cardona Muñoz
  * @Fecha lun abr  2 22:31:13 COT 2012
  * @version 0.1

@@ -6,11 +6,6 @@ package imagen;
 
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Administrador
- */
-public class Scalar {
     /**
  * Definicion de la clase Scalar
  * Permite la reducion o ampliacion
@@ -22,6 +17,9 @@ public class Scalar {
  * @Fecha lun abr  2 22:31:13 COT 2012
  * @version 0.1
  */
+
+public class Scalar {
+
     private int [][] imagenEscalada;
     private int [][] imagenOriginal;
     

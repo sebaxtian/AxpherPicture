@@ -5,12 +5,6 @@
 
 package imagen;
 
-/**
- *
- * @author Jhon
- */
-public class umbral {
-
     /**
  * @entrada : arreglo con con la frecuencia de todos los pixeles (histograma)
  * Definicion de la clase Umbral
@@ -23,6 +17,10 @@ public class umbral {
  * @Fecha lun abr  2 22:31:13 COT 2012
  * @version 0.1
 */
+public class umbral {
+    
+    private int posicionUmbral;
+
     public static int calculoDosPicos(int[] entrada){
        //calculo de la posicion del histograma con el mayor dato
         int hk=0; //esta variable hace referencia al valor mas alto H(k)
@@ -79,4 +77,18 @@ public class umbral {
     }
 
 public static void  main(String []arg){}
+
+    /**
+     * @return the posicionUmbral
+     */
+    public int getPosicionUmbral() {
+        return posicionUmbral;
+    }
+
+    /**
+     * @param posicionUmbral the posicionUmbral to set
+     */
+    public void setPosicionUmbral(int posicionUmbral) {
+        this.posicionUmbral = posicionUmbral;
+    }
 }

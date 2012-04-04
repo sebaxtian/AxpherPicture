@@ -1,9 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package imagen;
 
+/*
+ */ 
 import javax.swing.JOptionPane;
 
     /**
@@ -21,17 +20,21 @@ import javax.swing.JOptionPane;
 public class Scalar {
 
     // para imagenes tipo P2
-    private short [][] matrizEscalada;
-    private short [][] matrizOriginal;
+    private short [][] matrizEscalada=null;
+    private short [][] matrizOriginal=null;
     //para imagenes tipo P3
-    private short matrizR[][];
-    private short matrizG[][];
-    private short matrizB[][];
+    private short matrizR[][]=null;
+    private short matrizG[][]=null;
+    private short matrizB[][]=null;
+    
+    private short matrizRoriginal[][]=null;
+    private short matrizGoriginal[][]=null;
+    private short matrizBoriginal[][]=null;
     
     //*************************
     private double factor = 1.0;
-    private Imagen imagenEscalada;
-    private char constructor;
+    //private Imagen imagenEscalada;
+    private char constructor=' ';
     
     /**
      * Metodo constructor por defecto 1,
@@ -76,7 +79,7 @@ public class Scalar {
             double escalar;     
             //se asume que la imagen original es de n x n
             if(imagen.length==imagen[0].length)
-                escalar = imagen.length/pixeles;
+                escalar = (double)pixeles/(double)imagen.length;
             //en caso contrario se toma la fila o columna que sea contenga mas pixeles
             else{
                 int mayorPixeles;
@@ -84,7 +87,7 @@ public class Scalar {
                     mayorPixeles = imagen.length;
                 else
                     mayorPixeles = imagen[0].length;
-                escalar = mayorPixeles/pixeles;
+                escalar = pixeles/mayorPixeles;
             }
                 
             this.matrizEscalada = new short [(int)Math.floor(escalar*imagen.length)][(int)Math.floor(escalar*imagen[0].length)];
@@ -93,6 +96,7 @@ public class Scalar {
                     this.matrizEscalada[i][j]=0;
             }
             this.matrizOriginal = imagen;
+            //JOptionPane.showMessageDialog(null, "escalar = "+escalar+ " factor ="+factor );
             this.factor = escalar;
             this.constructor='1';
         }
@@ -145,7 +149,9 @@ public class Scalar {
                         this.matrizB[i][j] = 0;
                     }
                 }
-                
+                this.matrizBoriginal = imagen.getMatrizB();
+                this.matrizGoriginal = imagen.getMatrizG();
+                this.matrizRoriginal = imagen.getMatrizR();
                 this.factor = escalar;
                 this.constructor='2';
             }else
@@ -154,137 +160,216 @@ public class Scalar {
         }
     }
     
-    
-    
-    
-    public static void escalarM(int [][] entrada, double escalar){
-        //el escalar debe ser mayor que 0
-        int [][] salida = null;
-        if(escalar>0){
-            salida = new int [(int)Math.floor(escalar*entrada.length)][(int)Math.floor(escalar*entrada[0].length)];
-            for (int i=0; i<salida.length; i++){
-                for(int j=0; j<salida[0].length;j++)
-                    salida[i][j]=0;
-            }
-            
-            for (int i=0; i<entrada.length; i++){
-                for(int j=0; j<entrada[0].length;j++)
-                    salida[(int)Math.floor(i*escalar)][(int)Math.floor(j*escalar)]=entrada[i][j];
-            }
-
-            imprimirM(salida);
-            System.out.println();
-            for (int i=0; i<salida.length; i++){
-                for(int j=0; j<salida[0].length;j++)
-                    if(salida[i][j]==0){
-                        //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
-                        interpolar(salida,i,j);
+    /*Metodo encargado de realizar la escalacion de una imagen
+     * utilizando interpolacion bicubica y lineal
+     */
+    public void escalacionBicubica(){
+        //switch(this.constructor){
+            //este es el caso de que la imagen sea de un formato P2 (escala de grises)
+            if(this.constructor=='1'){
+                for (int i = 0; i < this.matrizEscalada.length; i++) {
+                    for (int j = 0; j < this.matrizEscalada[0].length; j++){
+                        //System.out.println("i = "+i+ " j="+j);
+                        this.matrizEscalada[i][j] = this.matrizOriginal[(int) Math.floor(i / this.factor)][(int) Math.floor(j / this.factor)];
+                        //this.matrizEscalada[(int) Math.floor(i * this.factor)][(int) Math.floor(j * this.factor)] = this.matrizOriginal[i][j];
                     }
-            }
-
-        }else{
-            JOptionPane.showMessageDialog(null, "El escalar es menor a cero");
-        }
-
-        imprimirM(salida);
-        System.out.println();
-        
-        for (int i = 0; i < salida.length; i++) {
-            for (int j = 0; j < salida[0].length; j++) {
-                if (i>0&&i<salida.length-1 && j>0 && j<salida[0].length-1 && salida[i][j]==0){
-                    //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
-                   interpolacionInterna(salida, i, j);
                 }
+                if(this.factor>1){
+                    for (int i = 0; i < this.matrizEscalada.length; i++) {
+                        for (int j = 0; j < this.matrizEscalada[0].length; j++) {
+                            if (this.matrizEscalada[i][j] == 0) {
+                                //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
+                                matrizEscalada[i][j] = interpolacionExterna(matrizEscalada,i, j);
+                            }
+                        }
+                        for (int j = 0; j < this.matrizEscalada[0].length; j++) {
+                            if (this.matrizEscalada[i][j] == 0) {
+                                //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
+                                matrizEscalada[i][j] = interpolacionInterna(matrizEscalada,i, j);
+                            }
+                        }
+                    }
+                }else {
+                
+                }              
+                
             }
-        }
-
-
-        imprimirM(salida);
-        System.out.println();
-
-
-        for (int i = 0; i < salida.length; i++) {
-            for (int j = 0; j < salida[0].length; j++) {
-                if (i>0&&i<salida.length-1 && j>0 && j<salida[0].length-1 && salida[i][j]==0){
-                    //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
-                   interpolacionInterna(salida, i, j);
+                //Este es el caso  de que la imagen sea de formato P3 (RGB)
+            else if(this.constructor=='2'){
+              
+                for (int i = 0; i < this.matrizRoriginal.length; i++) {
+                    for (int j = 0; j < this.matrizRoriginal[0].length; j++) {
+                        //this.matrizR[(int) Math.floor(i * this.factor)][(int) Math.floor(j * this.factor)] = this.matrizOriginal[i][j];
+                        this.matrizEscalada[i][j]= this.matrizOriginal[(int) Math.floor(i * this.factor)][(int) Math.floor(j * this.factor)];
+       
+                    }       
                 }
+                
+                for (int i = 0; i < this.matrizGoriginal.length; i++) {
+                    for (int j = 0; j < this.matrizGoriginal[0].length; j++) {
+                        this.matrizEscalada[(int) Math.floor(i * this.factor)][(int) Math.floor(j * this.factor)] = this.matrizOriginal[i][j];
+                    }       
+                }
+                
+                for (int i = 0; i < this.matrizBoriginal.length; i++) {
+                    for (int j = 0; j < this.matrizBoriginal[0].length; j++) {
+                        this.matrizB[(int) Math.floor(i * this.factor)][(int) Math.floor(j * this.factor)] = this.matrizOriginal[i][j];
+                    }       
+                }
+                
+                if(this.factor>1){
+                    //interpolacion de la matriz con el componente RED
+
+                    for (int i = 0; i < this.matrizR.length; i++) {
+                        for (int j = 0; j < this.matrizR[0].length; j++) {
+                            if (this.matrizR[i][j] == 0) {
+                                //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
+                                this.matrizR[i][j] = interpolacionExterna(matrizR, i, j);
+                            }
+                        }
+                        
+                        for (int j = 0; j < this.matrizR[0].length; j++) {
+                            if (this.matrizR[i][j] == 0) {
+                                //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
+                                this.matrizR[i][j] = interpolacionInterna(this.matrizR, i, j);
+                            }
+                        }
+                    }
+                    
+                    //interpolacion de la matriz con el componente GREN
+                    for (int i = 0; i < this.matrizG.length; i++) {
+                        for (int j = 0; j < this.matrizG[0].length; j++) {
+                            if (this.matrizG[i][j] == 0) {
+                                //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
+                                matrizG[i][j] = interpolacionExterna(matrizG, i, j);
+                            }
+                        }
+                        for (int j = 0; j < this.matrizG[0].length; j++) {
+                            if (this.matrizG[i][j] == 0) {
+                                //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
+                                matrizG[i][j] = interpolacionInterna(matrizG, i, j);
+                            }
+                        }
+                    }
+                    
+                    //interpolacion de la componente BLUE
+                    for (int i = 0; i < this.matrizB.length; i++) {
+                        for (int j = 0; j < this.matrizB[0].length; j++) {
+                            if (this.matrizB[i][j] == 0) {
+                                //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
+                                matrizB[i][j] = interpolacionExterna(matrizB, i, j);
+                            }
+                        }
+                        for (int j = 0; j < this.matrizB[0].length; j++) {
+                            if (this.matrizB[i][j] == 0) {
+                                //JOptionPane.showConfirmDialog(null, "Revisar " +i+" "+j);
+                                matrizB[i][j] = interpolacionInterna(matrizB, i, j);
+                            }
+                        }
+                    }
+                    
+                    
+                }else {
+                
+                }
+                
+            
             }
-        }
-
-
-        imprimirM(salida);
-        System.out.println();
-
-        
-    }
-
-    public static int interpolacionInterna(int [][] entrada, int y, int x){
-        int suma = (entrada[y][x-1] + entrada[y-1][x-1] + entrada[y-1][x] +entrada[y-1][x+1] + entrada[y][x+1] + entrada[y][x+1] + entrada[y][x+1] + entrada[y][x+1])/8;    
-        entrada[y][x] = (int)suma;  
-        return 0;
+             
+            else
+                ;        
+        //}
     }
     
-    public static int interpolar(int [][] entrada, int y, int x){
+    /**
+     *
+     * metodo que realiza interpolacion lineal o bicubica para la parte interna de
+     * una matriz 
+     *@param matrizEscalada matriz a la cual se le realiza la interpolacion 
+     * @param y coordena que hace referencia a la fila del parametro matrizEscalada
+     * @param x coordena que hace referencia a la columna del parametro matrizEscalada
+     * @return short valor resultante que arroja la interpolacion de la matrizEscalada en las
+     * coordenas (y,x) 
+     */
+    private short interpolacionInterna(short [][] matrizEscalada, int y, int x){
+        int suma = matrizEscalada[y][x];
+        if (y>0 && y<matrizEscalada.length-1 && x>0 && x<matrizEscalada[0].length-1 && matrizEscalada[y][x]==0)
+            suma = (matrizEscalada[y][x-1] + matrizEscalada[y-1][x-1] + matrizEscalada[y-1][x] +matrizEscalada[y-1][x+1] + matrizEscalada[y][x+1] + matrizEscalada[y][x+1] + matrizEscalada[y][x+1] + matrizEscalada[y][x+1])/8;    
+        //matrizEscalada[y][x] = (short)suma;  
+        return (short) suma;
+    }
+    
+     /**
+     *
+     * metodo que realiza interpolacion lineal o bicubica para bordes de
+     * una matriz 
+     *@param matrizEscalada matriz a la cual se le realiza la interpolacion 
+     * @param y coordena que hace referencia a la fila del parametro matrizEscalada
+     * @param x coordena que hace referencia a la columna del parametro matrizEscalada
+     * @return short valor resultante que arroja la interpolacion de la matrizEscalada en las
+     * coordenas (y,x) 
+     */
+    private short interpolacionExterna(short [][] matrizEscalada, int y, int x){
+        int suma=0;
         if(x==0){
             if(y==0){
-                int suma = (entrada[y+1][x] + entrada[y+1][x+1] + entrada[y][x+1])/3;
-                entrada[y][x] = (int)suma;
-            }else if(y==entrada.length-1){
-                int suma = (entrada[y-1][x] + entrada[y-1][x+1] + entrada[y][x+1])/3;
-                entrada[y][x] = (int)suma;
+                suma = (matrizEscalada[y+1][x] + matrizEscalada[y+1][x+1] + matrizEscalada[y][x+1])/3;
+                //matrizEscalada[y][x] = (short)suma;
+            }else if(y==matrizEscalada.length-1){
+                suma = (matrizEscalada[y-1][x] + matrizEscalada[y-1][x+1] + matrizEscalada[y][x+1])/3;
+                //matrizEscalada[y][x] = (short)suma;
             }else {
-                int suma = (entrada[y-1][x] + entrada[y-1][x+1] + entrada[y][x+1] +entrada[y+1][x+1] + entrada[y+1][x])/5;
-                entrada[y][x] = (int)suma;
+                suma = (matrizEscalada[y-1][x] + matrizEscalada[y-1][x+1] + matrizEscalada[y][x+1] +matrizEscalada[y+1][x+1] + matrizEscalada[y+1][x])/5;
+                //matrizEscalada[y][x] = (short)suma;
             }
         }
-        else if(x == entrada[0].length - 1){
+        else if(x == matrizEscalada[0].length - 1){
             if(y==0){
-                int suma = (entrada[y][x-1] + entrada[y+1][x-1] + entrada[y+1][x])/3;
-                entrada[y][x] = (int)suma;
-            }else if(y==entrada.length-1){
-                int suma = (entrada[y][x-1] + entrada[y-1][x-1] + entrada[y-1][x])/3;
-                entrada[y][x] = (int)suma;
+                suma = (matrizEscalada[y][x-1] + matrizEscalada[y+1][x-1] + matrizEscalada[y+1][x])/3;
+                //matrizEscalada[y][x] = (short)suma;
+            }else if(y==matrizEscalada.length-1){
+                suma = (matrizEscalada[y][x-1] + matrizEscalada[y-1][x-1] + matrizEscalada[y-1][x])/3;
+                //matrizEscalada[y][x] = (short)suma;
             }else{
-                int suma = (entrada[y-1][x] + entrada[y-1][x-1] + entrada[y][x-1] +entrada[y+1][x-1] + entrada[y+1][x])/5;
-                entrada[y][x] = (int)suma;
+                suma = (matrizEscalada[y-1][x] + matrizEscalada[y-1][x-1] + matrizEscalada[y][x-1] +matrizEscalada[y+1][x-1] + matrizEscalada[y+1][x])/5;
+                //matrizEscalada[y][x] = (short)suma;
             }
         }
         else if(y == 0){
             if(x==0){
-                int suma = (entrada[y+1][x] + entrada[y+1][x+1] + entrada[y][x+1])/3;
-                entrada[y][x] = (int)suma;
+                suma = (matrizEscalada[y+1][x] + matrizEscalada[y+1][x+1] + matrizEscalada[y][x+1])/3;
+                //matrizEscalada[y][x] = (short)suma;
             }
-            else if(x == entrada[0].length - 1){
-                int suma = (entrada[y][x-1] + entrada[y+1][x-1] + entrada[y+1][x])/3;
-                entrada[y][x] = (int)suma;
+            else if(x == matrizEscalada[0].length - 1){
+                suma = (matrizEscalada[y][x-1] + matrizEscalada[y+1][x-1] + matrizEscalada[y+1][x])/3;
+                //matrizEscalada[y][x] = (short)suma;
             }else{
-                int suma = (entrada[y][x-1] + entrada[y+1][x-1] + entrada[y][x+1] +entrada[y+1][x+1] + entrada[y][x+1])/5;
-                entrada[y][x] = (int)suma;    
+                suma = (matrizEscalada[y][x-1] + matrizEscalada[y+1][x-1] + matrizEscalada[y][x+1] +matrizEscalada[y+1][x+1] + matrizEscalada[y][x+1])/5;
+                //matrizEscalada[y][x] = (short)suma;    
             }
         }
-        else if(y == entrada.length - 1){
+        else if(y == matrizEscalada.length - 1){
             if(x==0){
-                int suma = (entrada[y-1][x] + entrada[y-1][x+1] + entrada[y][x+1])/3;
-                entrada[y][x] = (int)suma;
+                suma = (matrizEscalada[y-1][x] + matrizEscalada[y-1][x+1] + matrizEscalada[y][x+1])/3;
+                //matrizEscalada[y][x] = (short)suma;
             }
-            else if(x == entrada[0].length - 1){
-                 int suma = (entrada[y][x-1] + entrada[y-1][x-1] + entrada[y-1][x])/3;
-                entrada[y][x] = (int)suma;
+            else if(x == matrizEscalada[0].length - 1){
+                suma = (matrizEscalada[y][x-1] + matrizEscalada[y-1][x-1] + matrizEscalada[y-1][x])/3;
+                //matrizEscalada[y][x] = (short)suma;
             }else{
-                int suma = (entrada[y][x-1] + entrada[y-1][x-1] + entrada[y-1][x] +entrada[y-1][x+1] + entrada[y][x+1])/5;
-                entrada[y][x] = (int)suma;   
+                suma = (matrizEscalada[y][x-1] + matrizEscalada[y-1][x-1] + matrizEscalada[y-1][x] +matrizEscalada[y-1][x+1] + matrizEscalada[y][x+1])/5;
+                //matrizEscalada[y][x] = (short)suma;   
             }
         }
         else{
 //            int suma = (entrada[y][x-1] + entrada[y-1][x-1] + entrada[y-1][x] +entrada[y-1][x+1] + entrada[y][x+1] + entrada[y][x+1] + entrada[y][x+1] + entrada[y][x+1])/8;    
 //            entrada[y][x] = (int)suma;  
         }
-        return 0;
+        return (short)suma;
     }
 
 
-    public static void imprimirM(int [][] entrada){
+    public static void imprimirM(short [][] entrada){
         for (int i=0; i<entrada.length; i++){
             for(int j=0; j<entrada[0].length;j++)
                 System.out.print(entrada[i][j]+" ");
@@ -292,15 +377,28 @@ public class Scalar {
         }
     }
 
-    public static void imprimirA(int [] entrada){
+    public static void imprimirA(short [] entrada){
         for(int i=0; i<entrada.length; i++)
             System.out.println(entrada[i] +" ");
     }
 
 
-    public static void main(String []arg){
-        JOptionPane.showMessageDialog(null, "jhon");
-    }
+//    public static void main(String []arg){
+//        //JOptionPane.showMessageDialog(null, "jhon");
+//                
+//        short [][] entrada = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};   
+//      
+//        imprimirM(entrada);
+//        System.out.println("original");
+//        Scalar sc = new Scalar(entrada,6);
+//        
+//        //JOptionPane.showMessageDialog(null, sc.factor);
+//        imprimirM(sc.getImagenEscalada());
+//        System.out.println("matriz");
+//        sc.escalacionBicubica();
+//        imprimirM(sc.getImagenEscalada());
+//        System.out.println("fin");
+//    }
  
 
     /**
@@ -348,3 +446,4 @@ public class Scalar {
  
 
 }
+

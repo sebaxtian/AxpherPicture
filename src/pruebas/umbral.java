@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package imagen;
+package pruebas;
 
     /**
  * @entrada : arreglo con con la frecuencia de todos los pixeles (histograma)

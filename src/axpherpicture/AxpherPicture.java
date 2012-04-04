@@ -6,7 +6,7 @@ package axpherpicture;
 
 import imagen.Histograma;
 import imagen.Imagen;
-import pruebas.Umbralizacion;
+import imagen.Umbralizacion;
 
 /**
  * Clase Main del proyecto AxpherPicture

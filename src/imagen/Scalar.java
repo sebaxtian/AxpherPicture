@@ -8,8 +8,8 @@ import javax.swing.JOptionPane;
  * para una imagen Los valores del tamaño de la imagen por pixel son almacenados
  * en una matriz.
  *
- * @author Jhon Javier Cardona Muñoz @Fecha lun abr 2 22:31:13 COT 2012
- * @version 0.1
+ * @author Jhon Javier Cardona Muñoz @Fecha mar abr 3 22:00:00 COT 2012
+ * @version 0.2
  */
 public class Scalar {
 
@@ -427,21 +427,6 @@ public class Scalar {
 //            entrada[y][x] = (int)suma;  
         }
         return (short) suma;
-    }
-
-    public static void imprimirM(short[][] entrada) {
-        for (int i = 0; i < entrada.length; i++) {
-            for (int j = 0; j < entrada[0].length; j++) {
-                System.out.print(entrada[i][j] + " ");
-            }
-            System.out.println("");
-        }
-    }
-
-    public static void imprimirA(short[] entrada) {
-        for (int i = 0; i < entrada.length; i++) {
-            System.out.println(entrada[i] + " ");
-        }
     }
 
     /**

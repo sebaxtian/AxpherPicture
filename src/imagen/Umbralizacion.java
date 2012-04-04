@@ -4,8 +4,6 @@
  */
 package imagen;
 
-import imagen.Histograma;
-
 /**
  * Esta clase permite calcular el umbral
  * para un histograma de alguna imagen,

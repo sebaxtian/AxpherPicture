@@ -6,6 +6,7 @@ package axpherpicture;
 
 import imagen.Histograma;
 import imagen.Imagen;
+import imagen.Scalar;
 import imagen.Umbralizacion;
 
 /**
@@ -31,15 +32,15 @@ public class AxpherPicture {
         String rutaImgPGM = "ImgFuente/lena.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         imgPGM.guardarImagen("ImgProcesado/lenaCopia.pgm");
-        //calcula el histograma
+        //-->calcula el histograma
         Histograma histogramaImgPGM = new Histograma(imgPGM);
         Imagen imgHistogramaPGM = histogramaImgPGM.getImagenHistograma();
         imgHistogramaPGM.guardarImagen("ImgProcesado/histogramaLena.pgm");
-        //calcula el umbral
+        //-->calcula el umbral
         Umbralizacion umbralizacionPGM = new Umbralizacion(histogramaImgPGM, 0);
         int umbralGris = umbralizacionPGM.getUmbralGris();
         System.out.println("UmbralGris: "+umbralGris);
-        //construye una imagen binaria
+        //-->construye una imagen binaria
         Imagen imgBinariaPGM = new Imagen();
         imgBinariaPGM.setFormato("P2");
         imgBinariaPGM.setNivelIntensidad(1);
@@ -57,6 +58,14 @@ public class AxpherPicture {
         }
         imgBinariaPGM.setMatrizGris(matrizGris);
         imgBinariaPGM.guardarImagen("ImgProcesado/binariaLena.pgm");
+        //aplica escalacion a la imagen
+        double factorScalarPGM = 2.25;
+        Scalar scalarPGM = new Scalar(imgPGM, factorScalarPGM);
+        scalarPGM.escalacionBicubica();
+        imgPGM.setMatrizGris(scalarPGM.getImagenEscalada());
+        imgPGM.setN(imgPGM.getMatrizGris().length);
+        imgPGM.setM(imgPGM.getMatrizGris()[0].length);
+        imgPGM.guardarImagen("ImgProcesado/scalarLena2.25X.pgm");
         
         /**
          * Imagen en formato PPM
@@ -114,5 +123,15 @@ public class AxpherPicture {
         imgBinariaPPM.setMatrizG(matrizG);
         imgBinariaPPM.setMatrizB(matrizB);
         imgBinariaPPM.guardarImagen("ImgProcesado/binariaLena.ppm");
+        //aplica escalacion a la imagen
+        double factorScalarPPM = 2.25;
+        Scalar scalarPPM = new Scalar(imgPPM, factorScalarPPM);
+        scalarPPM.escalacionBicubica();
+        imgPPM.setMatrizR(scalarPPM.getMatrizR());
+        imgPPM.setMatrizG(scalarPPM.getMatrizG());
+        imgPPM.setMatrizB(scalarPPM.getMatrizB());
+        imgPPM.setN(imgPPM.getMatrizR().length);
+        imgPPM.setM(imgPPM.getMatrizR()[0].length);
+        imgPPM.guardarImagen("ImgProcesado/scalarLena2.25X.ppm");
     }
 }

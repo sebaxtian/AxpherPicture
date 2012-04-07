@@ -81,7 +81,7 @@ public class Scalar {
                 } else {
                     mayorPixeles = imagen[0].length;
                 }
-                escalar = pixeles / mayorPixeles;
+                escalar = (double)pixeles / (double)mayorPixeles;
             }
 
             this.matrizEscalada = new short[(int) Math.floor(escalar * imagen.length)][(int) Math.floor(escalar * imagen[0].length)];
@@ -183,7 +183,7 @@ public class Scalar {
                     mayorPixeles = imagen.getM();
                 }
 
-                escalar = pixeles / mayorPixeles;
+                escalar = (double)pixeles / (double)mayorPixeles;
             }
 
             //si el formato de la imagen es PGM

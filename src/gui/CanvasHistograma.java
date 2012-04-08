@@ -5,64 +5,61 @@
 package gui;
 
 import imagen.Imagen;
-import imagen.Scalar;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 
 /**
- * Esta clase CanvasImagen permite
- * pintar un objeto imagen sobre
- * el mismo.
+ * Esta clase canvas permite
+ * pintar la imagen de un
+ * histograma.
  * 
  * @author Juan Sebastian Rios Sabogal
- * 
  */
 
 
-public class CanvasImagen extends Canvas {
+public class CanvasHistograma extends Canvas {
     
     private Image imagen;
     
-    public CanvasImagen() {
+    public CanvasHistograma() {
         setBackground(Color.WHITE);
     }
     
-    public void pintarImagen(Imagen objImagen) {
-        Scalar scalarImagen = new Scalar(objImagen, 358);
-        scalarImagen.escalacionBicubica();
-        if(objImagen.getFormato().equals("P2")) {
-            pintarImgGris(scalarImagen.getImagenEscalada());
+    public void pintarHistograma(Imagen imgHistograma) {
+        if(imgHistograma.getFormato().equals("P2")) {
+            System.out.println("pinta histograma P2");
+            this.setSize(imgHistograma.getM(), imgHistograma.getN());
+            pintarHistogramaGris(imgHistograma.getMatrizGris());
         } else {
-            pintarImgRGB(scalarImagen.getMatrizR(), scalarImagen.getMatrizG(), scalarImagen.getMatrizB());
+            this.setSize(imgHistograma.getM(), imgHistograma.getN());
+            pintarHistogramaRGB(imgHistograma.getMatrizR(), imgHistograma.getMatrizG(), imgHistograma.getMatrizB());
         }
     }
     
-    private void pintarImgGris(short matrizGris[][]) {
+    private void pintarHistogramaGris(short matrizGris[][]) {
         Graphics g;
         Color color;
-        int centroJ = (114/2);
-        int centroI = (123/2);
         imagen = createImage(getWidth(), getHeight());
         g = imagen.getGraphics();
         for(int i = 0; i < matrizGris.length; i++) {
             for(int j = 0; j < matrizGris[0].length; j++) {
                 int pixel = matrizGris[i][j];
+                if(pixel == 256)
+                    System.out.println(""+pixel);
                 color = new Color(pixel, pixel, pixel);
                 g.setColor(color);
-                g.fillOval(j+centroJ, i+centroI, 2, 2);
+                g.fillOval(j, i, 2, 2);
             }
         }
         g = getGraphics();
         g.drawImage(imagen, 0, 0, this);
     }
     
-    private void pintarImgRGB(short matrizR[][],short matrizG[][],short matrizB[][]) {
+    private void pintarHistogramaRGB(short matrizR[][],short matrizG[][],short matrizB[][]) {
         Graphics g;
         Color color;
-        int centroJ = (114/2);
-        int centroI = (123/2);
         imagen = createImage(getWidth(), getHeight());
         g = imagen.getGraphics();
         for(int i = 0; i < matrizR.length; i++) {
@@ -70,9 +67,15 @@ public class CanvasImagen extends Canvas {
                 int pixelR = matrizR[i][j];
                 int pixelG = matrizG[i][j];
                 int pixelB = matrizB[i][j];
+                if(pixelR == 256)
+                    pixelR = 255;
+                if(pixelG == 256)
+                    pixelG = 255;
+                if(pixelB == 256)
+                    pixelB = 255;
                 color = new Color(pixelR, pixelG, pixelB);
                 g.setColor(color);
-                g.fillOval(j+centroJ, i+centroI, 2, 2);
+                g.fillOval(j, i, 2, 2);
             }
         }
         g = getGraphics();

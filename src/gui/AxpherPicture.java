@@ -59,8 +59,10 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemSalir = new javax.swing.JMenuItem();
         menuImagen = new javax.swing.JMenu();
         menuVer = new javax.swing.JMenu();
+        menuItemVerHistograma = new javax.swing.JMenuItem();
+        menuItemVerImagen = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("AxpherPicture");
         setResizable(false);
 
@@ -104,7 +106,7 @@ public class AxpherPicture extends javax.swing.JFrame {
         );
         panelOperacionesLayout.setVerticalGroup(
             panelOperacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 348, Short.MAX_VALUE)
+            .addGap(0, 344, Short.MAX_VALUE)
         );
 
         panelPropiedades.setBorder(javax.swing.BorderFactory.createTitledBorder("Propiedades"));
@@ -134,8 +136,7 @@ public class AxpherPicture extends javax.swing.JFrame {
                     .addGroup(panelPropiedadesLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(labelArchivo)
-                        .addContainerGap(415, Short.MAX_VALUE))
+                        .addComponent(labelArchivo))
                     .addGroup(panelPropiedadesLayout.createSequentialGroup()
                         .addGroup(panelPropiedadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelPropiedadesLayout.createSequentialGroup()
@@ -153,8 +154,8 @@ public class AxpherPicture extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(panelPropiedadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelAncho)
-                            .addComponent(labelAlto))
-                        .addContainerGap())))
+                            .addComponent(labelAlto))))
+                .addContainerGap(139, Short.MAX_VALUE))
         );
         panelPropiedadesLayout.setVerticalGroup(
             panelPropiedadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -194,7 +195,7 @@ public class AxpherPicture extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCenterLayout.createSequentialGroup()
                 .addComponent(panelPropiedades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelOperaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                .addComponent(panelOperaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -219,6 +220,13 @@ public class AxpherPicture extends javax.swing.JFrame {
         barraMenus.add(menuImagen);
 
         menuVer.setText("Ver");
+
+        menuItemVerHistograma.setText("Histograma");
+        menuVer.add(menuItemVerHistograma);
+
+        menuItemVerImagen.setText("Imagen");
+        menuVer.add(menuItemVerImagen);
+
         barraMenus.add(menuVer);
 
         setJMenuBar(barraMenus);
@@ -285,6 +293,8 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JMenuItem menuItemAbrir;
     public javax.swing.JMenuItem menuItemGuardar;
     public javax.swing.JMenuItem menuItemSalir;
+    public javax.swing.JMenuItem menuItemVerHistograma;
+    public javax.swing.JMenuItem menuItemVerImagen;
     private javax.swing.JPopupMenu.Separator menuSeparador;
     private javax.swing.JMenu menuVer;
     private javax.swing.JPanel panelCanvas;

@@ -62,7 +62,8 @@ public class Histograma {
         for(int i = 0; i < imagen.getN(); i++) {
             for(int j = 0; j < imagen.getM(); j++) {
                 int nivelGris = imagen.getMatrizGris()[i][j];
-                histogramaGris[nivelGris]++;
+                if(nivelGris < 256)
+                    histogramaGris[nivelGris]++;
             }
         }
     }
@@ -82,13 +83,16 @@ public class Histograma {
             for(int j = 0; j < imagen.getM(); j++) {
                 //canal R
                 int nivelR = imagen.getMatrizR()[i][j];
-                histogramaR[nivelR]++;
+                if(nivelR < 256)
+                    histogramaR[nivelR]++;
                 //canal G
                 int nivelG = imagen.getMatrizG()[i][j];
-                histogramaG[nivelG]++;
+                if(nivelG < 256)
+                    histogramaG[nivelG]++;
                 //canal B
                 int nivelB = imagen.getMatrizB()[i][j];
-                histogramaB[nivelB]++;
+                if(nivelB < 256)
+                    histogramaB[nivelB]++;
             }
         }
     }
@@ -103,7 +107,7 @@ public class Histograma {
     private Imagen getImagenHistogramaGris() {
         Imagen imagenHistograma = new Imagen();
         imagenHistograma.setFormato("P2");
-        imagenHistograma.setM((short)255);
+        imagenHistograma.setM((short)256);
         imagenHistograma.setN((short)270);
         imagenHistograma.setNivelIntensidad((short)255);
         //busca el maximo numero de pixeles para el nivel de intensidad dominante

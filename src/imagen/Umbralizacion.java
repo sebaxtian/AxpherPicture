@@ -173,7 +173,7 @@ public class Umbralizacion {
         }
     }
 
-    public void isodata() {
+    public void metodoIsodata() {
         this.umbralGris = 0;
         int t = 0, PixelesFi = 0;
         int histogramaGris[] = this.histograma.getHistogramaGris();
@@ -211,7 +211,7 @@ public class Umbralizacion {
     }
     
     
-    public void otsu(){
+    public void metodoOtsu(){
         int histogramaGris[] = this.histograma.getHistogramaGris();
         int Size = histogramaGris.length;
         int total = 0;

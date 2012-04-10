@@ -174,85 +174,213 @@ public class Umbralizacion {
     }
 
     public void metodoIsodata() {
-        this.umbralGris = 0;
-        int t = 0, PixelesFi = 0;
-        int histogramaGris[] = this.histograma.getHistogramaGris();
-        int Size = histogramaGris.length, TotalPixels = 0;
-        int PixelsBackGround, PixelsForeground, TotalPixelsBg, TotalPixelsFg;
+        String formato = histograma.getFormato(); 
+        if(formato.equals("P2")) {
+            this.umbralGris = 0;
+            int histogramaGris[] = this.histograma.getHistogramaGris();
+            int t = 0, PixelesFi = 0;
 
-        for (int i = 0; i < Size; i++) {
-            PixelesFi += i * histogramaGris[i];
-            TotalPixels += histogramaGris[i];
-        }
-        this.umbralGris = PixelesFi / TotalPixels;
+            int Size = histogramaGris.length, TotalPixels = 0;
+            int PixelsBackGround, PixelsForeground, TotalPixelsBg, TotalPixelsFg;
 
-        while (true) {
-            PixelsBackGround = 0;
-            TotalPixelsBg = 0;
-            PixelsForeground = 0;
-            TotalPixelsFg = 0;
-
-            for (int i = 0; i < this.umbralGris; i++) {
-                PixelsBackGround += i * histogramaGris[i];
-                TotalPixelsBg += histogramaGris[i];
+            for (int i = 0; i < Size; i++) {
+                PixelesFi += i * histogramaGris[i];
+                TotalPixels += histogramaGris[i];
             }
-            PixelsForeground = PixelesFi - PixelsBackGround;
-            TotalPixelsFg = TotalPixels - TotalPixelsBg;
+            this.umbralGris = PixelesFi / TotalPixels;
 
-            t = (PixelsBackGround / TotalPixelsBg) + (PixelsForeground / TotalPixelsFg);
-            t /= 2;
+            while (true) {
+                PixelsBackGround = 0;
+                TotalPixelsBg = 0;
+                PixelsForeground = 0;
+                TotalPixelsFg = 0;
 
-            if (this.umbralGris == t) {
-                break;
-            } else {
-                this.umbralGris = t;
+                for (int i = 0; i < this.umbralGris; i++) {
+                    PixelsBackGround += i * histogramaGris[i];
+                    TotalPixelsBg += histogramaGris[i];
+                }
+                PixelsForeground = PixelesFi - PixelsBackGround;
+                TotalPixelsFg = TotalPixels - TotalPixelsBg;
+
+                t = (PixelsBackGround / TotalPixelsBg) + (PixelsForeground / TotalPixelsFg);
+                t /= 2;
+
+                if (this.umbralGris == t) {
+                    break;
+                } else {
+                    this.umbralGris = t;
+                }
             }
+        }else if(formato.equals("P2")) {
+            //Calculo para el umbral del histograma con el color blue
+            this.umbralB = 0;
+            int histogramaB[] = this.histograma.getHistogramaB();
+            int t = 0, PixelesFi = 0;
+
+            int Size = histogramaB.length, TotalPixels = 0;
+            int PixelsBackGround, PixelsForeground, TotalPixelsBg, TotalPixelsFg;
+
+            for (int i = 0; i < Size; i++) {
+                PixelesFi += i * histogramaB[i];
+                TotalPixels += histogramaB[i];
+            }
+            this.umbralB = PixelesFi / TotalPixels;
+
+            while (true) {
+                PixelsBackGround = 0;
+                TotalPixelsBg = 0;
+                PixelsForeground = 0;
+                TotalPixelsFg = 0;
+
+                for (int i = 0; i < this.umbralB; i++) {
+                    PixelsBackGround += i * histogramaB[i];
+                    TotalPixelsBg += histogramaB[i];
+                }
+                PixelsForeground = PixelesFi - PixelsBackGround;
+                TotalPixelsFg = TotalPixels - TotalPixelsBg;
+
+                t = (PixelsBackGround / TotalPixelsBg) + (PixelsForeground / TotalPixelsFg);
+                t /= 2;
+
+                if (this.umbralB == t) {
+                    break;
+                } else {
+                    this.umbralB = t;
+                }
+            }
+            
+            //Calculo para el umbral del histograma con el color GREEN
+            this.umbralG = 0;
+            int histogramaG[] = this.histograma.getHistogramaG();
+            
+            t = 0;
+            PixelesFi = 0;
+
+            Size = histogramaG.length;
+            TotalPixels = 0;
+            
+            for (int i = 0; i < Size; i++) {
+                PixelesFi += i * histogramaB[i];
+                TotalPixels += histogramaB[i];
+            }
+            
+            this.umbralG = PixelesFi / TotalPixels;
+
+            while (true) {
+                PixelsBackGround = 0;
+                TotalPixelsBg = 0;
+                PixelsForeground = 0;
+                TotalPixelsFg = 0;
+
+                for (int i = 0; i < this.umbralG; i++) {
+                    PixelsBackGround += i * histogramaG[i];
+                    TotalPixelsBg += histogramaG[i];
+                }
+                PixelsForeground = PixelesFi - PixelsBackGround;
+                TotalPixelsFg = TotalPixels - TotalPixelsBg;
+
+                t = (PixelsBackGround / TotalPixelsBg) + (PixelsForeground / TotalPixelsFg);
+                t /= 2;
+
+                if (this.umbralG == t) {
+                    break;
+                } else {
+                    this.umbralG = t;
+                }
+            }
+            //
+            //Calculo para el umbral del histograma con el color RED
+            this.umbralR = 0;
+            int histogramaR[] = this.histograma.getHistogramaR();
+            
+            t = 0;
+            PixelesFi = 0;
+
+            Size = histogramaB.length;
+            TotalPixels = 0;
+
+            for (int i = 0; i < Size; i++) {
+                PixelesFi += i * histogramaR[i];
+                TotalPixels += histogramaR[i];
+            }
+            this.umbralR = PixelesFi / TotalPixels;
+
+            while (true) {
+                PixelsBackGround = 0;
+                TotalPixelsBg = 0;
+                PixelsForeground = 0;
+                TotalPixelsFg = 0;
+
+                for (int i = 0; i < this.umbralR; i++) {
+                    PixelsBackGround += i * histogramaR[i];
+                    TotalPixelsBg += histogramaR[i];
+                }
+                PixelsForeground = PixelesFi - PixelsBackGround;
+                TotalPixelsFg = TotalPixels - TotalPixelsBg;
+
+                t = (PixelsBackGround / TotalPixelsBg) + (PixelsForeground / TotalPixelsFg);
+                t /= 2;
+
+                if (this.umbralR == t) {
+                    break;
+                } else {
+                    this.umbralR = t;
+                }
+            }
+        }else{
+            System.out.println("UPS que formato sera "+formato );
         }
     }
     
     
-    public void metodoOtsu(){
-        int histogramaGris[] = this.histograma.getHistogramaGris();
-        int Size = histogramaGris.length;
-        int total = 0;
+    public void metodoOtsu() {
+        String formato = histograma.getFormato();
+        if (formato.equals("P2")) {
+            int histogramaGris[] = this.histograma.getHistogramaGris();
+            int Size = histogramaGris.length;
+            int total = 0;
 
-        for (int i = 0; i < Size; i++) {
-            total += histogramaGris[i];
-        }
-
-        float wb = 0, wf = 0;//frecuencias de background y foreground
-        this.umbralGris = 0;//valor umbral
-        double Maximo = 0, temp = 0, Sum = 0, sum = 0;
-        double mb = 0, mf = 0;
-
-        for (int i = 0; i < Size; i++) {
-            Sum += i * histogramaGris[i];
-        }
-        for (int t = 0; t < Size; t++) {
-            wb += histogramaGris[t];
-            if (wb == 0) {
-                continue;
+            for (int i = 0; i < Size; i++) {
+                total += histogramaGris[i];
             }
 
+            float wb = 0, wf = 0;//frecuencias de background y foreground
+            this.umbralGris = 0;//valor umbral
+            double Maximo = 0, temp = 0, Sum = 0, sum = 0;
+            double mb = 0, mf = 0;
 
-            wf = total - wb;
-            if (wf == 0) {
-                break;
+            for (int i = 0; i < Size; i++) {
+                Sum += i * histogramaGris[i];
+            }
+            for (int t = 0; t < Size; t++) {
+                wb += histogramaGris[t];
+                if (wb == 0) {
+                    continue;
+                }
+
+
+                wf = total - wb;
+                if (wf == 0) {
+                    break;
+                }
+
+
+                sum += t * histogramaGris[t];
+
+                mb = sum / wb;
+                mf = (Sum - sum) / wf;
+
+                temp = wb * wf * Math.pow(mb - mf, 2);
+
+                if (temp > Maximo) {
+
+                    Maximo = temp;
+                    this.umbralGris = t;
+                }
             }
 
-
-            sum += t * histogramaGris[t];
-
-            mb = sum / wb;
-            mf = (Sum - sum) / wf;
-
-            temp = wb * wf * Math.pow(mb - mf, 2);
-
-            if (temp > Maximo) {
-
-                Maximo = temp;
-                this.umbralGris = t;
-            }
+        }else if(formato.equals("P3")) {
+            
         }
     }
     

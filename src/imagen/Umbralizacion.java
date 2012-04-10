@@ -172,6 +172,90 @@ public class Umbralizacion {
             }
         }
     }
+
+    public void isodata() {
+        this.umbralGris = 0;
+        int t = 0, PixelesFi = 0;
+        int histogramaGris[] = this.histograma.getHistogramaGris();
+        int Size = histogramaGris.length, TotalPixels = 0;
+        int PixelsBackGround, PixelsForeground, TotalPixelsBg, TotalPixelsFg;
+
+        for (int i = 0; i < Size; i++) {
+            PixelesFi += i * histogramaGris[i];
+            TotalPixels += histogramaGris[i];
+        }
+        this.umbralGris = PixelesFi / TotalPixels;
+
+        while (true) {
+            PixelsBackGround = 0;
+            TotalPixelsBg = 0;
+            PixelsForeground = 0;
+            TotalPixelsFg = 0;
+
+            for (int i = 0; i < this.umbralGris; i++) {
+                PixelsBackGround += i * histogramaGris[i];
+                TotalPixelsBg += histogramaGris[i];
+            }
+            PixelsForeground = PixelesFi - PixelsBackGround;
+            TotalPixelsFg = TotalPixels - TotalPixelsBg;
+
+            t = (PixelsBackGround / TotalPixelsBg) + (PixelsForeground / TotalPixelsFg);
+            t /= 2;
+
+            if (this.umbralGris == t) {
+                break;
+            } else {
+                this.umbralGris = t;
+            }
+        }
+    }
+    
+    
+    public void otsu(){
+        int histogramaGris[] = this.histograma.getHistogramaGris();
+        int Size = histogramaGris.length;
+        int total = 0;
+
+        for (int i = 0; i < Size; i++) {
+            total += histogramaGris[i];
+        }
+
+        float wb = 0, wf = 0;//frecuencias de background y foreground
+        this.umbralGris = 0;//valor umbral
+        double Maximo = 0, temp = 0, Sum = 0, sum = 0;
+        double mb = 0, mf = 0;
+
+        for (int i = 0; i < Size; i++) {
+            Sum += i * histogramaGris[i];
+        }
+        for (int t = 0; t < Size; t++) {
+            wb += histogramaGris[t];
+            if (wb == 0) {
+                continue;
+            }
+
+
+            wf = total - wb;
+            if (wf == 0) {
+                break;
+            }
+
+
+            sum += t * histogramaGris[t];
+
+            mb = sum / wb;
+            mf = (Sum - sum) / wf;
+
+            temp = wb * wf * Math.pow(mb - mf, 2);
+
+            if (temp > Maximo) {
+
+                Maximo = temp;
+                this.umbralGris = t;
+            }
+        }
+    }
+    
     
     public int getUmbralGris() {
         return umbralGris;

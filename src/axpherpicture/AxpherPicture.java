@@ -81,7 +81,8 @@ public class AxpherPicture {
         Imagen imgHistogramaPPM = histogramaImgPPM.getImagenHistograma();
         imgHistogramaPPM.guardarImagen("ImgProcesado/histogramaLena.ppm");
         //calcula el umbral
-        Umbralizacion umbralizacionPPM = new Umbralizacion(histogramaImgPPM, 0);
+        //Umbralizacion umbralizacionPPM = new Umbralizacion(histogramaImgPPM, 0);
+        Umbralizacion umbralizacionPPM = new Umbralizacion(histogramaImgPPM, 1);
         int umbralR = umbralizacionPPM.getUmbralR();
         int umbralG = umbralizacionPPM.getUmbralG();
         int umbralB = umbralizacionPPM.getUmbralB();

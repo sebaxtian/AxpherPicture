@@ -33,7 +33,13 @@ public class Umbralizacion {
     private void calcularUmbral(int metodo) {
         if(metodo == 0) {
             metodoDosPicos();
+        }else if (metodo == 1){
+            metodoIsodata();
         }
+        else if(metodo == 2){
+            metodoOtsu();
+        }
+        
     }
     
     private void metodoDosPicos() {
@@ -211,7 +217,7 @@ public class Umbralizacion {
                     this.umbralGris = t;
                 }
             }
-        }else if(formato.equals("P2")) {
+        }else if(formato.equals("P3")) {
             //Calculo para el umbral del histograma con el color blue
             this.umbralB = 0;
             int histogramaB[] = this.histograma.getHistogramaB();

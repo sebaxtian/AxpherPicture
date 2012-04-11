@@ -66,6 +66,15 @@ public class Histograma {
                     histogramaGris[nivelGris]++;
             }
         }
+        //busca el maximo numero de pixeles para el nivel de intensidad dominante
+        nivelDominanteGris = 0;
+        maxNumPixelesGris = 0;
+        for(int i = 0; i < histogramaGris.length; i++) {
+            if(histogramaGris[i] > maxNumPixelesGris) {
+                maxNumPixelesGris = histogramaGris[i];
+                nivelDominanteGris = i;
+            }
+        }
     }
     
     /**
@@ -95,6 +104,30 @@ public class Histograma {
                     histogramaB[nivelB]++;
             }
         }
+        //busca el maximo numero de pixeles para el nivel de intensidad dominante por cada canal
+        nivelDominanteR = 0;
+        maxNumPixelesR = 0;
+        nivelDominanteG = 0;
+        maxNumPixelesG = 0;
+        nivelDominanteB = 0;
+        maxNumPixelesB = 0;
+        for(int i = 0; i < histogramaR.length; i++) {//los histogramas RGB tienen la misma dimension
+            //canal R
+            if(histogramaR[i] > maxNumPixelesR) {
+                maxNumPixelesR = histogramaR[i];
+                nivelDominanteR = i;
+            }
+            //canal G
+            if(histogramaG[i] > maxNumPixelesG) {
+                maxNumPixelesG = histogramaG[i];
+                nivelDominanteG = i;
+            }
+            //canal B
+            if(histogramaB[i] > maxNumPixelesB) {
+                maxNumPixelesB = histogramaB[i];
+                nivelDominanteB = i;
+            }
+        }
     }
     
     /**
@@ -110,15 +143,6 @@ public class Histograma {
         imagenHistograma.setM((short)256);
         imagenHistograma.setN((short)270);
         imagenHistograma.setNivelIntensidad((short)255);
-        //busca el maximo numero de pixeles para el nivel de intensidad dominante
-        nivelDominanteGris = 0;
-        maxNumPixelesGris = 0;
-        for(int i = 0; i < histogramaGris.length; i++) {
-            if(histogramaGris[i] > maxNumPixelesGris) {
-                maxNumPixelesGris = histogramaGris[i];
-                nivelDominanteGris = i;
-            }
-        }
         //matriz para dibujar el histograma
         short matrizGris[][] = new short[imagenHistograma.getN()][imagenHistograma.getM()];
         //todos los elementos de la matriz estan en blanco
@@ -159,30 +183,6 @@ public class Histograma {
         imagenHistograma.setM((short)768);
         imagenHistograma.setN((short)270);
         imagenHistograma.setNivelIntensidad((short)255);
-        //busca el maximo numero de pixeles para el nivel de intensidad dominante por cada canal
-        nivelDominanteR = 0;
-        maxNumPixelesR = 0;
-        nivelDominanteG = 0;
-        maxNumPixelesG = 0;
-        nivelDominanteB = 0;
-        maxNumPixelesB = 0;
-        for(int i = 0; i < histogramaR.length; i++) {//los histogramas RGB tienen la misma dimension
-            //canal R
-            if(histogramaR[i] > getMaxNumPixelesR()) {
-                maxNumPixelesR = histogramaR[i];
-                nivelDominanteR = i;
-            }
-            //canal G
-            if(histogramaG[i] > getMaxNumPixelesG()) {
-                maxNumPixelesG = histogramaG[i];
-                nivelDominanteG = i;
-            }
-            //canal B
-            if(histogramaB[i] > getMaxNumPixelesB()) {
-                maxNumPixelesB = histogramaB[i];
-                nivelDominanteB = i;
-            }
-        }
         //matriz para dibujar el histograma por cada canal RGB
         short matrizR[][] = new short[imagenHistograma.getN()][imagenHistograma.getM()];
         short matrizG[][] = new short[imagenHistograma.getN()][imagenHistograma.getM()];

@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.StringTokenizer;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -97,12 +98,19 @@ public class ControladorImagen implements ActionListener {
                 System.out.println("Umbral Dos Picos");
             }
             if(e.getSource().equals(objPanelUmbral.btnCalcularIsodata)) {
+                HiloUmbralizacion hiloUmbral = new HiloUmbralizacion(1);
+                hiloUmbral.start();
                 System.out.println("Umbral Isodata");
             }
             if(e.getSource().equals(objPanelUmbral.btnCalcularOtsu)) {
+                HiloUmbralizacion hiloUmbral = new HiloUmbralizacion(2);
+                hiloUmbral.start();
                 System.out.println("Umbral Otsu");
             }
             if(e.getSource().equals(objPanelUmbral.btnCalcularImgBinaria)) {
+                String umbral = objPanelUmbral.textFieldValorUmbral.getText();
+                HiloImagenBinaria hiloImgBinaria = new HiloImagenBinaria(umbral);
+                hiloImgBinaria.start();
                 System.out.println("Imagen Binaria");
             }
         }
@@ -245,14 +253,18 @@ public class ControladorImagen implements ActionListener {
         public void run() {
             AxpherPicture.barraProgreso.setValue(25);
             objHistograma = new Histograma(objImagen);
-            objHistograma.getImagenHistograma();
             AxpherPicture.barraProgreso.setValue(50);
             objUmbral = new Umbralizacion(objHistograma, idMetodo);
             if(objImagen.getFormato().equals("P2")) {
                 int umbral = objUmbral.getUmbralGris();
-                System.out.println(""+umbral);
                 if(idMetodo == 0) {
                     objPanelUmbral.labelValorDosPicos.setText(""+umbral);
+                }
+                if(idMetodo == 1) {
+                    objPanelUmbral.labelValorIsodata.setText(""+umbral);
+                }
+                if(idMetodo == 2) {
+                    objPanelUmbral.labelValorOtsu.setText(""+umbral);
                 }
             } else {
                 int umbralR = objUmbral.getUmbralR();
@@ -260,6 +272,12 @@ public class ControladorImagen implements ActionListener {
                 int umbralB = objUmbral.getUmbralB();
                 if(idMetodo == 0) {
                     objPanelUmbral.labelValorDosPicos.setText(umbralR+","+umbralG+","+umbralB);
+                }
+                if(idMetodo == 1) {
+                    objPanelUmbral.labelValorIsodata.setText(umbralR+","+umbralG+","+umbralB);
+                }
+                if(idMetodo == 2) {
+                    objPanelUmbral.labelValorOtsu.setText(umbralR+","+umbralG+","+umbralB);
                 }
             }
             AxpherPicture.barraProgreso.setValue(100);
@@ -282,22 +300,57 @@ public class ControladorImagen implements ActionListener {
         
         @Override
         public void run() {
-            /*Imagen imgBinariaPGM = new Imagen();
-            imgBinariaPGM.setFormato("P2");
-            imgBinariaPGM.setNivelIntensidad(1);
-            imgBinariaPGM.setN(imgPGM.getN());
-            imgBinariaPGM.setM(imgPGM.getM());
-            short matrizGris[][] = new short[imgBinariaPGM.getN()][imgBinariaPGM.getM()];
-            for(int i = 0; i < imgBinariaPGM.getN(); i++) {
-                for(int j = 0; j < imgBinariaPGM.getM(); j++) {
-                    if(imgPGM.getMatrizGris()[i][j] < umbralGris) {
-                        matrizGris[i][j] = 0;
-                    } else {
-                        matrizGris[i][j] = 1;
+            if(objImagen.getFormato().equals("P2")) {
+                objImagen.setNivelIntensidad(1);
+                short matrizGris[][] = objImagen.getMatrizGris();
+                int valorUmbral = Integer.parseInt(umbral);
+                for(int i = 0; i < objImagen.getN(); i++) {
+                    for(int j = 0; j < objImagen.getM(); j++) {
+                        if(matrizGris[i][j] < valorUmbral) {
+                            matrizGris[i][j] = 0;
+                        } else {
+                            matrizGris[i][j] = 1;
+                        }
                     }
                 }
+                objImagen.setMatrizGris(matrizGris);
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagen);
+            } else {
+                objImagen.setNivelIntensidad(1);
+                short matrizR[][] = objImagen.getMatrizR();
+                short matrizG[][] = objImagen.getMatrizG();
+                short matrizB[][] = objImagen.getMatrizB();
+                StringTokenizer stringToken = new StringTokenizer(umbral, ",");
+                int valorUmbralR = Integer.parseInt(stringToken.nextToken());
+                int valorUmbralG = Integer.parseInt(stringToken.nextToken());
+                int valorUmbralB = Integer.parseInt(stringToken.nextToken());
+                for(int i = 0; i < objImagen.getN(); i++) {
+                    for(int j = 0; j < objImagen.getM(); j++) {
+                        //canal R
+                        if(matrizR[i][j] < valorUmbralR) {
+                            matrizR[i][j] = 0;
+                        } else {
+                            matrizR[i][j] = 1;
+                        }
+                        //canal G
+                        if(matrizG[i][j] < valorUmbralG) {
+                            matrizG[i][j] = 0;
+                        } else {
+                            matrizG[i][j] = 1;
+                        }
+                        //canal B
+                        if(matrizB[i][j] < valorUmbralB) {
+                            matrizB[i][j] = 0;
+                        } else {
+                            matrizB[i][j] = 1;
+                        }
+                    }
+                }
+                objImagen.setMatrizR(matrizR);
+                objImagen.setMatrizG(matrizG);
+                objImagen.setMatrizB(matrizB);
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagen);
             }
-            imgBinariaPGM.setMatrizGris(matrizGris);*/
         }
     }
 }

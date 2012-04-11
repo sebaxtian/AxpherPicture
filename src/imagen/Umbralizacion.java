@@ -386,7 +386,135 @@ public class Umbralizacion {
             }
 
         }else if(formato.equals("P3")) {
-            
+            //calculo para el canal canal R
+            int histogramaR[] = this.histograma.getHistogramaR();
+            int Size = histogramaR.length;
+            int total = 0;
+
+            for (int i = 0; i < Size; i++) {
+                total += histogramaR[i];
+            }
+
+            float wb = 0, wf = 0;//frecuencias de background y foreground
+            this.umbralR = 0;//valor umbral
+            double Maximo = 0, temp = 0, Sum = 0, sum = 0;
+            double mb = 0, mf = 0;
+
+            for (int i = 0; i < Size; i++) {
+                Sum += i * histogramaR[i];
+            }
+            for (int t = 0; t < Size; t++) {
+                wb += histogramaR[t];
+                if (wb == 0) {
+                    continue;
+                }
+
+
+                wf = total - wb;
+                if (wf == 0) {
+                    break;
+                }
+
+
+                sum += t * histogramaR[t];
+
+                mb = sum / wb;
+                mf = (Sum - sum) / wf;
+
+                temp = wb * wf * Math.pow(mb - mf, 2);
+
+                if (temp > Maximo) {
+
+                    Maximo = temp;
+                    this.umbralR = t;
+                }
+            }
+            //calculo para el canal canal G
+            int histogramaG[] = this.histograma.getHistogramaG();
+            Size = histogramaG.length;
+            total = 0;
+
+            for (int i = 0; i < Size; i++) {
+                total += histogramaG[i];
+            }
+
+            wb = 0; wf = 0;//frecuencias de background y foreground
+            this.umbralG = 0;//valor umbral
+            Maximo = 0; temp = 0; Sum = 0; sum = 0;
+            mb = 0; mf = 0;
+
+            for (int i = 0; i < Size; i++) {
+                Sum += i * histogramaG[i];
+            }
+            for (int t = 0; t < Size; t++) {
+                wb += histogramaG[t];
+                if (wb == 0) {
+                    continue;
+                }
+
+
+                wf = total - wb;
+                if (wf == 0) {
+                    break;
+                }
+
+
+                sum += t * histogramaG[t];
+
+                mb = sum / wb;
+                mf = (Sum - sum) / wf;
+
+                temp = wb * wf * Math.pow(mb - mf, 2);
+
+                if (temp > Maximo) {
+
+                    Maximo = temp;
+                    this.umbralG = t;
+                }
+            }
+            //calculo para el canal canal B
+            int histogramaB[] = this.histograma.getHistogramaB();
+            Size = histogramaB.length;
+            total = 0;
+
+            for (int i = 0; i < Size; i++) {
+                total += histogramaB[i];
+            }
+
+            wb = 0; wf = 0;//frecuencias de background y foreground
+            this.umbralB = 0;//valor umbral
+            Maximo = 0; temp = 0; Sum = 0; sum = 0;
+            mb = 0; mf = 0;
+
+            for (int i = 0; i < Size; i++) {
+                Sum += i * histogramaB[i];
+            }
+            for (int t = 0; t < Size; t++) {
+                wb += histogramaB[t];
+                if (wb == 0) {
+                    continue;
+                }
+
+
+                wf = total - wb;
+                if (wf == 0) {
+                    break;
+                }
+
+
+                sum += t * histogramaB[t];
+
+                mb = sum / wb;
+                mf = (Sum - sum) / wf;
+
+                temp = wb * wf * Math.pow(mb - mf, 2);
+
+                if (temp > Maximo) {
+
+                    Maximo = temp;
+                    this.umbralB = t;
+                }
+            }
         }
     }
     

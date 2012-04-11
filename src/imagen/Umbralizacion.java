@@ -59,14 +59,14 @@ public class Umbralizacion {
             int picoBajo = pixelesPico1+pixelesPico2;
             if(nivelPico1 > nivelPico2) {
                 for(int i = nivelPico2; i < nivelPico1; i++) {
-                    if(histogramaGris[i] < picoBajo) {
+                    if(histogramaGris[i] < picoBajo && histogramaGris[i] > 0) {
                         picoBajo = histogramaGris[i];
                         umbralGris = (short)i;
                     }
                 }
             } else {
                 for(int i = nivelPico1; i < nivelPico2; i++) {
-                    if(histogramaGris[i] < picoBajo) {
+                    if(histogramaGris[i] < picoBajo && histogramaGris[i] > 0) {
                         picoBajo = histogramaGris[i];
                         umbralGris = (short)i;
                     }
@@ -125,14 +125,14 @@ public class Umbralizacion {
             //canal R
             if(nivelPico1R > nivelPico2R) {
                 for(int i = nivelPico2R; i < nivelPico1R; i++) {
-                    if(histogramaR[i] < picoBajoR) {
+                    if(histogramaR[i] < picoBajoR && histogramaR[i] > 0) {
                         picoBajoR = histogramaR[i];
                         umbralR = (short)i;
                     }
                 }
             } else {
                 for(int i = nivelPico1R; i < nivelPico2R; i++) {
-                    if(histogramaR[i] < picoBajoR) {
+                    if(histogramaR[i] < picoBajoR && histogramaR[i] > 0) {
                         picoBajoR = histogramaR[i];
                         umbralR = (short)i;
                     }
@@ -141,14 +141,14 @@ public class Umbralizacion {
             //cana G
             if(nivelPico1G > nivelPico2G) {
                 for(int i = nivelPico2G; i < nivelPico1G; i++) {
-                    if(histogramaG[i] < picoBajoG) {
+                    if(histogramaG[i] < picoBajoG && histogramaG[i] > 0) {
                         picoBajoG = histogramaG[i];
                         umbralG = (short)i;
                     }
                 }
             } else {
                 for(int i = nivelPico1G; i < nivelPico2G; i++) {
-                    if(histogramaG[i] < picoBajoG) {
+                    if(histogramaG[i] < picoBajoG && histogramaG[i] > 0) {
                         picoBajoG = histogramaG[i];
                         umbralG = (short)i;
                     }
@@ -157,14 +157,14 @@ public class Umbralizacion {
             //canal B
             if(nivelPico1B > nivelPico2B) {
                 for(int i = nivelPico2B; i < nivelPico1B; i++) {
-                    if(histogramaB[i] < picoBajoB) {
+                    if(histogramaB[i] < picoBajoB && histogramaB[i] > 0) {
                         picoBajoB = histogramaB[i];
                         umbralB = (short)i;
                     }
                 }
             } else {
                 for(int i = nivelPico1B; i < nivelPico2B; i++) {
-                    if(histogramaB[i] < picoBajoB) {
+                    if(histogramaB[i] < picoBajoB && histogramaB[i] > 0) {
                         picoBajoB = histogramaB[i];
                         umbralB = (short)i;
                     }

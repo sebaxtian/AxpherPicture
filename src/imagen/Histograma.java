@@ -114,7 +114,7 @@ public class Histograma {
         nivelDominanteGris = 0;
         maxNumPixelesGris = 0;
         for(int i = 0; i < histogramaGris.length; i++) {
-            if(histogramaGris[i] > getMaxNumPixelesGris()) {
+            if(histogramaGris[i] > maxNumPixelesGris) {
                 maxNumPixelesGris = histogramaGris[i];
                 nivelDominanteGris = i;
             }

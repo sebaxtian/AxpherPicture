@@ -4,6 +4,7 @@
  */
 package axpherpicture;
 
+import imagen.DicomImg;
 import imagen.Histograma;
 import imagen.Imagen;
 import imagen.Scalar;
@@ -27,8 +28,16 @@ public class AxpherPicture {
         // TODO code application logic here
         
         /**
+         * Imagen en formato Dicom
+         */
+        DicomImg objDicomImg = new DicomImg("ImgFuente/brain.dcm");
+        System.out.println("Imprime Headers De Imagen Dicom");
+        objDicomImg.listDicomHeader(objDicomImg.getDicomObject());
+        
+        /**
          * Imagen en formato PGM
          */
+        /*
         String rutaImgPGM = "ImgFuente/lena.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         imgPGM.guardarImagen("ImgProcesado/lenaCopia.pgm");
@@ -66,10 +75,11 @@ public class AxpherPicture {
         imgPGM.setN(imgPGM.getMatrizGris().length);
         imgPGM.setM(imgPGM.getMatrizGris()[0].length);
         imgPGM.guardarImagen("ImgProcesado/scalarLena2.25X.pgm");
-        
+        */
         /**
          * Imagen en formato PPM
          */
+        /*
         String rutaImgPPM = "ImgFuente/lena.ppm";
         Imagen imgPPM = new Imagen(rutaImgPPM);
         imgPPM.guardarImagen("ImgProcesado/lenaCopia.ppm");
@@ -133,5 +143,7 @@ public class AxpherPicture {
         imgPPM.setN(imgPPM.getMatrizR().length);
         imgPPM.setM(imgPPM.getMatrizR()[0].length);
         imgPPM.guardarImagen("ImgProcesado/scalarLena2.25X.ppm");
+        */
+        
     }
 }

@@ -58,6 +58,7 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuSeparador = new javax.swing.JPopupMenu.Separator();
         menuItemSalir = new javax.swing.JMenuItem();
         menuImagen = new javax.swing.JMenu();
+        menuItemUmbral = new javax.swing.JMenuItem();
         menuVer = new javax.swing.JMenu();
         menuItemVerHistograma = new javax.swing.JMenuItem();
         menuItemVerImagen = new javax.swing.JMenuItem();
@@ -87,7 +88,7 @@ public class AxpherPicture extends javax.swing.JFrame {
             panelEastLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelEastLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
+                .addComponent(panelCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -98,32 +99,21 @@ public class AxpherPicture extends javax.swing.JFrame {
         panelOperaciones.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         panelOperaciones.setPreferredSize(new java.awt.Dimension(512, 512));
 
-        javax.swing.GroupLayout panelOperacionesLayout = new javax.swing.GroupLayout(panelOperaciones);
-        panelOperaciones.setLayout(panelOperacionesLayout);
-        panelOperacionesLayout.setHorizontalGroup(
-            panelOperacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        panelOperacionesLayout.setVerticalGroup(
-            panelOperacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 344, Short.MAX_VALUE)
-        );
-
         panelPropiedades.setBorder(javax.swing.BorderFactory.createTitledBorder("Propiedades"));
 
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 15));
         jLabel1.setText("Archivo:");
 
-        jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 15));
         jLabel2.setText("Formato:");
 
-        jLabel3.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Ubuntu", 1, 15));
         jLabel3.setText("Intensidad:");
 
-        jLabel4.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Ubuntu", 1, 15));
         jLabel4.setText("Ancho:");
 
-        jLabel5.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Ubuntu", 1, 15));
         jLabel5.setText("Alto:");
 
         javax.swing.GroupLayout panelPropiedadesLayout = new javax.swing.GroupLayout(panelPropiedades);
@@ -195,7 +185,7 @@ public class AxpherPicture extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCenterLayout.createSequentialGroup()
                 .addComponent(panelPropiedades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelOperaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+                .addComponent(panelOperaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -217,6 +207,10 @@ public class AxpherPicture extends javax.swing.JFrame {
         barraMenus.add(menuArchivo);
 
         menuImagen.setText("Imagen");
+
+        menuItemUmbral.setText("Umbralizacion");
+        menuImagen.add(menuItemUmbral);
+
         barraMenus.add(menuImagen);
 
         menuVer.setText("Ver");
@@ -293,6 +287,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JMenuItem menuItemAbrir;
     public javax.swing.JMenuItem menuItemGuardar;
     public javax.swing.JMenuItem menuItemSalir;
+    public javax.swing.JMenuItem menuItemUmbral;
     public javax.swing.JMenuItem menuItemVerHistograma;
     public javax.swing.JMenuItem menuItemVerImagen;
     private javax.swing.JPopupMenu.Separator menuSeparador;
@@ -300,7 +295,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     private javax.swing.JPanel panelCanvas;
     private javax.swing.JPanel panelCenter;
     private javax.swing.JPanel panelEast;
-    private javax.swing.JPanel panelOperaciones;
+    public javax.swing.JPanel panelOperaciones;
     private javax.swing.JPanel panelPropiedades;
     // End of variables declaration//GEN-END:variables
 }

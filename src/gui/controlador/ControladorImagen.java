@@ -5,8 +5,10 @@
 package gui.controlador;
 
 import gui.AxpherPicture;
+import gui.PanelUmbralizacion;
 import imagen.Histograma;
 import imagen.Imagen;
+import imagen.Umbralizacion;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -26,9 +28,11 @@ public class ControladorImagen implements ActionListener {
     
     private AxpherPicture objVentanaAxpherPicture;
     private gui.Histograma objVentanaHistograma;
+    private PanelUmbralizacion objPanelUmbral;
     private File archivoImagen;
     private Imagen objImagen;
     private Histograma objHistograma;
+    private Umbralizacion objUmbral;
     
     public ControladorImagen(AxpherPicture objVentana) {
         this.objVentanaAxpherPicture = objVentana;
@@ -38,6 +42,7 @@ public class ControladorImagen implements ActionListener {
         this.objVentanaAxpherPicture.menuItemSalir.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemVerHistograma.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemVerImagen.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemUmbral.addActionListener(this);
         this.objVentanaHistograma.btnGuardarHistograma.addActionListener(this);
         this.objVentanaAxpherPicture.addWindowListener(new WindowAdapter() {
             @Override
@@ -73,6 +78,33 @@ public class ControladorImagen implements ActionListener {
         if(e.getSource().equals(objVentanaHistograma.btnGuardarHistograma)) {
             System.out.println("Guardar histograma");
             guardarArchivoHistograma();
+        }
+        if(e.getActionCommand().equals("Umbralizacion")) {
+            System.out.println("Umbralizacion");
+            objPanelUmbral = new PanelUmbralizacion();
+            objPanelUmbral.btnCalcularDosPicos.addActionListener(this);
+            objPanelUmbral.btnCalcularImgBinaria.addActionListener(this);
+            objPanelUmbral.btnCalcularIsodata.addActionListener(this);
+            objPanelUmbral.btnCalcularOtsu.addActionListener(this);
+            objVentanaAxpherPicture.panelOperaciones.removeAll();
+            objVentanaAxpherPicture.panelOperaciones.add(objPanelUmbral);
+            objVentanaAxpherPicture.pack();
+        }
+        if(objPanelUmbral != null) {
+            if(e.getSource().equals(objPanelUmbral.btnCalcularDosPicos)) {
+                HiloUmbralizacion hiloUmbral = new HiloUmbralizacion(0);
+                hiloUmbral.start();
+                System.out.println("Umbral Dos Picos");
+            }
+            if(e.getSource().equals(objPanelUmbral.btnCalcularIsodata)) {
+                System.out.println("Umbral Isodata");
+            }
+            if(e.getSource().equals(objPanelUmbral.btnCalcularOtsu)) {
+                System.out.println("Umbral Otsu");
+            }
+            if(e.getSource().equals(objPanelUmbral.btnCalcularImgBinaria)) {
+                System.out.println("Imagen Binaria");
+            }
         }
     }
     
@@ -198,6 +230,74 @@ public class ControladorImagen implements ActionListener {
                 System.err.println("Error al dormir Hilo guardar archivo de imagen");
             }
             AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloUmbralizacion extends Thread {
+        
+        private int idMetodo;
+        
+        public HiloUmbralizacion(int idMetodo) {
+            this.idMetodo = idMetodo;
+        }
+        
+        @Override
+        public void run() {
+            AxpherPicture.barraProgreso.setValue(25);
+            objHistograma = new Histograma(objImagen);
+            objHistograma.getImagenHistograma();
+            AxpherPicture.barraProgreso.setValue(50);
+            objUmbral = new Umbralizacion(objHistograma, idMetodo);
+            if(objImagen.getFormato().equals("P2")) {
+                int umbral = objUmbral.getUmbralGris();
+                System.out.println(""+umbral);
+                if(idMetodo == 0) {
+                    objPanelUmbral.labelValorDosPicos.setText(""+umbral);
+                }
+            } else {
+                int umbralR = objUmbral.getUmbralR();
+                int umbralG = objUmbral.getUmbralG();
+                int umbralB = objUmbral.getUmbralB();
+                if(idMetodo == 0) {
+                    objPanelUmbral.labelValorDosPicos.setText(umbralR+","+umbralG+","+umbralB);
+                }
+            }
+            AxpherPicture.barraProgreso.setValue(100);
+            try {
+                sleep(512);
+            } catch (InterruptedException ex) {
+                System.err.println("Error al dormir Hilo umbralizacion");
+            }
+            AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloImagenBinaria extends Thread {
+        
+        private String umbral;
+        
+        public HiloImagenBinaria(String umbral) {
+            this.umbral = umbral;
+        }
+        
+        @Override
+        public void run() {
+            /*Imagen imgBinariaPGM = new Imagen();
+            imgBinariaPGM.setFormato("P2");
+            imgBinariaPGM.setNivelIntensidad(1);
+            imgBinariaPGM.setN(imgPGM.getN());
+            imgBinariaPGM.setM(imgPGM.getM());
+            short matrizGris[][] = new short[imgBinariaPGM.getN()][imgBinariaPGM.getM()];
+            for(int i = 0; i < imgBinariaPGM.getN(); i++) {
+                for(int j = 0; j < imgBinariaPGM.getM(); j++) {
+                    if(imgPGM.getMatrizGris()[i][j] < umbralGris) {
+                        matrizGris[i][j] = 0;
+                    } else {
+                        matrizGris[i][j] = 1;
+                    }
+                }
+            }
+            imgBinariaPGM.setMatrizGris(matrizGris);*/
         }
     }
 }

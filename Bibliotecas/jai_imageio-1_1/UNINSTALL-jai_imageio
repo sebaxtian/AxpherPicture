@@ -1,0 +1,19 @@
+#!/bin/sh
+# @(#)UNINSTALL-jai_imageio	3.1 06/05/12 16:18:39
+# usage: UNINSTALL-jai_imageio
+
+echo "Uninstalling Java Advanced Imaging Image I/O Tools"
+
+rm -f *jai_imageio.txt
+rm -f lib/jai_imageio.jar
+rm -f lib/clibwrapper_jiio.jar
+rm -f lib/libclib_jiio.so
+if [ \( `uname` = "SunOS" \) -a \( `uname -p` = "sparc" \) ]; then
+    rm -f lib/libclib_jiio.so
+    rm -f lib/libclib_jiio_vis.so
+    rm -f lib/libclib_jiio_vis2.so
+fi
+rmdir lib
+rm -f UNINSTALL-jai_imageio
+
+echo "Done"

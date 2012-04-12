@@ -30,10 +30,11 @@ public class AxpherPicture {
         /**
          * Imagen en formato Dicom
          */
-        DicomImg objDicomImg = new DicomImg("ImgFuente/brain.dcm");
+        DicomImg objDicomImg = new DicomImg("ImgFuente/ankle.dcm");
         System.out.println("Imprime Headers De Imagen Dicom");
         objDicomImg.listDicomHeader(objDicomImg.getDicomObject());
-        
+        Imagen objImagen = objDicomImg.getImagen();
+        objImagen.guardarImagen("ImgProcesado/prueba6.pgm");
         /**
          * Imagen en formato PGM
          */

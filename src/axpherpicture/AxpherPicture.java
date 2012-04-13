@@ -5,6 +5,7 @@
 package axpherpicture;
 
 import imagen.DicomImg;
+import imagen.FiltroNoise;
 import imagen.Histograma;
 import imagen.Imagen;
 import imagen.Scalar;
@@ -30,11 +31,13 @@ public class AxpherPicture {
         /**
          * Imagen en formato Dicom
          */
+        /*
         DicomImg objDicomImg = new DicomImg("ImgFuente/ankle.dcm");
         System.out.println("Imprime Headers De Imagen Dicom");
         objDicomImg.listDicomHeader(objDicomImg.getDicomObject());
         Imagen objImagen = objDicomImg.getImagen();
         objImagen.guardarImagen("ImgProcesado/prueba6.pgm");
+        */
         /**
          * Imagen en formato PGM
          */
@@ -147,5 +150,12 @@ public class AxpherPicture {
         imgPPM.guardarImagen("ImgProcesado/scalarLena2.25X.ppm");
         */
         
+        String rutaImgPGM = "ImgFuente/noisy.pgm";
+        Imagen imgPGM = new Imagen(rutaImgPGM);
+        FiltroNoise fl = new FiltroNoise(imgPGM);
+        fl.filtroMediana(3);
+        fl.getImagen().guardarImagen("ImgProcesado/ruidoMediana.pgm");
+        fl.nagaoMatsuyama();
+        fl.getImagen().guardarImagen("ImgProcesado/ruidoNagao.pgm");
     }
 }

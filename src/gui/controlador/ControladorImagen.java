@@ -6,6 +6,7 @@ package gui.controlador;
 
 import gui.AxpherPicture;
 import gui.PanelUmbralizacion;
+import imagen.Ecualizacion;
 import imagen.Histograma;
 import imagen.Imagen;
 import imagen.Umbralizacion;
@@ -31,7 +32,8 @@ public class ControladorImagen implements ActionListener {
     private gui.Histograma objVentanaHistograma;
     private PanelUmbralizacion objPanelUmbral;
     private File archivoImagen;
-    private Imagen objImagen;
+    private Imagen objImagenFuente;
+    private Imagen objImagenProcesado;
     private Histograma objHistograma;
     private Umbralizacion objUmbral;
     
@@ -44,6 +46,7 @@ public class ControladorImagen implements ActionListener {
         this.objVentanaAxpherPicture.menuItemVerHistograma.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemVerImagen.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemUmbral.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemEcualizar.addActionListener(this);
         this.objVentanaHistograma.btnGuardarHistograma.addActionListener(this);
         this.objVentanaAxpherPicture.addWindowListener(new WindowAdapter() {
             @Override
@@ -75,6 +78,7 @@ public class ControladorImagen implements ActionListener {
         }
         if(e.getActionCommand().equals("Imagen")) {
             System.out.println("Ver imagen");
+            verImagenFuente();
         }
         if(e.getSource().equals(objVentanaHistograma.btnGuardarHistograma)) {
             System.out.println("Guardar histograma");
@@ -114,6 +118,19 @@ public class ControladorImagen implements ActionListener {
                 System.out.println("Imagen Binaria");
             }
         }
+        if(e.getActionCommand().equals("Ecualizar")) {
+            HiloEcualizacion hiloEcualizacion = new HiloEcualizacion();
+            hiloEcualizacion.start();
+            System.out.println("Ecualizar");
+        }
+    }
+    
+    private void verAtributosImagen(Imagen objImagen) {
+        objVentanaAxpherPicture.labelArchivo.setText(""+objImagen.getNombreArchivo());
+        objVentanaAxpherPicture.labelFormato.setText(""+objImagen.getFormato());
+        objVentanaAxpherPicture.labelIntensidad.setText(""+objImagen.getNivelIntensidad());
+        objVentanaAxpherPicture.labelAncho.setText(""+objImagen.getM());
+        objVentanaAxpherPicture.labelAlto.setText(""+objImagen.getN());
     }
     
     private void abrirArchivoImagen() {
@@ -167,18 +184,22 @@ public class ControladorImagen implements ActionListener {
         }
     }
     
+    private void verImagenFuente() {
+        objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
+        objImagenProcesado = objImagenFuente.clone();
+        verAtributosImagen(objImagenFuente);
+    }
+    
     class HiloAbreArchivoImagen extends Thread {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(25);
-            objImagen = new Imagen(archivoImagen.getAbsolutePath());
-            objVentanaAxpherPicture.labelArchivo.setText(""+archivoImagen.getName());
-            objVentanaAxpherPicture.labelFormato.setText(""+objImagen.getFormato());
-            objVentanaAxpherPicture.labelIntensidad.setText(""+objImagen.getNivelIntensidad());
-            objVentanaAxpherPicture.labelAncho.setText(""+objImagen.getM());
-            objVentanaAxpherPicture.labelAlto.setText(""+objImagen.getN());
+            objImagenFuente = new Imagen(archivoImagen.getAbsolutePath());
+            //copia de objeto imagen fuente
+            objImagenProcesado = objImagenFuente.clone();
+            verAtributosImagen(objImagenFuente);
             AxpherPicture.barraProgreso.setValue(80);
-            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagen);
+            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
             AxpherPicture.barraProgreso.setValue(100);
             try {
                 sleep(512);
@@ -193,7 +214,7 @@ public class ControladorImagen implements ActionListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(25);
-            objImagen.guardarImagen(archivoImagen.getAbsolutePath());
+            objImagenProcesado.guardarImagen(archivoImagen.getAbsolutePath());
             AxpherPicture.barraProgreso.setValue(100);
             try {
                 sleep(512);
@@ -208,7 +229,7 @@ public class ControladorImagen implements ActionListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(25);
-            objHistograma = new Histograma(objImagen);
+            objHistograma = new Histograma(objImagenProcesado);
             objVentanaHistograma.canvasHistograma.pintarHistograma(objHistograma.getImagenHistograma());
             AxpherPicture.barraProgreso.setValue(50);
             objVentanaHistograma.pack();
@@ -252,10 +273,10 @@ public class ControladorImagen implements ActionListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(25);
-            objHistograma = new Histograma(objImagen);
+            Histograma objHistograma = new Histograma(objImagenFuente);
             AxpherPicture.barraProgreso.setValue(50);
             objUmbral = new Umbralizacion(objHistograma, idMetodo);
-            if(objImagen.getFormato().equals("P2")) {
+            if(objImagenFuente.getFormato().equals("P2")) {
                 int umbral = objUmbral.getUmbralGris();
                 if(idMetodo == 0) {
                     objPanelUmbral.labelValorDosPicos.setText(""+umbral);
@@ -300,57 +321,90 @@ public class ControladorImagen implements ActionListener {
         
         @Override
         public void run() {
-            if(objImagen.getFormato().equals("P2")) {
-                objImagen.setNivelIntensidad(1);
-                short matrizGris[][] = objImagen.getMatrizGris();
+            AxpherPicture.barraProgreso.setValue(25);
+            objImagenProcesado.setFormato(objImagenFuente.getFormato());
+            objImagenProcesado.setM(objImagenFuente.getM());
+            objImagenProcesado.setN(objImagenFuente.getN());
+            objImagenProcesado.setNivelIntensidad(1);
+            if(objImagenProcesado.getFormato().equals("P2")) {
+                short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
+                objImagenProcesado.setMatrizGris(matrizGris);
                 int valorUmbral = Integer.parseInt(umbral);
-                for(int i = 0; i < objImagen.getN(); i++) {
-                    for(int j = 0; j < objImagen.getM(); j++) {
-                        if(matrizGris[i][j] < valorUmbral) {
-                            matrizGris[i][j] = 0;
+                AxpherPicture.barraProgreso.setValue(45);
+                for(int i = 0; i < objImagenProcesado.getN(); i++) {
+                    for(int j = 0; j < objImagenProcesado.getM(); j++) {
+                        if(objImagenFuente.getMatrizGris()[i][j] < valorUmbral) {
+                            objImagenProcesado.getMatrizGris()[i][j] = 0;
                         } else {
-                            matrizGris[i][j] = 1;
+                            objImagenProcesado.getMatrizGris()[i][j] = 1;
                         }
                     }
                 }
-                objImagen.setMatrizGris(matrizGris);
-                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagen);
+                AxpherPicture.barraProgreso.setValue(80);
             } else {
-                objImagen.setNivelIntensidad(1);
-                short matrizR[][] = objImagen.getMatrizR();
-                short matrizG[][] = objImagen.getMatrizG();
-                short matrizB[][] = objImagen.getMatrizB();
+                short matrizR[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
+                short matrizG[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
+                short matrizB[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
+                objImagenProcesado.setMatrizR(matrizR);
+                objImagenProcesado.setMatrizG(matrizG);
+                objImagenProcesado.setMatrizB(matrizB);
                 StringTokenizer stringToken = new StringTokenizer(umbral, ",");
                 int valorUmbralR = Integer.parseInt(stringToken.nextToken());
                 int valorUmbralG = Integer.parseInt(stringToken.nextToken());
                 int valorUmbralB = Integer.parseInt(stringToken.nextToken());
-                for(int i = 0; i < objImagen.getN(); i++) {
-                    for(int j = 0; j < objImagen.getM(); j++) {
+                AxpherPicture.barraProgreso.setValue(45);
+                for(int i = 0; i < objImagenProcesado.getN(); i++) {
+                    for(int j = 0; j < objImagenProcesado.getM(); j++) {
                         //canal R
-                        if(matrizR[i][j] < valorUmbralR) {
-                            matrizR[i][j] = 0;
+                        if(objImagenFuente.getMatrizR()[i][j] < valorUmbralR) {
+                            objImagenProcesado.getMatrizR()[i][j] = 0;
                         } else {
-                            matrizR[i][j] = 1;
+                            objImagenProcesado.getMatrizR()[i][j] = 1;
                         }
                         //canal G
-                        if(matrizG[i][j] < valorUmbralG) {
-                            matrizG[i][j] = 0;
+                        if(objImagenFuente.getMatrizG()[i][j] < valorUmbralG) {
+                            objImagenProcesado.getMatrizG()[i][j] = 0;
                         } else {
-                            matrizG[i][j] = 1;
+                            objImagenProcesado.getMatrizG()[i][j] = 1;
                         }
                         //canal B
-                        if(matrizB[i][j] < valorUmbralB) {
-                            matrizB[i][j] = 0;
+                        if(objImagenFuente.getMatrizB()[i][j] < valorUmbralB) {
+                            objImagenProcesado.getMatrizB()[i][j] = 0;
                         } else {
-                            matrizB[i][j] = 1;
+                            objImagenProcesado.getMatrizB()[i][j] = 1;
                         }
                     }
                 }
-                objImagen.setMatrizR(matrizR);
-                objImagen.setMatrizG(matrizG);
-                objImagen.setMatrizB(matrizB);
-                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagen);
+                AxpherPicture.barraProgreso.setValue(80);
             }
+            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+            AxpherPicture.barraProgreso.setValue(90);
+            verAtributosImagen(objImagenProcesado);
+            AxpherPicture.barraProgreso.setValue(100);
+            try {
+                sleep(512);
+            } catch (InterruptedException ex) {
+                System.err.println("Error al dormir Hilo umbralizacion");
+            }
+            AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloEcualizacion extends Thread {
+        @Override
+        public void run() {
+            AxpherPicture.barraProgreso.setValue(45);
+            Ecualizacion ecualizador = new Ecualizacion(objImagenFuente);
+            objImagenProcesado = ecualizador.ecualizar();
+            AxpherPicture.barraProgreso.setValue(80);
+            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+            AxpherPicture.barraProgreso.setValue(100);
+            try {
+                sleep(512);
+            } catch (InterruptedException ex) {
+                System.err.println("Error al dormir Hilo umbralizacion");
+            }
+            AxpherPicture.barraProgreso.setValue(0);
         }
     }
 }

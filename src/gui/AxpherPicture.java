@@ -59,6 +59,7 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemSalir = new javax.swing.JMenuItem();
         menuImagen = new javax.swing.JMenu();
         menuItemUmbral = new javax.swing.JMenuItem();
+        menuItemEcualizar = new javax.swing.JMenuItem();
         menuVer = new javax.swing.JMenu();
         menuItemVerHistograma = new javax.swing.JMenuItem();
         menuItemVerImagen = new javax.swing.JMenuItem();
@@ -211,6 +212,9 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemUmbral.setText("Umbralizacion");
         menuImagen.add(menuItemUmbral);
 
+        menuItemEcualizar.setText("Ecualizar");
+        menuImagen.add(menuItemEcualizar);
+
         barraMenus.add(menuImagen);
 
         menuVer.setText("Ver");
@@ -285,6 +289,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenu menuImagen;
     public javax.swing.JMenuItem menuItemAbrir;
+    public javax.swing.JMenuItem menuItemEcualizar;
     public javax.swing.JMenuItem menuItemGuardar;
     public javax.swing.JMenuItem menuItemSalir;
     public javax.swing.JMenuItem menuItemUmbral;

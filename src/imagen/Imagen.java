@@ -6,6 +6,8 @@ package imagen;
 
 import java.io.*;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -26,7 +28,7 @@ import java.util.Date;
  */
 
 
-public class Imagen {
+public class Imagen implements Cloneable {
     
     //Atributos de clase
     private File archivoImagen;
@@ -343,6 +345,10 @@ public class Imagen {
     public short[][] getMatrizGris() {
         return matrizGris;
     }
+    
+    public String getNombreArchivo() {
+        return archivoImagen.getName();
+    }
 
     /**
      * @param matrizGris the matrizGris to set
@@ -391,5 +397,24 @@ public class Imagen {
      */
     public void setMatrizB(short[][] matrizB) {
         this.matrizB = matrizB;
+    }
+    
+    public File getArchivoImagen() {
+        return archivoImagen;
+    }
+    
+    public void setArchivoImagen(File archivo) {
+        this.archivoImagen = archivo;
+    }
+
+    @Override
+    public Imagen clone(){
+        Imagen copia = null;
+        try {
+            copia = (Imagen)super.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return copia;
     }
 }

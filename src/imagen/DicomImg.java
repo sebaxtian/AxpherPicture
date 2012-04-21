@@ -16,10 +16,12 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
 import org.dcm4che2.data.DicomElement;
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.imageio.plugins.dcm.DicomImageReadParam;
 import org.dcm4che2.io.DicomInputStream;
+import org.dcm4che2.tool.dcm2jpg.Dcm2Jpg;
 import org.dcm4che2.util.TagUtils;
 
 /**
@@ -81,6 +83,25 @@ public class DicomImg {
         }
     }
     
+    private int getNumBits() {
+        Iterator<DicomElement> itera = objDicom.datasetIterator();
+        //busca el numero de bits de la imagen dicom
+        String tagValue;
+        String tagName;
+        int numBits = 0;
+        while(itera.hasNext()) {
+            DicomElement dcmElement = itera.next();
+            int tag = dcmElement.tag();
+            tagName = objDicom.nameOf(tag);
+            tagValue = objDicom.getString(tag);
+            if(tagName.equals("Bits Stored")) {
+                numBits = Integer.parseInt(tagValue);
+                System.out.println(tagName+" ["+tagValue+"]");
+            }
+        }
+        return numBits;
+    }
+    
     private void leerRasterDicom() {
         try {
             Iterator<ImageReader> iter = ImageIO.getImageReadersByFormatName("DICOM");
@@ -117,7 +138,7 @@ public class DicomImg {
         objImagen.setFormato("P2");
         objImagen.setM(ancho);
         objImagen.setN(alto);
-        objImagen.setNivelIntensidad(255);
+        objImagen.setNivelIntensidad((int)Math.pow(2, getNumBits())-1);
         short matrizGris[][] = new short[alto][ancho];
         for(int i = minY; i < alto; i++) {
             for(int j = minX; j < ancho; j++) {
@@ -190,12 +211,11 @@ public class DicomImg {
     }
     
     public void guardarJPEG() {
-        OutputStream output = null;
+        /*OutputStream output = null;
         try {
-            File myJpegFile = new File("ImgProcesado/brain.jpg");
+            File myJpegFile = new File("ImgProcesado/cosa1.jpg");
             output = new BufferedOutputStream(new FileOutputStream(myJpegFile));
             JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(output);
-            PNMImageReader obj = new PNMImageReader(null);
             encoder.encode(rasterDicom);
             output.close();
         } catch (IOException ex) {
@@ -208,6 +228,13 @@ public class DicomImg {
             } catch (IOException ex) {
                 Logger.getLogger(DicomImg.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }*/
+        File myJpegFile = new File("ImgProcesado/cosa2.jpg");
+        Dcm2Jpg obj = new Dcm2Jpg();
+        try {
+            obj.convert(archivoDicom, myJpegFile);
+        } catch (IOException ex) {
+            Logger.getLogger(DicomImg.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

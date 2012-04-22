@@ -101,9 +101,7 @@ public class FiltroNoise {
                 }  
                 this.imagen.setMatrizGris(this.matrizGris);
             } else if (this.imagen.getFormato().equals("P3")) {
-                
-                
-                
+             
             } else {
                 System.out.println("(clase Filtro) Que formato sera " + this.imagen.getFormato());
             }
@@ -112,6 +110,73 @@ public class FiltroNoise {
         }
     
     }
+    
+    /**
+     * Metodo sigma : filtro encargado filtra el ruido de una imagen
+     * el cual consiste en toma una ventana de 5x5 y en donde el elemento que se encuentra
+     * en el centro (3,3), es el pixel que deseamos hallar con base a la vecinda que se encuntra 
+     * en la ventana seleccionada, recorriendo la ventana y restando de cada uno el dato del pixel
+     * (3,3) los datos que sean menores al umbral se toman y luego se suma y se divide sobre la cantidad de datos
+     *@param sigma parametro tipo short, el cual sirve como umbral de referencia para el metodo
+     */
+    public void filtroSigma(short sigma){
+        
+        int tamanoMascara = 5;//Si quiere toma el valor de la mascara que es constante
+        //inicializacion de los datos de la matriz gris
+        for (int i = 0; i < this.matrizGris.length; i++) {
+            for (int j = 0; j < this.matrizGris[0].length; j++) {
+                this.matrizGris[i][j] = this.matrizGrisOriginal[i][j];
+            }
+        }
+
+        //mascara seleccionada para realizar el filtro
+        short[][] mascara = new short[tamanoMascara][tamanoMascara];
+                
+        int tope = tamanoMascara / 2; //variable que sirve de control para evitar que se desborde la mascara de la matriz
+        //JOptionPane.showMessageDialog(null, "tope: "+tope);   
+
+        for (int i = tope; i < this.imagen.getMatrizGris().length - tope; i++) {
+            for (int j = tope; j < this.imagen.getMatrizGris()[0].length - tope; j++) {
+
+                //llenado de la mascara
+                for (int y = 0; y < mascara.length; y++) {
+                    for (int x = 0; x < mascara[0].length; x++) {
+                        mascara[y][x] = this.imagen.getMatrizGris()[i - tope + y][j - tope + x];
+                        //System.out.print(mascara[y][x]+" ");
+                    }
+                    //System.out.println();
+                }
+                //System.out.println();
+                
+                short cantidad = 0; // variable encargada de llevar la cantidad de pixeles que cumplen el umbral (sigma)
+                short sumatoria = 0; // sumatoria de los pixeles que cumplen el umbral (sigma)
+
+                 // Calculo de sumatoria y cantidad de pixles que cumplen el umbral
+                for (int y = 0; y < mascara.length; y++) {
+                    for (int x = 0; x < mascara[0].length; x++) {
+                        //if(Math.abs(mascara[y][x]-mascara[2][2]) < sigma){
+                        if((mascara[y][x]-mascara[2][2]) < sigma){
+                            sumatoria+=mascara[y][x];
+                            cantidad++;
+                            //System.out.println("Cumple --> (y,x)="+mascara[y][x]+" sigma="+sigma +" Resultado="+Math.abs(mascara[y][x]-mascara[2][2])); 
+                        }else;
+                            //System.out.println("No Cumple --> (y,x)="+mascara[y][x]+" sigma="+sigma +" Resultado="+Math.abs(mascara[y][x]-mascara[2][2]));
+                    }
+                    //System.out.println();
+                }
+                //System.out.println("sumatoria="+sumatoria+ "  cantidad="+cantidad);
+                
+                //Se le asigna a la matriz imagen el nuevo valor para el pixel evaluado
+                if(cantidad > 0){
+                    this.matrizGris[i][j] = (short) (sumatoria/cantidad);
+                    //System.out.println("matriz="+this.matrizGris[i][j]+" sum="+sumatoria+" cant="+cantidad);
+                }
+                
+            }
+        }
+        this.imagen.setMatrizGris(this.matrizGris);
+    }
+    
     
     public void nagaoMatsuyama(){
         int tamanoMascara = 5 ;//Si quiere toma el valor de la mascara que es constante
@@ -451,20 +516,31 @@ public class FiltroNoise {
                System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
            System.out.println();
        }
-       fl.filtroMediana(3);
-       System.out.println("Despues de la mediana");
+       
+//       fl.filtroMediana(3);
+//       System.out.println("Despues de la mediana");
+//       for(int i=0;i<fl.getImagen().getMatrizGris().length;i++){
+//           for(int j=0;j<fl.getImagen().getMatrizGris()[0].length;j++)
+//               System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
+//           System.out.println();
+//       }
+       
+//       fl.nagaoMatsuyama();
+//       System.out.println("Despues de nagaoMatsuyama");
+//       for(int i=0;i<fl.getImagen().getMatrizGris().length;i++){
+//           for(int j=0;j<fl.getImagen().getMatrizGris()[0].length;j++)
+//               System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
+//           System.out.println();
+//       }
+       
+       fl.filtroSigma((short)2);
+       System.out.println("Despues de filtroSigma");
        for(int i=0;i<fl.getImagen().getMatrizGris().length;i++){
            for(int j=0;j<fl.getImagen().getMatrizGris()[0].length;j++)
                System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
            System.out.println();
        }
-       fl.nagaoMatsuyama();
-       System.out.println("Despues de nagaoMatsuyama");
-       for(int i=0;i<fl.getImagen().getMatrizGris().length;i++){
-           for(int j=0;j<fl.getImagen().getMatrizGris()[0].length;j++)
-               System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
-           System.out.println();
-       }
+
     }
     
        /**

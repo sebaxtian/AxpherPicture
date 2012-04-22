@@ -162,5 +162,19 @@ public class AxpherPicture {
         imgPPM.setM(imgPPM.getMatrizR()[0].length);
         imgPPM.guardarImagen("ImgProcesado/scalarLena2.25X.ppm");
         */
+        
+        String rutaImgPGM = "ImgFuente/noisy.pgm";
+        Imagen imgPGM = new Imagen(rutaImgPGM);
+        FiltroNoise fl = new FiltroNoise(imgPGM);
+        fl.filtroSigma((short)100);
+        fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
+        
+        fl.filtroMediana(3);
+        fl.getImagen().guardarImagen("ImgProcesado/medianaNoisy.pgm");
+        
+        fl.nagaoMatsuyama();
+        fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");
+        
+        
     }
 }

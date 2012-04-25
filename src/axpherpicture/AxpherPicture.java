@@ -4,13 +4,7 @@
  */
 package axpherpicture;
 
-import imagen.DicomImg;
-import imagen.Ecualizacion;
-import imagen.FiltroNoise;
-import imagen.Histograma;
-import imagen.Imagen;
-import imagen.Scalar;
-import imagen.Umbralizacion;
+import imagen.*;
 
 /**
  * Clase Main del proyecto AxpherPicture
@@ -33,12 +27,12 @@ public class AxpherPicture {
          * Imagen en formato Dicom
          */
         
-        DicomImg objDicomImg = new DicomImg("ImgFuente/ankle.dcm");
-        System.out.println("Imprime Headers De Imagen Dicom");
-        objDicomImg.listDicomHeader(objDicomImg.getDicomObject());
-        Imagen objImagen = objDicomImg.getImagen();
-        objImagen.guardarImagen("ImgProcesado/ankle.pgm");
-        objDicomImg.guardarJPEG();
+//        DicomImg objDicomImg = new DicomImg("ImgFuente/ankle.dcm");
+//        System.out.println("Imprime Headers De Imagen Dicom");
+//        objDicomImg.listDicomHeader(objDicomImg.getDicomObject());
+//        Imagen objImagen = objDicomImg.getImagen();
+//        objImagen.guardarImagen("ImgProcesado/ankle.pgm");
+//        objDicomImg.guardarJPEG();
         /**
          * Imagen en formato PGM
          */
@@ -163,18 +157,27 @@ public class AxpherPicture {
         imgPPM.guardarImagen("ImgProcesado/scalarLena2.25X.ppm");
         */
         
-        String rutaImgPGM = "ImgFuente/noisy.pgm";
-        Imagen imgPGM = new Imagen(rutaImgPGM);
-        FiltroNoise fl = new FiltroNoise(imgPGM);
-        fl.filtroSigma((short)100);
-        fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
         
-        fl.filtroMediana(3);
-        fl.getImagen().guardarImagen("ImgProcesado/medianaNoisy.pgm");
+//        String rutaImgPGM = "ImgFuente/noisy.pgm";
+//        Imagen imgPGM = new Imagen(rutaImgPGM);
+//       
+//        FiltroNoise fl = new FiltroNoise(imgPGM);
+//        fl.filtroSigma((short)100);
+//        fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
+//        
+//        fl.filtroMediana(3);
+//        fl.getImagen().guardarImagen("ImgProcesado/medianaNoisy.pgm");
+//        
+//        fl.nagaoMatsuyama();
+//        fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");
         
-        fl.nagaoMatsuyama();
-        fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");
-        
+
+          String rutaImgPGM = "ImgFuente/lena.pgm";
+          Imagen imgPGM = new Imagen(rutaImgPGM);
+
+          Resolucion rs = new Resolucion(imgPGM);
+          rs.cuantizar(7);
+          rs.getObjImagen().guardarImagen("ImgProcesado/Resolucion7Lena.pgm");
         
     }
 }

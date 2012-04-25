@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 public class Resolucion {
     
         // Atributos de clase
-    Imagen objImagen;
+    private Imagen objImagen;
     
     public Resolucion(Imagen objImagen) {
         this.objImagen = objImagen;
@@ -70,23 +70,37 @@ public class Resolucion {
         }
         
         if (estado){
-            int intensidadOriginal = this.objImagen.getNivelIntensidad();
+            int intensidadOriginal = this.getObjImagen().getNivelIntensidad();
             double intensidadNueva = Math.pow(2, bits);
             double factor = (intensidadOriginal + 1) / intensidadNueva; //ojo AQUI
             
-            if(this.objImagen.getFormato().equals("P2")){ 
-                short [][] matrizGris = this.objImagen.getMatrizGris();
+            if(this.getObjImagen().getFormato().equals("P2")){ 
+                short [][] matrizGris = this.getObjImagen().getMatrizGris();
                 
-                for (int i = 0; i < this.objImagen.getMatrizGris().length; i++) {
-                    for (int j = 0; j < this.objImagen.getMatrizGris()[0].length; j++) {
+                for (int i = 0; i < this.getObjImagen().getMatrizGris().length; i++) {
+                    for (int j = 0; j < this.getObjImagen().getMatrizGris()[0].length; j++) {
                         matrizGris[i][j] = (short) Math.ceil(matrizGris[i][j] / factor); //OJO aqui
                     }
                 }
                 
-                this.objImagen.setMatrizGris(matrizGris);
+                this.getObjImagen().setMatrizGris(matrizGris);
             }
         }
     
+    }
+
+    /**
+     * @return the objImagen
+     */
+    public Imagen getObjImagen() {
+        return objImagen;
+    }
+
+    /**
+     * @param objImagen the objImagen to set
+     */
+    public void setObjImagen(Imagen objImagen) {
+        this.objImagen = objImagen;
     }
     
 }

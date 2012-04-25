@@ -70,8 +70,21 @@ public class Resolucion {
         }
         
         if (estado){
-            int intensidad = this.objImagen.getNivelIntensidad();
+            int intensidadOriginal = this.objImagen.getNivelIntensidad();
+            double intensidadNueva = Math.pow(2, bits);
+            double factor = (intensidadOriginal + 1) / intensidadNueva; //ojo AQUI
             
+            if(this.objImagen.getFormato().equals("P2")){ 
+                short [][] matrizGris = this.objImagen.getMatrizGris();
+                
+                for (int i = 0; i < this.objImagen.getMatrizGris().length; i++) {
+                    for (int j = 0; j < this.objImagen.getMatrizGris()[0].length; j++) {
+                        matrizGris[i][j] = (short) Math.ceil(matrizGris[i][j] / factor); //OJO aqui
+                    }
+                }
+                
+                this.objImagen.setMatrizGris(matrizGris);
+            }
         }
     
     }

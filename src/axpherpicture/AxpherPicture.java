@@ -255,8 +255,18 @@ public class AxpherPicture {
         fl.filtroSigma((short)100);
         fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
         
-        fl.filtroMediana(3);
-        fl.getImagen().guardarImagen("ImgProcesado/medianaNoisy.pgm");
+//        String rutaImgPGM = "ImgFuente/noisy.pgm";
+//        Imagen imgPGM = new Imagen(rutaImgPGM);
+//       
+//        FiltroNoise fl = new FiltroNoise(imgPGM);
+//        fl.filtroSigma((short)100);
+//        fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
+//        
+//        fl.filtroMediana(3);
+//        fl.getImagen().guardarImagen("ImgProcesado/medianaNoisy.pgm");
+//        
+//        fl.nagaoMatsuyama();
+//        fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");
         
         fl.nagaoMatsuyama();
         fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");

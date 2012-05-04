@@ -22,6 +22,7 @@ import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.imageio.plugins.dcm.DicomImageReadParam;
 import org.dcm4che2.io.DicomInputStream;
 import org.dcm4che2.tool.dcm2jpg.Dcm2Jpg;
+import org.dcm4che2.tool.jpg2dcm.Jpg2Dcm;
 import org.dcm4che2.util.TagUtils;
 
 /**

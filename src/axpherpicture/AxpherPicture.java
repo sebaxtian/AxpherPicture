@@ -4,13 +4,8 @@
  */
 package axpherpicture;
 
-import imagen.DicomImg;
-import imagen.Ecualizacion;
-import imagen.FiltroNoise;
-import imagen.Histograma;
-import imagen.Imagen;
-import imagen.Scalar;
-import imagen.Umbralizacion;
+import imagen.*;
+import org.dcm4che2.data.DicomObject;
 
 /**
  * Clase Main del proyecto AxpherPicture
@@ -33,12 +28,103 @@ public class AxpherPicture {
          * Imagen en formato Dicom
          */
         
+        DcmImg objDcmImg = new DcmImg("ImgFuente/ankle.dcm");
+        objDcmImg.guardaY("ImgProcesado/ankle.dcm");
+        DicomObject dcmObj;
+        dcmObj = objDcmImg.getDicomObject();
+        objDcmImg.printHeaders(dcmObj);
+        String estudio = objDcmImg.getEstudio();
+        if(!estudio.equals("CT") || !estudio.equals("RM")) {
+            Imagen imgObj;
+            imgObj = objDcmImg.getImagen();
+            imgObj.guardarImagen("ImgProcesado/ankle.pgm");
+            //-->construye una imagen binaria
+            Imagen imgBinariaPGM = new Imagen();
+            imgBinariaPGM.setFormato("P2");
+            imgBinariaPGM.setNivelIntensidad(1);
+            imgBinariaPGM.setN(imgObj.getN());
+            imgBinariaPGM.setM(imgObj.getM());
+            short matrizGris[][] = new short[imgBinariaPGM.getN()][imgBinariaPGM.getM()];
+            for(int i = 0; i < imgBinariaPGM.getN(); i++) {
+                for(int j = 0; j < imgBinariaPGM.getM(); j++) {
+                    if(imgObj.getMatrizGris()[i][j] < 104) {
+                        matrizGris[i][j] = 0;
+                    } else {
+                        matrizGris[i][j] = 1;
+                    }
+                }
+            }
+            imgBinariaPGM.setMatrizGris(matrizGris);
+            objDcmImg.setImagen(imgBinariaPGM);
+            imgObj = objDcmImg.getImagen();
+            imgObj.guardarImagen("ImgProcesado/binariaAnkle.pgm");
+            objDcmImg.guardarDcmImg("ImgProcesado/binarioAnkle.dcm");
+            objDcmImg.guardaX("ImgProcesado/bi2Ankle.dcm");
+            //------
+            objDcmImg.guardaY("ImgProcesado/binaria3ankle.dcm");
+        }
+        
+        
+        /**
+         * Operaciones
+         */
+        String rutaImgPGM = "ImgFuente/noisy.pgm";
+        Imagen imgPGM = new Imagen(rutaImgPGM);
+
+        FiltroNoise fl = new FiltroNoise(imgPGM);
+        fl.filtroSigma((short)100);
+        fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
+
+        fl.filtroMediana(3);
+        fl.getImagen().guardarImagen("ImgProcesado/medianaNoisy.pgm");
+
+        fl.nagaoMatsuyama();
+        fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");
+
+
+        String rutaImgPGM2 = "ImgFuente/madera.pgm";
+        Imagen imgPGM2 = new Imagen(rutaImgPGM2);
+        String rutaImgPGM1 = "ImgFuente/velas.pgm";
+        Imagen imgPGM1 = new Imagen(rutaImgPGM1);
+
+        Cuantizar rs = new Cuantizar(imgPGM1);
+        rs.asignarBitsPixel(4);
+        rs.getObjImagen().guardarImagen("ImgProcesado/Resolucion7Lena.pgm");
+
+        
+        rutaImgPGM2 = "ImgFuente/madera.pgm";
+        imgPGM2 = new Imagen(rutaImgPGM2);
+        rutaImgPGM1 = "ImgFuente/velas.pgm";
+        imgPGM1 = new Imagen(rutaImgPGM1);
+        
+        Operaciones op = new Operaciones();
+        op.OrAndXor(imgPGM1, imgPGM2, "and").guardarImagen("ImgProcesado/maderaAndVelas.pgm");
+        op.OrAndXor(imgPGM1, imgPGM2, "xor").guardarImagen("ImgProcesado/maderaXorVelas.pgm");
+        op.OrAndXor(imgPGM1, imgPGM2, "or").guardarImagen("ImgProcesado/maderaOrVelas.pgm");
+        op.suma(imgPGM1, imgPGM2).guardarImagen("ImgProcesado/maderaSumaVelas.pgm");
+        op.suma(imgPGM1, 128).guardarImagen("ImgProcesado/velasSuma128.pgm");
+        
+        rutaImgPGM2 = "ImgFuente/pills.pgm";
+        imgPGM2 = new Imagen(rutaImgPGM2);
+        rutaImgPGM1 = "ImgFuente/birs.pgm";
+        imgPGM1 = new Imagen(rutaImgPGM1);
+        
+        op.OrAndXor(imgPGM1, imgPGM2, "and").guardarImagen("ImgProcesado/pillsAndBirs.pgm");
+        op.OrAndXor(imgPGM1, imgPGM2, "xor").guardarImagen("ImgProcesado/pillsXorBirs.pgm");
+        op.OrAndXor(imgPGM1, imgPGM2, "or").guardarImagen("ImgProcesado/pillsOrBirs.pgm");
+        op.suma(imgPGM1, imgPGM2).guardarImagen("ImgProcesado/pillsSumaBirs.pgm");
+        op.suma(imgPGM1, 128).guardarImagen("ImgProcesado/birsSuma128.pgm");
+        
+        
+        /*
         DicomImg objDicomImg = new DicomImg("ImgFuente/ankle.dcm");
         System.out.println("Imprime Headers De Imagen Dicom");
         objDicomImg.listDicomHeader(objDicomImg.getDicomObject());
         Imagen objImagen = objDicomImg.getImagen();
         objImagen.guardarImagen("ImgProcesado/ankle.pgm");
         objDicomImg.guardarJPEG();
+        */
+        
         /**
          * Imagen en formato PGM
          */
@@ -162,7 +248,7 @@ public class AxpherPicture {
         imgPPM.setM(imgPPM.getMatrizR()[0].length);
         imgPPM.guardarImagen("ImgProcesado/scalarLena2.25X.ppm");
         */
-        
+        /*
         String rutaImgPGM = "ImgFuente/noisy.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         FiltroNoise fl = new FiltroNoise(imgPGM);
@@ -174,7 +260,7 @@ public class AxpherPicture {
         
         fl.nagaoMatsuyama();
         fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");
-        
+        */
         
     }
 }

@@ -5,10 +5,9 @@
 package gui;
 
 import imagen.Imagen;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 /**
  * Esta clase canvas permite
@@ -19,20 +18,25 @@ import java.awt.Image;
  */
 
 
-public class CanvasHistograma extends Canvas {
+public class CanvasHistograma extends Canvas implements MouseMotionListener {
     
     private Image imagen;
+    private String formato;
     
     public CanvasHistograma() {
         setBackground(Color.WHITE);
+        addMouseMotionListener(this);
     }
     
     public void pintarHistograma(Imagen imgHistograma) {
         if(imgHistograma.getFormato().equals("P2")) {
             System.out.println("pinta histograma P2");
+            formato = imgHistograma.getFormato();
             this.setSize(imgHistograma.getM(), imgHistograma.getN());
             pintarHistogramaGris(imgHistograma.getMatrizGris());
         } else {
+            System.out.println("pinta histograma P3");
+            formato = imgHistograma.getFormato();
             this.setSize(imgHistograma.getM(), imgHistograma.getN());
             pintarHistogramaRGB(imgHistograma.getMatrizR(), imgHistograma.getMatrizG(), imgHistograma.getMatrizB());
         }
@@ -86,5 +90,61 @@ public class CanvasHistograma extends Canvas {
     public void paint(Graphics g) {
         super.paint(g);
         g.drawImage(imagen, 0, 0, this);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        //System.out.println("Arrastra El Mouse Sobre El Canvas "+Math.random());
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        Graphics g = getGraphics();
+        g.clearRect(0, 0, imagen.getWidth(this), imagen.getHeight(this));
+        g.drawImage(imagen, 0, 0, this);
+        
+        if(formato.equals("P2")) {
+            g.setColor(Color.red);
+            if(e.getX() < 128) {
+                g.drawString(""+e.getX(), e.getX()+4, e.getY());
+            } else {
+                g.drawString(""+e.getX(), e.getX()-25, e.getY());
+            }
+            g.setColor(Color.cyan);
+            g.drawLine(e.getX(), 0, e.getX(), imagen.getHeight(this));
+        }
+        if(formato.equals("P3")) {
+            g.setColor(Color.black);
+            int nivel = 0;
+            if(e.getX() <= 255) {
+                nivel = e.getX();
+            }
+            if(e.getX() > 255 && e.getX() <= 510) {
+                nivel = e.getX()-255;
+            }
+            if(e.getX() > 510 && e.getX() <= 765) {
+                nivel = e.getX()-510;
+            }
+            if(e.getX() < 128) {
+                g.drawString(""+nivel, e.getX()+4, e.getY());
+            }
+            if(e.getX() <= 255 && e.getX() >= 128) {
+                g.drawString(""+nivel, e.getX()-25, e.getY());
+            }
+            if(e.getX() > 255 && e.getX() < 383) {
+                g.drawString(""+nivel, e.getX()+4, e.getY());
+            }
+            if(e.getX() <= 510 && e.getX() >= 383) {
+                g.drawString(""+nivel, e.getX()-25, e.getY());
+            }
+            if(e.getX() > 510 && e.getX() < 638) {
+                g.drawString(""+nivel, e.getX()+4, e.getY());
+            }
+            if(e.getX() <= 765 && e.getX() >= 638) {
+                g.drawString(""+nivel, e.getX()-25, e.getY());
+            }
+            g.setColor(Color.yellow);
+            g.drawLine(e.getX(), 0, e.getX(), imagen.getHeight(this));
+        }
     }
 }

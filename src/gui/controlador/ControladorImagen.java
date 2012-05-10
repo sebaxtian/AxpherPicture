@@ -5,19 +5,22 @@
 package gui.controlador;
 
 import gui.AxpherPicture;
+import gui.PanelMR;
 import gui.PanelUmbralizacion;
-import imagen.Ecualizacion;
-import imagen.Histograma;
-import imagen.Imagen;
-import imagen.Umbralizacion;
+import imagen.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.StringTokenizer;
+import javax.activation.MimetypesFileTypeMap;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.dcm4che2.data.DicomObject;
 
 /**
  * Clase controlador para una imagen.
@@ -26,27 +29,39 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 
 
-public class ControladorImagen implements ActionListener {
+public class ControladorImagen implements ActionListener, ChangeListener {
     
     private AxpherPicture objVentanaAxpherPicture;
     private gui.Histograma objVentanaHistograma;
     private PanelUmbralizacion objPanelUmbral;
+    private PanelMR objPanelMR;
     private File archivoImagen;
     private Imagen objImagenFuente;
     private Imagen objImagenProcesado;
     private Histograma objHistograma;
     private Umbralizacion objUmbral;
+    private FiltroNoise objFiltro;
+    private DcmImg objDcmImg;
     
     public ControladorImagen(AxpherPicture objVentana) {
         this.objVentanaAxpherPicture = objVentana;
         this.objVentanaHistograma = new gui.Histograma();
-        this.objVentanaAxpherPicture.menuItemAbrir.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemAbrirPGMPPM.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemAbrirDICOM.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemGuardar.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemSalir.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemVerHistograma.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemVerImagen.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemUmbral.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemEcualizar.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemCuantizar.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemSigma.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemMediana.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemMatsuyama.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemOpAnd.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemOpOr.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemOpXor.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemOpSuma.addActionListener(this);
         this.objVentanaHistograma.btnGuardarHistograma.addActionListener(this);
         this.objVentanaAxpherPicture.addWindowListener(new WindowAdapter() {
             @Override
@@ -59,9 +74,13 @@ public class ControladorImagen implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("Abrir ...")) {
-            System.out.println("Abre archivo de imagen");
-            abrirArchivoImagen();
+        if(e.getActionCommand().equals("PGM - PPM")) {
+            System.out.println("Abre archivo de imagen PGM - PPM");
+            abrirArchivoImagenPGMPPM();
+        }
+        if(e.getActionCommand().equals("DICOM")) {
+            System.out.println("Abre archivo de imagen DICOM");
+            abrirArchivoImagenDICOM();
         }
         if(e.getActionCommand().equals("Guardar ...")) {
             System.out.println("Guarda archivo de imagen");
@@ -84,7 +103,7 @@ public class ControladorImagen implements ActionListener {
             System.out.println("Guardar histograma");
             guardarArchivoHistograma();
         }
-        if(e.getActionCommand().equals("Umbralizacion")) {
+        if(e.getActionCommand().equals("Umbralizar")) {
             System.out.println("Umbralizacion");
             objPanelUmbral = new PanelUmbralizacion();
             objPanelUmbral.btnCalcularDosPicos.addActionListener(this);
@@ -123,6 +142,130 @@ public class ControladorImagen implements ActionListener {
             hiloEcualizacion.start();
             System.out.println("Ecualizar");
         }
+        if(e.getActionCommand().equals("Cuantizar")) {
+            String valor = JOptionPane.showInputDialog(objVentanaAxpherPicture, "Ingrese numero de bits por pixel", "Cuantizar", JOptionPane.INFORMATION_MESSAGE);
+            int bitsPixel = Integer.parseInt(valor);
+            HiloCuantizar hiloCuantizar = new HiloCuantizar(bitsPixel);
+            hiloCuantizar.start();
+            System.out.println("Cuantizar");
+        }
+        if(e.getActionCommand().equals("Sigma")) {
+            HiloFiltroNoise hiloFiltroNoise = new HiloFiltroNoise(0);
+            hiloFiltroNoise.start();
+            System.out.println("Filtro Sigma");
+        }
+        if(e.getActionCommand().equals("Mediana")) {
+            HiloFiltroNoise hiloFiltroNoise = new HiloFiltroNoise(1);
+            hiloFiltroNoise.start();
+            System.out.println("Filtro Mediana");
+        }
+        if(e.getActionCommand().equals("Matsuyama")) {
+            HiloFiltroNoise hiloFiltroNoise = new HiloFiltroNoise(2);
+            hiloFiltroNoise.start();
+            System.out.println("Filtro Matsuyama");
+        }
+        if(e.getActionCommand().equals("And")) {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("PGM & PPM", "pgm", "ppm");
+            fileChooser.setFileFilter(filter);
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            int respuesta = fileChooser.showOpenDialog(objVentanaAxpherPicture);
+            if(respuesta == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().exists()) {
+                File fileImage = fileChooser.getSelectedFile();
+                //crea el objeto Imagen
+                Imagen objImg = new Imagen(fileImage.getAbsolutePath());
+                HiloOperaciones hiloOperaciones = new HiloOperaciones("And");
+                hiloOperaciones.setOpImg(objImg);
+                hiloOperaciones.start();
+                System.out.println("Archivo imagen seleccionado");
+            } else {
+                System.out.println("No selecciona archivo imagen");
+            }
+            System.out.println("Operador And");
+        }
+        if(e.getActionCommand().equals("Or")) {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("PGM & PPM", "pgm", "ppm");
+            fileChooser.setFileFilter(filter);
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            int respuesta = fileChooser.showOpenDialog(objVentanaAxpherPicture);
+            if(respuesta == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().exists()) {
+                File fileImage = fileChooser.getSelectedFile();
+                //crea el objeto Imagen
+                Imagen objImg = new Imagen(fileImage.getAbsolutePath());
+                HiloOperaciones hiloOperaciones = new HiloOperaciones("Or");
+                hiloOperaciones.setOpImg(objImg);
+                hiloOperaciones.start();
+                System.out.println("Archivo imagen seleccionado");
+            } else {
+                System.out.println("No selecciona archivo imagen");
+            }
+            System.out.println("Operador Or");
+        }
+        if(e.getActionCommand().equals("Xor")) {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("PGM & PPM", "pgm", "ppm");
+            fileChooser.setFileFilter(filter);
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            int respuesta = fileChooser.showOpenDialog(objVentanaAxpherPicture);
+            if(respuesta == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().exists()) {
+                File fileImage = fileChooser.getSelectedFile();
+                //crea el objeto Imagen
+                Imagen objImg = new Imagen(fileImage.getAbsolutePath());
+                HiloOperaciones hiloOperaciones = new HiloOperaciones("Xor");
+                hiloOperaciones.setOpImg(objImg);
+                hiloOperaciones.start();
+                System.out.println("Archivo imagen seleccionado");
+            } else {
+                System.out.println("No selecciona archivo imagen");
+            }
+            System.out.println("Operador Xor");
+        }
+        if(e.getActionCommand().equals("Suma")) {
+            int respuesta = JOptionPane.showConfirmDialog(objVentanaAxpherPicture, "Sumar Una Constante?", "Sumar Constante O Imagen",JOptionPane.YES_NO_CANCEL_OPTION);
+            // si respuesta es si, suma constante
+            if(respuesta == 0) {
+                String valor = JOptionPane.showInputDialog(objVentanaAxpherPicture, "Valor", "Sumar Valor A Imagen", JOptionPane.INFORMATION_MESSAGE);
+                int constante = Integer.parseInt(valor);
+                HiloOperaciones hiloOperaciones = new HiloOperaciones("Suma");
+                hiloOperaciones.setOpConst(constante);
+                hiloOperaciones.start();
+                System.out.println("Si Suma Constante");
+            }
+            // si respuesta es no, suma imagen
+            if(respuesta == 1) {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("PGM & PPM", "pgm", "ppm");
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                int respu = fileChooser.showOpenDialog(objVentanaAxpherPicture);
+                if(respu == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().exists()) {
+                    File fileImage = fileChooser.getSelectedFile();
+                    //crea el objeto Imagen
+                    Imagen objImg = new Imagen(fileImage.getAbsolutePath());
+                    HiloOperaciones hiloOperaciones = new HiloOperaciones("Suma");
+                    hiloOperaciones.setOpImg(objImg);
+                    hiloOperaciones.start();
+                    System.out.println("Archivo imagen seleccionado");
+                } else {
+                    System.out.println("No selecciona archivo imagen");
+                }
+                System.out.println("No Suma Constante");
+            }
+            System.out.println("Suma "+respuesta);
+        }
+        if(objPanelMR != null) {
+            if(e.getSource().equals(objPanelMR.btnVisualizar)){
+                int windowCenter = Integer.parseInt(objPanelMR.textFieldWC.getText());
+                int windowWidth = Integer.parseInt(objPanelMR.textFieldWW.getText());
+                objImagenFuente = objDcmImg.getImagenMR(windowCenter,windowWidth);
+                //copia de objeto imagen fuente
+                objImagenProcesado = objImagenFuente.clone();
+                verAtributosImagen(objImagenFuente);
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
+                System.out.println("Boton Visualizar");
+            }
+        }
     }
     
     private void verAtributosImagen(Imagen objImagen) {
@@ -133,17 +276,34 @@ public class ControladorImagen implements ActionListener {
         objVentanaAxpherPicture.labelAlto.setText(""+objImagen.getN());
     }
     
-    private void abrirArchivoImagen() {
+    private void abrirArchivoImagenPGMPPM() {
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("PGM & PPM", "pgm", "ppm");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("PGM, PPM", "pgm", "ppm");
         fileChooser.setFileFilter(filter);
         fileChooser.setAcceptAllFileFilterUsed(false);
         int respuesta = fileChooser.showOpenDialog(objVentanaAxpherPicture);
         if(respuesta == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().exists()) {
             archivoImagen = fileChooser.getSelectedFile();
             //crea el objeto Imagen
-            HiloAbreArchivoImagen hiloAbreArchivoImagen = new HiloAbreArchivoImagen();
+            HiloAbreArchivoImagenPGMPPM hiloAbreArchivoImagen = new HiloAbreArchivoImagenPGMPPM();
             hiloAbreArchivoImagen.start();
+            System.out.println("Archivo imagen seleccionado");
+        } else {
+            System.out.println("No selecciona archivo imagen");
+        }
+    }
+    
+    private void abrirArchivoImagenDICOM() {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("DICOM", "dcm");
+        fileChooser.setFileFilter(filter);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        int respuesta = fileChooser.showOpenDialog(objVentanaAxpherPicture);
+        if(respuesta == JFileChooser.APPROVE_OPTION && fileChooser.getSelectedFile().exists()) {
+            archivoImagen = fileChooser.getSelectedFile();
+            //crea el objeto Imagen
+            HiloAbreArchivoImagenDICOM hiloArchivoImagenDicom = new HiloAbreArchivoImagenDICOM();
+            hiloArchivoImagenDicom.start();
             System.out.println("Archivo imagen seleccionado");
         } else {
             System.out.println("No selecciona archivo imagen");
@@ -189,8 +349,19 @@ public class ControladorImagen implements ActionListener {
         objImagenProcesado = objImagenFuente.clone();
         verAtributosImagen(objImagenFuente);
     }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if(e.getSource().equals(objPanelMR.sliderWC)){
+            objPanelMR.textFieldWC.setText(objPanelMR.sliderWC.getValue()+"");
+        }
+        if(e.getSource().equals(objPanelMR.sliderWW)){
+            objPanelMR.textFieldWW.setText(objPanelMR.sliderWW.getValue()+"");
+        }
+        System.out.println("Cambia Slider");
+    }
     
-    class HiloAbreArchivoImagen extends Thread {
+    class HiloAbreArchivoImagenPGMPPM extends Thread {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(25);
@@ -207,6 +378,53 @@ public class ControladorImagen implements ActionListener {
                 System.err.println("Error al dormir Hilo abrir archivo de imagen");
             }
             AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloAbreArchivoImagenDICOM extends Thread {
+        
+        public HiloAbreArchivoImagenDICOM() {
+            
+        }
+        
+        @Override
+        public void run() {
+            objDcmImg = new DcmImg(archivoImagen.getAbsolutePath());
+            DicomObject dcmObj;
+            dcmObj = objDcmImg.getDicomObject();
+            objDcmImg.printHeaders(dcmObj);
+            String estudio = objDcmImg.getEstudio();
+            System.out.println("Estudio "+estudio);
+            if(estudio.equals("OT")) {
+                objImagenFuente = objDcmImg.getImagenOT();
+                //copia de objeto imagen fuente
+                objImagenProcesado = objImagenFuente.clone();
+                verAtributosImagen(objImagenFuente);
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
+            }
+            if(estudio.equals("MR")) {
+                int windowCenter = objDcmImg.getWindowCenter();
+                int windowWidth = objDcmImg.getWindowWidth();
+                objImagenFuente = objDcmImg.getImagenMR(windowCenter,windowWidth);
+                //copia de objeto imagen fuente
+                objImagenProcesado = objImagenFuente.clone();
+                verAtributosImagen(objImagenFuente);
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
+                // agrega el panel MR
+                objVentanaAxpherPicture.panelOperaciones.removeAll();
+                objPanelMR = new PanelMR();
+                objVentanaAxpherPicture.panelOperaciones.add(objPanelMR);
+                objPanelMR.textFieldWC.setText(windowCenter+"");
+                objPanelMR.textFieldWW.setText(windowWidth+"");
+                objPanelMR.sliderWC.setMaximum(windowCenter);
+                objPanelMR.sliderWW.setMaximum(windowWidth);
+                objPanelMR.sliderWC.setValue(windowCenter);
+                objPanelMR.sliderWW.setValue(windowWidth);
+                objPanelMR.sliderWC.addChangeListener(ControladorImagen.this);
+                objPanelMR.sliderWW.addChangeListener(ControladorImagen.this);
+                objPanelMR.btnVisualizar.addActionListener(ControladorImagen.this);
+                objVentanaAxpherPicture.pack();
+            }
         }
     }
     
@@ -405,6 +623,139 @@ public class ControladorImagen implements ActionListener {
                 System.err.println("Error al dormir Hilo umbralizacion");
             }
             AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloCuantizar extends Thread {
+        private int bitsPixel;
+        
+        public HiloCuantizar(int bitsPixel) {
+            this.bitsPixel = bitsPixel;
+        }
+        
+        @Override
+        public void run() {
+            AxpherPicture.barraProgreso.setValue(45);
+            objImagenProcesado.setFormato(objImagenFuente.getFormato());
+            objImagenProcesado.setM(objImagenFuente.getM());
+            objImagenProcesado.setN(objImagenFuente.getN());
+            objImagenProcesado.setNivelIntensidad(objImagenFuente.getNivelIntensidad());
+            short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
+            for(int i = 0; i < matrizGris.length; i++) {
+                for(int j = 0; j < matrizGris[0].length; j++) {
+                    matrizGris[i][j] = objImagenFuente.getMatrizGris()[i][j];
+                }
+            }
+            objImagenProcesado.setMatrizGris(matrizGris);
+            Cuantizar rs = new Cuantizar(objImagenProcesado);
+            rs.asignarBitsPixel(this.bitsPixel);
+            AxpherPicture.barraProgreso.setValue(80);
+            objImagenProcesado = rs.getObjImagen();
+            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+            AxpherPicture.barraProgreso.setValue(100);
+            try {
+                sleep(512);
+            } catch (InterruptedException ex) {
+                System.err.println("Error al dormir Hilo umbralizacion");
+            }
+            AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloFiltroNoise extends Thread {
+        private int filtro;
+        
+        public HiloFiltroNoise(int filtro) {
+            this.filtro = filtro;
+        }
+        
+        @Override
+        public void run() {
+            AxpherPicture.barraProgreso.setValue(45);
+            objImagenProcesado.setFormato(objImagenFuente.getFormato());
+            objImagenProcesado.setM(objImagenFuente.getM());
+            objImagenProcesado.setN(objImagenFuente.getN());
+            objImagenProcesado.setNivelIntensidad(objImagenFuente.getNivelIntensidad());
+            short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
+            for(int i = 0; i < matrizGris.length; i++) {
+                for(int j = 0; j < matrizGris[0].length; j++) {
+                    matrizGris[i][j] = objImagenFuente.getMatrizGris()[i][j];
+                }
+            }
+            objImagenProcesado.setMatrizGris(matrizGris);
+            // -->>
+            objFiltro = new FiltroNoise(objImagenProcesado);
+            if(filtro == 0) {
+                String valor = JOptionPane.showInputDialog(objVentanaAxpherPicture, "Ingrese un valor para el Sigma", "Filtro Sigma", JOptionPane.INFORMATION_MESSAGE);
+                short sigma = Short.parseShort(valor);
+                objFiltro.filtroSigma(sigma);
+            }
+            if(filtro == 1) {
+                String valor = JOptionPane.showInputDialog(objVentanaAxpherPicture, "Ingrese un tamaño de ventana", "Filtro Mediana", JOptionPane.INFORMATION_MESSAGE);
+                int sizeVentana = Integer.parseInt(valor);
+                objFiltro.filtroMediana(sizeVentana);
+            }
+            if(filtro == 2) {
+                objFiltro.nagaoMatsuyama();
+            }
+            AxpherPicture.barraProgreso.setValue(80);
+            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+            AxpherPicture.barraProgreso.setValue(100);
+            try {
+                sleep(512);
+            } catch (InterruptedException ex) {
+                System.err.println("Error al dormir Hilo umbralizacion");
+            }
+            AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloOperaciones extends Thread {
+        private String operacion;
+        private Imagen opImg;
+        private int constante;
+        
+        public HiloOperaciones(String operacion) {
+            this.operacion = operacion;
+        }
+        
+        public void setOpImg(Imagen objImagen) {
+            this.opImg = objImagen;
+        }
+        
+        public void setOpConst(int constante) {
+            this.constante = constante;
+        }
+        
+        @Override
+        public void run() {
+            if(operacion.equals("And")) {
+                Operaciones operaciones = new Operaciones();
+                objImagenProcesado = operaciones.OrAndXor(objImagenFuente, opImg, "and");
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+            }
+            if(operacion.equals("Or")) {
+                Operaciones operaciones = new Operaciones();
+                objImagenProcesado = operaciones.OrAndXor(objImagenFuente, opImg, "or");
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+            }
+            if(operacion.equals("Xor")) {
+                Operaciones operaciones = new Operaciones();
+                objImagenProcesado = operaciones.OrAndXor(objImagenFuente, opImg, "xor");
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+            }
+            if(operacion.equals("Suma")) {
+                // si no hay operador imagen, suma constante
+                if(opImg == null) {
+                    Operaciones operaciones = new Operaciones();
+                    objImagenProcesado = operaciones.suma(objImagenFuente, constante);
+                    objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+                } else { // si hay operador imagen, suma imagen
+                    Operaciones operaciones = new Operaciones();
+                    objImagenProcesado = operaciones.suma(objImagenFuente, opImg);
+                    objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+                }
+            }
         }
     }
 }

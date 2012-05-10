@@ -29,7 +29,7 @@ public class AxpherPicture {
          */
         
         DcmImg objDcmImg = new DcmImg("ImgFuente/ankle.dcm");
-        objDcmImg.guardaY("ImgProcesado/ankle.dcm");
+        //objDcmImg.guardaY("ImgProcesado/ankle.dcm");
         DicomObject dcmObj;
         dcmObj = objDcmImg.getDicomObject();
         objDcmImg.printHeaders(dcmObj);
@@ -71,6 +71,7 @@ public class AxpherPicture {
         String rutaImgPGM = "ImgFuente/noisy.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
 
+        // --->> Filtros
         FiltroNoise fl = new FiltroNoise(imgPGM);
         fl.filtroSigma((short)100);
         fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
@@ -87,11 +88,12 @@ public class AxpherPicture {
         String rutaImgPGM1 = "ImgFuente/velas.pgm";
         Imagen imgPGM1 = new Imagen(rutaImgPGM1);
 
+        // --->> Cuantizar
         Cuantizar rs = new Cuantizar(imgPGM1);
         rs.asignarBitsPixel(4);
         rs.getObjImagen().guardarImagen("ImgProcesado/Resolucion7Lena.pgm");
 
-        
+        // -->> Operaciones
         rutaImgPGM2 = "ImgFuente/madera.pgm";
         imgPGM2 = new Imagen(rutaImgPGM2);
         rutaImgPGM1 = "ImgFuente/velas.pgm";

@@ -53,13 +53,25 @@ public class AxpherPicture extends javax.swing.JFrame {
         barraProgreso = new javax.swing.JProgressBar();
         barraMenus = new javax.swing.JMenuBar();
         menuArchivo = new javax.swing.JMenu();
-        menuItemAbrir = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        menuItemAbrirPGMPPM = new javax.swing.JMenuItem();
+        menuItemAbrirDICOM = new javax.swing.JMenuItem();
         menuItemGuardar = new javax.swing.JMenuItem();
         menuSeparador = new javax.swing.JPopupMenu.Separator();
         menuItemSalir = new javax.swing.JMenuItem();
         menuImagen = new javax.swing.JMenu();
         menuItemUmbral = new javax.swing.JMenuItem();
         menuItemEcualizar = new javax.swing.JMenuItem();
+        menuItemCuantizar = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        menuItemSigma = new javax.swing.JMenuItem();
+        menuItemMediana = new javax.swing.JMenuItem();
+        menuItemMatsuyama = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        menuItemOpAnd = new javax.swing.JMenuItem();
+        menuItemOpOr = new javax.swing.JMenuItem();
+        menuItemOpXor = new javax.swing.JMenuItem();
+        menuItemOpSuma = new javax.swing.JMenuItem();
         menuVer = new javax.swing.JMenu();
         menuItemVerHistograma = new javax.swing.JMenuItem();
         menuItemVerImagen = new javax.swing.JMenuItem();
@@ -102,19 +114,19 @@ public class AxpherPicture extends javax.swing.JFrame {
 
         panelPropiedades.setBorder(javax.swing.BorderFactory.createTitledBorder("Propiedades"));
 
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 15));
+        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel1.setText("Archivo:");
 
-        jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 15));
+        jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel2.setText("Formato:");
 
-        jLabel3.setFont(new java.awt.Font("Ubuntu", 1, 15));
+        jLabel3.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel3.setText("Intensidad:");
 
-        jLabel4.setFont(new java.awt.Font("Ubuntu", 1, 15));
+        jLabel4.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel4.setText("Ancho:");
 
-        jLabel5.setFont(new java.awt.Font("Ubuntu", 1, 15));
+        jLabel5.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel5.setText("Alto:");
 
         javax.swing.GroupLayout panelPropiedadesLayout = new javax.swing.GroupLayout(panelPropiedades);
@@ -146,7 +158,7 @@ public class AxpherPicture extends javax.swing.JFrame {
                         .addGroup(panelPropiedadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelAncho)
                             .addComponent(labelAlto))))
-                .addContainerGap(139, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelPropiedadesLayout.setVerticalGroup(
             panelPropiedadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,8 +207,15 @@ public class AxpherPicture extends javax.swing.JFrame {
 
         menuArchivo.setText("Archivo");
 
-        menuItemAbrir.setText("Abrir ...");
-        menuArchivo.add(menuItemAbrir);
+        jMenu3.setText("Abrir");
+
+        menuItemAbrirPGMPPM.setText("PGM - PPM");
+        jMenu3.add(menuItemAbrirPGMPPM);
+
+        menuItemAbrirDICOM.setText("DICOM");
+        jMenu3.add(menuItemAbrirDICOM);
+
+        menuArchivo.add(jMenu3);
 
         menuItemGuardar.setText("Guardar ...");
         menuArchivo.add(menuItemGuardar);
@@ -209,11 +228,43 @@ public class AxpherPicture extends javax.swing.JFrame {
 
         menuImagen.setText("Imagen");
 
-        menuItemUmbral.setText("Umbralizacion");
+        menuItemUmbral.setText("Umbralizar");
         menuImagen.add(menuItemUmbral);
 
         menuItemEcualizar.setText("Ecualizar");
         menuImagen.add(menuItemEcualizar);
+
+        menuItemCuantizar.setText("Cuantizar");
+        menuImagen.add(menuItemCuantizar);
+
+        jMenu1.setText("Filtro");
+
+        menuItemSigma.setText("Sigma");
+        jMenu1.add(menuItemSigma);
+
+        menuItemMediana.setText("Mediana");
+        jMenu1.add(menuItemMediana);
+
+        menuItemMatsuyama.setText("Matsuyama");
+        jMenu1.add(menuItemMatsuyama);
+
+        menuImagen.add(jMenu1);
+
+        jMenu2.setText("Operaciones");
+
+        menuItemOpAnd.setText("And");
+        jMenu2.add(menuItemOpAnd);
+
+        menuItemOpOr.setText("Or");
+        jMenu2.add(menuItemOpOr);
+
+        menuItemOpXor.setText("Xor");
+        jMenu2.add(menuItemOpXor);
+
+        menuItemOpSuma.setText("Suma");
+        jMenu2.add(menuItemOpSuma);
+
+        menuImagen.add(jMenu2);
 
         barraMenus.add(menuImagen);
 
@@ -281,6 +332,9 @@ public class AxpherPicture extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     public javax.swing.JLabel labelAlto;
     public javax.swing.JLabel labelAncho;
     public javax.swing.JLabel labelArchivo;
@@ -288,10 +342,19 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JLabel labelIntensidad;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenu menuImagen;
-    public javax.swing.JMenuItem menuItemAbrir;
+    public javax.swing.JMenuItem menuItemAbrirDICOM;
+    public javax.swing.JMenuItem menuItemAbrirPGMPPM;
+    public javax.swing.JMenuItem menuItemCuantizar;
     public javax.swing.JMenuItem menuItemEcualizar;
     public javax.swing.JMenuItem menuItemGuardar;
+    public javax.swing.JMenuItem menuItemMatsuyama;
+    public javax.swing.JMenuItem menuItemMediana;
+    public javax.swing.JMenuItem menuItemOpAnd;
+    public javax.swing.JMenuItem menuItemOpOr;
+    public javax.swing.JMenuItem menuItemOpSuma;
+    public javax.swing.JMenuItem menuItemOpXor;
     public javax.swing.JMenuItem menuItemSalir;
+    public javax.swing.JMenuItem menuItemSigma;
     public javax.swing.JMenuItem menuItemUmbral;
     public javax.swing.JMenuItem menuItemVerHistograma;
     public javax.swing.JMenuItem menuItemVerImagen;

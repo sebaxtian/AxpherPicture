@@ -37,6 +37,8 @@ public class DcmImg {
     private DicomObject dcmObj;
     private Raster rasterDicom;
     private int tagBits;
+    private short Ymin = 0;
+    private short Ymax = 255;
 
     /**
      * Metodo contructor que recibe como argumento la ruta hacia el archivo
@@ -48,8 +50,8 @@ public class DcmImg {
         DicomInputStream din = null;
         try {
             archivoDcm = new File(rutaArchivo);
-            //din = new DicomInputStream(archivoDcm);
-            din = new DicomInputStream(new BufferedInputStream(new FileInputStream(rutaArchivo)), TransferSyntax.ImplicitVRLittleEndian);
+            din = new DicomInputStream(archivoDcm);
+            //din = new DicomInputStream(new BufferedInputStream(new FileInputStream(rutaArchivo)), TransferSyntax.ImplicitVRLittleEndian);
             dcmObj = din.readDicomObject();
             // obtiene un objeto raster de la imagen de un archivo Dicom
             rasterizarDicom(archivoDcm);
@@ -169,6 +171,50 @@ public class DcmImg {
         }
         return numBits;
     }
+    
+    public int getWindowCenter() {
+        Iterator<DicomElement> itera = dcmObj.datasetIterator();
+        //busca el window center de la imagen dicom
+        String tagValue;
+        String tagName;
+        String tagAddr;
+        int windowCenter = 0;
+        while (itera.hasNext()) {
+            DicomElement dcmElement = itera.next();
+            int tag = dcmElement.tag();
+            tagName = dcmObj.nameOf(tag);
+            tagAddr = TagUtils.toString(tag);
+            if (tagAddr.equals("(0028,1050)")) {
+                tagValue = dcmObj.getString(tag);
+                tagBits = tag;
+                windowCenter = Integer.parseInt(tagValue);
+                System.out.println(tagName + " [" + tagValue + "]");
+            }
+        }
+        return windowCenter;
+    }
+    
+    public int getWindowWidth() {
+        Iterator<DicomElement> itera = dcmObj.datasetIterator();
+        //busca el window width de la imagen dicom
+        String tagValue;
+        String tagName;
+        String tagAddr;
+        int windowWidth = 0;
+        while (itera.hasNext()) {
+            DicomElement dcmElement = itera.next();
+            int tag = dcmElement.tag();
+            tagName = dcmObj.nameOf(tag);
+            tagAddr = TagUtils.toString(tag);
+            if (tagAddr.equals("(0028,1051)")) {
+                tagValue = dcmObj.getString(tag);
+                tagBits = tag;
+                windowWidth = Integer.parseInt(tagValue);
+                System.out.println(tagName + " [" + tagValue + "]");
+            }
+        }
+        return windowWidth;
+    }
 
     public Imagen getImagen() {
         int bandas = rasterDicom.getNumBands();
@@ -191,6 +237,7 @@ public class DcmImg {
         imgObj.setM(ancho);
         imgObj.setN(alto);
         imgObj.setNivelIntensidad((int) Math.pow(2, getNumBits()) - 1);
+        imgObj.setArchivoImagen(archivoDcm);
         short matrizGris[][] = new short[alto][ancho];
         for (int i = minY; i < alto; i++) {
             for (int j = minX; j < ancho; j++) {
@@ -200,6 +247,70 @@ public class DcmImg {
         }
         imgObj.setMatrizGris(matrizGris);
 
+        return imgObj;
+    }
+    
+    public Imagen getImagenOT() {
+        Imagen imgObj = new Imagen();
+        int alto = rasterDicom.getHeight();
+        int ancho = rasterDicom.getWidth();
+        int minX = rasterDicom.getMinX();
+        int minY = rasterDicom.getMinY();
+        imgObj.setFormato("P2");
+        imgObj.setM(ancho);
+        imgObj.setN(alto);
+        imgObj.setNivelIntensidad((int) Math.pow(2, getNumBits()) - 1);
+        imgObj.setArchivoImagen(archivoDcm);
+        short matrizGris[][] = new short[alto][ancho];
+        for (int i = minY; i < alto; i++) {
+            for (int j = minX; j < ancho; j++) {
+                short pixel = (short) rasterDicom.getSample(j, i, 0);
+                matrizGris[i][j] = pixel;
+            }
+        }
+        imgObj.setMatrizGris(matrizGris);
+
+        return imgObj;
+    }
+    
+    public Imagen getImagenMR(int windowCenter, int windowWidth) {
+        Imagen imgObj = new Imagen();
+        int alto = rasterDicom.getHeight();
+        int ancho = rasterDicom.getWidth();
+        int minX = rasterDicom.getMinX();
+        int minY = rasterDicom.getMinY();
+        imgObj.setFormato("P2");
+        imgObj.setM(ancho);
+        imgObj.setN(alto);
+        //imgObj.setNivelIntensidad((int) Math.pow(2, getNumBits()) - 1);
+        imgObj.setNivelIntensidad(255);
+        imgObj.setArchivoImagen(archivoDcm);
+        short matrizGris[][] = new short[alto][ancho];
+        if(windowCenter == 0){
+            windowCenter = getWindowCenter();
+        }
+        if(windowWidth == 0){
+            windowWidth = getWindowWidth();
+        }
+        short y;
+        for (int i = minY; i < alto; i++) {
+            for (int j = minX; j < ancho; j++) {
+                short x = (short) rasterDicom.getSample(j, i, 0);
+                if(x <= windowCenter - 0.5 - (windowWidth - 1) / 2 ){
+                    y = Ymin;
+                }
+                else if(x > windowCenter - 0.5 + (windowWidth - 1) / 2 ) {
+                    y = Ymax;
+                }
+                else {
+                    y = (short) ( ( (x - (windowCenter - 0.5) ) / (windowWidth - 1) + 0.5 ) * ( Ymax - Ymin ) + Ymin );
+                }
+                
+                matrizGris[i][j] = y;
+            }
+        }
+        imgObj.setMatrizGris(matrizGris);
+        
         return imgObj;
     }
 

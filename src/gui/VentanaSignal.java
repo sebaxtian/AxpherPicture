@@ -5,23 +5,22 @@
 package gui;
 
 import java.awt.BorderLayout;
-import javax.swing.border.Border;
 
 /**
  *
  * @author sebaxtian
  */
-public class Histograma extends javax.swing.JFrame {
-
-    public CanvasHistograma canvasHistograma;
+public class VentanaSignal extends javax.swing.JFrame {
     
+    public CanvasSignal canvasSignal;
+
     /**
-     * Creates new form Histograma
+     * Creates new form VentanaSignal
      */
-    public Histograma() {
+    public VentanaSignal() {
         initComponents();
-        canvasHistograma = new CanvasHistograma();
-        jPanel1.add(canvasHistograma, BorderLayout.CENTER);
+        canvasSignal = new CanvasSignal();
+        jPanel1.add(canvasSignal, BorderLayout.CENTER);
     }
 
     /**
@@ -33,14 +32,36 @@ public class Histograma extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnGuardarHistograma = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        sliderSignal = new javax.swing.JSlider();
         jPanel1 = new javax.swing.JPanel();
 
-        setTitle("Histograma");
-        setResizable(false);
+        setTitle("Signal");
+        setPreferredSize(new java.awt.Dimension(618, 455));
 
-        btnGuardarHistograma.setText("Guardar");
-        getContentPane().add(btnGuardarHistograma, java.awt.BorderLayout.SOUTH);
+        jPanel3.setBackground(new java.awt.Color(228, 223, 223));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Fila"));
+
+        sliderSignal.setMaximum(511);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(sliderSignal, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(sliderSignal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        jPanel2.add(jPanel3);
+
+        getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
         jPanel1.setLayout(new java.awt.BorderLayout());
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -69,13 +90,13 @@ public class Histograma extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Histograma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaSignal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Histograma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaSignal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Histograma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaSignal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Histograma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaSignal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -85,12 +106,14 @@ public class Histograma extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new Histograma().setVisible(true);
+                new VentanaSignal().setVisible(true);
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton btnGuardarHistograma;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    public javax.swing.JSlider sliderSignal;
     // End of variables declaration//GEN-END:variables
 }

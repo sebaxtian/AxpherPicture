@@ -231,6 +231,63 @@ public class Scalar {
             }
         }
     }
+    
+    public Scalar(Imagen imagen, int alto, int ancho) {
+        if (alto <= 0 || ancho <= 0) {
+            JOptionPane.showMessageDialog(null, "Los pixeles deben ser mayores a cero");
+        } else {
+            double escalarAlto = 1.0;
+            double escalarAncho = 1.0;
+            //----------
+            
+            escalarAlto = (double) alto / (double) imagen.getN();
+            escalarAncho = (double) alto / (double) imagen.getM();
+
+            //si el formato de la imagen es PGM
+            if (imagen.getFormato().equals("P2")) {
+                this.matrizEscalada = new short[(int) Math.floor(escalarAlto * imagen.getMatrizGris().length)][(int) Math.floor(escalarAncho * imagen.getMatrizGris()[0].length)];
+                for (int i = 0; i < this.matrizEscalada.length; i++) {
+                    for (int j = 0; j < this.matrizEscalada[0].length; j++) {
+                        this.matrizEscalada[i][j] = 0;
+                    }
+                }
+
+                this.matrizOriginal = imagen.getMatrizGris();
+                //this.factor = escalar;
+                this.constructor = '1';
+            } //si el formato de la imagen es PPM
+            else if (imagen.getFormato().equals("P3")) {
+                this.matrizR = new short[(int) Math.floor(escalarAlto * imagen.getMatrizR().length)][(int) Math.floor(escalarAncho * imagen.getMatrizR()[0].length)];
+                for (int i = 0; i < this.matrizR.length; i++) {
+                    for (int j = 0; j < this.matrizR[0].length; j++) {
+                        this.matrizR[i][j] = 0;
+                    }
+                }
+
+                this.matrizG = new short[(int) Math.floor(escalarAlto * imagen.getMatrizG().length)][(int) Math.floor(escalarAncho * imagen.getMatrizG()[0].length)];
+                for (int i = 0; i < this.matrizG.length; i++) {
+                    for (int j = 0; j < this.matrizG[0].length; j++) {
+                        this.matrizG[i][j] = 0;
+                    }
+                }
+
+                this.matrizB = new short[(int) Math.floor(escalarAlto * imagen.getMatrizB().length)][(int) Math.floor(escalarAncho * imagen.getMatrizB()[0].length)];
+                for (int i = 0; i < this.matrizB.length; i++) {
+                    for (int j = 0; j < this.matrizB[0].length; j++) {
+                        this.matrizB[i][j] = 0;
+                    }
+                }
+
+                this.matrizBoriginal = imagen.getMatrizB();
+                this.matrizGoriginal = imagen.getMatrizG();
+                this.matrizRoriginal = imagen.getMatrizR();
+                //this.factor = escalar;
+                this.constructor = '2';
+            } else {
+                JOptionPane.showMessageDialog(null, "Error formato");
+            }
+        }
+    }
 
     /*
      * Metodo encargado de realizar la escalacion de una imagen utilizando

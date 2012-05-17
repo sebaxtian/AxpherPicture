@@ -7,6 +7,8 @@ package gui.controlador;
 import gui.AxpherPicture;
 import gui.PanelMR;
 import gui.PanelUmbralizacion;
+import gui.VentanaHistograma;
+import gui.VentanaSignal;
 import imagen.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +34,8 @@ import org.dcm4che2.data.DicomObject;
 public class ControladorImagen implements ActionListener, ChangeListener {
     
     private AxpherPicture objVentanaAxpherPicture;
-    private gui.Histograma objVentanaHistograma;
+    private VentanaHistograma objVentanaHistograma;
+    private VentanaSignal objVentanaSignal;
     private PanelUmbralizacion objPanelUmbral;
     private PanelMR objPanelMR;
     private File archivoImagen;
@@ -45,12 +48,14 @@ public class ControladorImagen implements ActionListener, ChangeListener {
     
     public ControladorImagen(AxpherPicture objVentana) {
         this.objVentanaAxpherPicture = objVentana;
-        this.objVentanaHistograma = new gui.Histograma();
+        this.objVentanaHistograma = new VentanaHistograma();
+        this.objVentanaSignal = new VentanaSignal();
         this.objVentanaAxpherPicture.menuItemAbrirPGMPPM.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemAbrirDICOM.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemGuardar.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemSalir.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemVerHistograma.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemSignal.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemVerImagen.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemUmbral.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemEcualizar.addActionListener(this);
@@ -63,6 +68,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         this.objVentanaAxpherPicture.menuItemOpXor.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemOpSuma.addActionListener(this);
         this.objVentanaHistograma.btnGuardarHistograma.addActionListener(this);
+        this.objVentanaSignal.sliderSignal.addChangeListener(this);
         this.objVentanaAxpherPicture.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -94,6 +100,11 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             System.out.println("Ver histograma");
             HiloVerHistogramaImagen hiloVerHistogramaImagen = new HiloVerHistogramaImagen();
             hiloVerHistogramaImagen.start();
+        }
+        if(e.getActionCommand().equals("Signal")) {
+            System.out.println("Ver Signal");
+            HiloVerSignalImagen hiloVerSignalImagen = new HiloVerSignalImagen();
+            hiloVerSignalImagen.start();
         }
         if(e.getActionCommand().equals("Imagen")) {
             System.out.println("Ver imagen");
@@ -352,11 +363,21 @@ public class ControladorImagen implements ActionListener, ChangeListener {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if(e.getSource().equals(objPanelMR.sliderWC)){
-            objPanelMR.textFieldWC.setText(objPanelMR.sliderWC.getValue()+"");
+        if(objPanelMR != null) {
+            if(e.getSource().equals(objPanelMR.sliderWC)){
+                objPanelMR.textFieldWC.setText(objPanelMR.sliderWC.getValue()+"");
+            }
+            if(e.getSource().equals(objPanelMR.sliderWW)){
+                objPanelMR.textFieldWW.setText(objPanelMR.sliderWW.getValue()+"");
+            }
         }
-        if(e.getSource().equals(objPanelMR.sliderWW)){
-            objPanelMR.textFieldWW.setText(objPanelMR.sliderWW.getValue()+"");
+        if(objVentanaSignal != null) {
+            if(e.getSource().equals(objVentanaSignal.sliderSignal)) {
+                System.out.println("Fila: "+objVentanaSignal.sliderSignal.getValue());
+                objVentanaSignal.canvasSignal.setFila(objVentanaSignal.sliderSignal.getValue());
+                objVentanaSignal.canvasSignal.repaint();
+                System.out.println("H "+objVentanaSignal.getHeight()+" W "+objVentanaSignal.getWidth());
+            }
         }
         System.out.println("Cambia Slider");
     }
@@ -460,6 +481,17 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 System.err.println("Error al dormir Hilo ver histograma de imagen");
             }
             AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloVerSignalImagen extends Thread {
+        @Override
+        public void run() {
+            // --->
+            objVentanaSignal.canvasSignal.pintarSignal(objImagenFuente, objVentanaSignal.sliderSignal.getValue());
+            objVentanaSignal.pack();
+            objVentanaSignal.setLocationRelativeTo(objVentanaAxpherPicture);
+            objVentanaSignal.setVisible(true);
         }
     }
     

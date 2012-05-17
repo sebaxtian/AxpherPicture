@@ -452,6 +452,89 @@ public class FiltroNoise {
         this.imagen.setMatrizGris(this.matrizGris);
     }
     
+    /* Filtro GAUSIANO */
+    public void filtroGausiano(int tamanoMascara){
+        
+        if(tamanoMascara%2 == 0 || tamanoMascara==1){
+            JOptionPane.showMessageDialog(null,"Favor ingresar un numero IMPAR o mayor a 1");
+        } else {  
+            
+            Convolucion cv = new Convolucion();
+            //inicializacion de los datos de la matriz gris
+            for (int i = 0; i < this.matrizGris.length; i++) {
+                for (int j = 0; j < this.matrizGris[0].length; j++) {
+                    this.matrizGris[i][j] = this.matrizGrisOriginal[i][j];
+                }
+            }
+            
+            //mascara seleccionada para realizar el filtro
+            short[][] mascara = multiplicaVector(trianguloPascal(tamanoMascara));            
+            
+            int tope = tamanoMascara / 2; //variable que sirve de control para evitar que se desborde la mascara de la matriz
+            //JOptionPane.showMessageDialog(null, "tope: "+tope);   
+
+            for (int i = tope; i < this.imagen.getMatrizGris().length - tope; i++) {
+                for (int j = tope; j < this.imagen.getMatrizGris()[0].length - tope; j++) {
+                    this.matrizGris[i][j] = cv.convolucionar(this.matrizGrisOriginal, mascara, i, j);             
+                }
+            }
+        }
+        this.imagen.setMatrizGris(this.matrizGris);
+    }
+    
+    
+    private short[][] multiplicaVector(short [] A){
+        short [][] C = new short[A.length][A.length];
+        
+        for(int i=0; i<C.length; i++){
+            for(int j=0; j<C[0].length;j++){
+                C[i][j] = (short) (A[i] * A[j]);
+                //System.out.print(C[i][j]+" ");
+            }
+            //System.out.println();
+        }
+        return C;
+    }
+    
+    private short [] trianguloPascal(int nivel){
+    
+        short [] aux = new short[nivel];
+        
+        ArrayList resultado = new ArrayList();
+        ArrayList base = new ArrayList();
+        
+        base.add(1);
+        base.add(1);
+        
+        for (int i=2; i< nivel; i++){
+            resultado.add(1);
+            for(int j=1; j < base.size();j++){
+                int dato = (Integer) base.get(j-1)+ (Integer)base.get(j);
+                resultado.add(dato);
+            }
+            
+            resultado.add(1);
+            base.removeAll(base);
+           
+            for(int k=0; k<resultado.size(); k++){
+                int dato = (Integer) resultado.get(k);
+                base.add(dato);
+            }
+            //JOptionPane.showMessageDialog(null, "Tamano Base "+base.size());
+            if(i < nivel-1)
+                resultado.removeAll(resultado);
+            //JOptionPane.showMessageDialog(null, "Tamano resultado "+resultado.size());
+        } 
+        
+        //System.out.println("**********Pascal*********************");
+        for(int k=0; k<resultado.size(); k++){
+            int dato = (Integer)resultado.get(k);
+            aux[k]= (short) dato;    
+            //System.out.println(aux[k]); 
+        } 
+        return aux;
+    }
+    
     
     private double variaza(short []datos){
         double media = 0;
@@ -479,68 +562,6 @@ public class FiltroNoise {
         media /= datos.length;
         //System.out.println("media ="+media + "  N=" + datos.length);
         return media;
-    }
-    
-    
-    public static void main(String [] arg){
-        
-        short [][] gris ={{1,2,3,4,5,6,7,8,9,10},
-            {11,12,13,14,15,16,17,18,19,20},
-            {21,22,23,24,25,26,27,28,29,30},
-            {31,32,33,34,35,36,37,38,39,40},
-            {41,42,43,44,45,46,47,48,49,50},
-            {11,12,13,14,15,16,17,18,19,20},
-            {31,32,33,34,35,36,37,38,39,40}}; 
-        
-        short [][] gris1 ={{11,12,13,14,15,16,17,18,19,20},
-            {1,2,3,4,5,6,7,8,9,10},
-            {11,12,13,14,15,16,17,18,19,20},
-            {11,12,13,14,15,16,17,18,19,20},
-            {21,22,23,24,25,26,27,28,29,30},
-            {31,32,33,34,35,36,37,38,39,40},
-            {41,42,43,44,45,46,47,48,49,50},
-            {31,32,33,34,35,36,37,38,39,40}}; 
-        
-        short [] datos = {9,3,8,8,9,8,9,18};
-        
-        
-        Imagen im = new Imagen();
-        im.setMatrizGris(gris);
-        im.setFormato("P2");
-        
-        FiltroNoise fl = new FiltroNoise(im);
-       // fl.variaza(datos);
-       System.out.println("Original");
-       for(int i=0;i<fl.getImagen().getMatrizGris().length;i++){
-           for(int j=0;j<fl.getImagen().getMatrizGris()[0].length;j++)
-               System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
-           System.out.println();
-       }
-       
-//       fl.filtroMediana(3);
-//       System.out.println("Despues de la mediana");
-//       for(int i=0;i<fl.getImagen().getMatrizGris().length;i++){
-//           for(int j=0;j<fl.getImagen().getMatrizGris()[0].length;j++)
-//               System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
-//           System.out.println();
-//       }
-       
-//       fl.nagaoMatsuyama();
-//       System.out.println("Despues de nagaoMatsuyama");
-//       for(int i=0;i<fl.getImagen().getMatrizGris().length;i++){
-//           for(int j=0;j<fl.getImagen().getMatrizGris()[0].length;j++)
-//               System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
-//           System.out.println();
-//       }
-       
-       fl.filtroSigma((short)2);
-       System.out.println("Despues de filtroSigma");
-       for(int i=0;i<fl.getImagen().getMatrizGris().length;i++){
-           for(int j=0;j<fl.getImagen().getMatrizGris()[0].length;j++)
-               System.out.print(fl.getImagen().getMatrizGris()[i][j]+" ");
-           System.out.println();
-       }
-
     }
     
        /**

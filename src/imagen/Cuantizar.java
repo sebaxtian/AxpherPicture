@@ -34,35 +34,35 @@ public class Cuantizar {
                 estado = true;
                 break;
             
-            case 3:
+            case 2:
                 estado = true;
                 break;
                 
-            case 4:
+            case 3:
                 estado = true;
                 break;    
             
+            case 4:
+                estado = true;
+                break;
+                
             case 5:
                 estado = true;
                 break;
                 
+            case 6:
+                estado = true;
+                break;
+           
             case 7:
                 estado = true;
                 break;
                 
-            case 8:
-                estado = true;
-                break;
-           
-            case 10:
-                estado = true;
-                break;
-                
-           case 12:
+           case 8:
                estado = true;
                 break;
                
-           case 14:
+           case 10:
                estado = true;
                 break;
             default:
@@ -81,11 +81,17 @@ public class Cuantizar {
                 for (int i = 0; i < this.getObjImagen().getMatrizGris().length; i++) {
                     for (int j = 0; j < this.getObjImagen().getMatrizGris()[0].length; j++) {
                         matrizGris[i][j] = (short) Math.floor(matrizGris[i][j] / factor); //OJO aqui
+                        if(matrizGris[i][j] > (Math.pow(2, bits)-1)){
+                            matrizGris[i][j]= (short) (Math.pow(2, bits)-1);
+                        }
                     }
                 }
                 
                 this.objImagen.setMatrizGris(matrizGris);
+                
                 this.objImagen.setNivelIntensidad((int)(intensidadNueva-1));
+                //this.objImagen.guardarImagen("ImgProcesado/moto.pgm");
+                //JOptionPane.showMessageDialog(null, "intensidad nueva "+ objImagen.getNivelIntensidad());
             }
         }
     

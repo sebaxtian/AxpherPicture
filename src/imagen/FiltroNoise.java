@@ -453,6 +453,11 @@ public class FiltroNoise {
     }
     
     /* Filtro GAUSIANO */
+    /**
+     * 
+     * @param tamanoMascara 
+     */
+    
     public void filtroGausiano(int tamanoMascara){
         
         if(tamanoMascara%2 == 0 || tamanoMascara==1){

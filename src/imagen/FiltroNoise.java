@@ -453,6 +453,10 @@ public class FiltroNoise {
     }
     
     /* Filtro GAUSIANO */
+    /**
+     * 
+     * @param tamanoMascara 
+     */
     public void filtroGausiano(int tamanoMascara){
         
         if(tamanoMascara%2 == 0 || tamanoMascara==1){
@@ -483,7 +487,11 @@ public class FiltroNoise {
     }
     
     /* Filtro SOBEL */
-     public void filtroSobel(){
+    /**
+     * 
+     * @param umbral 
+     */
+     public void filtroSobel(int umbral){
      
          Convolucion cv = new Convolucion();
          //inicializacion de los datos de la matriz gris

@@ -453,11 +453,6 @@ public class FiltroNoise {
     }
     
     /* Filtro GAUSIANO */
-    /**
-     * 
-     * @param tamanoMascara 
-     */
-    
     public void filtroGausiano(int tamanoMascara){
         
         if(tamanoMascara%2 == 0 || tamanoMascara==1){
@@ -486,6 +481,36 @@ public class FiltroNoise {
         }
         this.imagen.setMatrizGris(this.matrizGris);
     }
+    
+    /* Filtro SOBEL */
+     public void filtroSobel(){
+     
+         Convolucion cv = new Convolucion();
+         //inicializacion de los datos de la matriz gris
+            for (int i = 0; i < this.matrizGris.length; i++) {
+                for (int j = 0; j < this.matrizGris[0].length; j++) {
+                    this.matrizGris[i][j] = this.matrizGrisOriginal[i][j];
+                }
+            }
+            
+            //mascara h1 seleccionada para realizar el filtro
+            short[][] mascaraH1 = {{1,2,1},{0,0,0},{-1,-2,-1}};    
+            
+             //mascara h2 seleccionada para realizar el filtro
+            short[][] mascaraH2 = {{1,0,-1},{2,0,-2},{1,0,-1}};   
+            
+            int tope = 3 / 2; //variable que sirve de control para evitar que se desborde la mascara de la matriz
+            //JOptionPane.showMessageDialog(null, "tope: "+tope);   
+
+            for (int i = tope; i < this.imagen.getMatrizGris().length - tope; i++) {
+                for (int j = tope; j < this.imagen.getMatrizGris()[0].length - tope; j++) {
+                    int x = cv.convolucionar(this.matrizGrisOriginal, mascaraH1, i, j);
+                    int y = cv.convolucionar(this.matrizGrisOriginal, mascaraH2, i, j);
+                    this.matrizGris[i][j] = (short) Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));             
+                }
+            }
+            this.imagen.setMatrizGris(this.matrizGris);
+     }
     
     
     private short[][] multiplicaVector(short [] A){

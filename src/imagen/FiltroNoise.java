@@ -15,6 +15,7 @@ public class FiltroNoise {
     //private String formato;
     private Imagen imagen;
     private short[][] matrizGris = null;
+    private short[][] matrizDireccion = null;
     private short[][] matrizGrisOriginal=null;
     //para imagenes tipo P3
     private short matrizR[][] = null;
@@ -32,9 +33,12 @@ public class FiltroNoise {
         this.imagen = imagen;
         this.matrizGrisOriginal = new short[imagen.getMatrizGris().length][imagen.getMatrizGris()[0].length];
         this.matrizGris = new short[imagen.getMatrizGris().length][imagen.getMatrizGris()[0].length];
+        this.matrizDireccion = new short[imagen.getMatrizGris().length][imagen.getMatrizGris()[0].length];
+        
         for (int i = 0; i < imagen.getMatrizGris().length; i++) 
             for (int j = 0; j < imagen.getMatrizGris()[0].length; j++) {
                 this.matrizGrisOriginal[i][j] = imagen.getMatrizGris()[i][j];
+                this.matrizDireccion[i][j] = 0;
             }
     }
     
@@ -514,7 +518,12 @@ public class FiltroNoise {
                 for (int j = tope; j < this.imagen.getMatrizGris()[0].length - tope; j++) {
                     int x = cv.convolucionar(this.matrizGrisOriginal, mascaraH1, i, j);
                     int y = cv.convolucionar(this.matrizGrisOriginal, mascaraH2, i, j);
+                    
                     this.matrizGris[i][j] = (short) Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));             
+                    if(this.matrizGris[i][j]>255)
+                        this.matrizGris[i][j]=255;
+                    
+                    this.matrizDireccion[i][j] = (short)((Math.atan2(y, x)*180)/ Math.PI);
                 }
             }
             this.imagen.setMatrizGris(this.matrizGris);
@@ -621,6 +630,20 @@ public class FiltroNoise {
      */
     public short[][] getMatrizGris() {
         return matrizGris;
+    }
+
+    /**
+     * @return the matrizDireccion
+     */
+    public short[][] getMatrizDireccion() {
+        return matrizDireccion;
+    }
+
+    /**
+     * @param matrizDireccion the matrizDireccion to set
+     */
+    public void setMatrizDireccion(short[][] matrizDireccion) {
+        this.matrizDireccion = matrizDireccion;
     }
     
 }

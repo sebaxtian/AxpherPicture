@@ -13,13 +13,25 @@ import javax.swing.JOptionPane;
 public class Convolucion {
     
    private Imagen objImagen;
+   //private short [][] matrizMagnitud;  
+   //private short [][] matrizDireccion;
     
-    public Convolucion() {
+   public Convolucion() {
         
     }
     
+    /**
+     * 
+     * @param imagen objeto tipo Imagen la cual contiene la imagen original que se desea procesar
+     * @param kernel matriz parametro de entreda de tipo short el cual contiene la mascara con la
+     * cual se realiza la convolucion sobre cada pixel de entrada
+     * @return un objeto tipo Imagen al cual fue recorrido por todos sus pixeles y se aplica sobre estos
+     * la convolucion con el kernel que recibe como parametro de entrada
+     */
     public Imagen calculoConvolucion(Imagen imagen, short [][] kernel){
         this.objImagen = imagen;
+        //this.matrizDireccion = imagen.getMatrizGris();
+        //this.matrizMagnitud = imagen.getMatrizGris();
         short [][] matrizGris = imagen.getMatrizGris();
         //short [][] kernel = tamanoKernel][tamanoKernel];
             

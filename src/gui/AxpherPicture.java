@@ -72,6 +72,9 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemOpOr = new javax.swing.JMenuItem();
         menuItemOpXor = new javax.swing.JMenuItem();
         menuItemOpSuma = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+        menuItemSobel = new javax.swing.JMenuItem();
+        menuItemCany = new javax.swing.JMenuItem();
         menuVer = new javax.swing.JMenu();
         menuItemVerHistograma = new javax.swing.JMenuItem();
         menuItemSignal = new javax.swing.JMenuItem();
@@ -269,6 +272,16 @@ public class AxpherPicture extends javax.swing.JFrame {
 
         barraMenus.add(menuImagen);
 
+        jMenu4.setText("Bordes");
+
+        menuItemSobel.setText("Sobel");
+        jMenu4.add(menuItemSobel);
+
+        menuItemCany.setText("Cany");
+        jMenu4.add(menuItemCany);
+
+        barraMenus.add(jMenu4);
+
         menuVer.setText("Ver");
 
         menuItemVerHistograma.setText("Histograma");
@@ -339,6 +352,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
     public javax.swing.JLabel labelAlto;
     public javax.swing.JLabel labelAncho;
     public javax.swing.JLabel labelArchivo;
@@ -348,6 +362,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     private javax.swing.JMenu menuImagen;
     public javax.swing.JMenuItem menuItemAbrirDICOM;
     public javax.swing.JMenuItem menuItemAbrirPGMPPM;
+    public javax.swing.JMenuItem menuItemCany;
     public javax.swing.JMenuItem menuItemCuantizar;
     public javax.swing.JMenuItem menuItemEcualizar;
     public javax.swing.JMenuItem menuItemGuardar;
@@ -360,6 +375,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JMenuItem menuItemSalir;
     public javax.swing.JMenuItem menuItemSigma;
     public javax.swing.JMenuItem menuItemSignal;
+    public javax.swing.JMenuItem menuItemSobel;
     public javax.swing.JMenuItem menuItemUmbral;
     public javax.swing.JMenuItem menuItemVerHistograma;
     public javax.swing.JMenuItem menuItemVerImagen;

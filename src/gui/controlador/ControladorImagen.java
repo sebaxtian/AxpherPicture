@@ -67,6 +67,8 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         this.objVentanaAxpherPicture.menuItemOpOr.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemOpXor.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemOpSuma.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemSobel.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemCany.addActionListener(this);
         this.objVentanaHistograma.btnGuardarHistograma.addActionListener(this);
         this.objVentanaSignal.sliderSignal.addChangeListener(this);
         this.objVentanaAxpherPicture.addWindowListener(new WindowAdapter() {
@@ -276,6 +278,14 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
                 System.out.println("Boton Visualizar");
             }
+        }
+        if(e.getActionCommand().equals("Sobel")) {
+            HiloBordeSobel hiloBordeSobel = new HiloBordeSobel();
+            hiloBordeSobel.start();
+            System.out.println("Bordes Sobel");
+        }
+        if(e.getActionCommand().equals("Cany")) {
+            System.out.println("Bordes Cany");
         }
     }
     
@@ -788,6 +798,37 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 }
             }
+        }
+    }
+    
+    class HiloBordeSobel extends Thread {
+        @Override
+        public void run() {
+            AxpherPicture.barraProgreso.setValue(45);
+            objImagenProcesado.setFormato(objImagenFuente.getFormato());
+            objImagenProcesado.setM(objImagenFuente.getM());
+            objImagenProcesado.setN(objImagenFuente.getN());
+            objImagenProcesado.setNivelIntensidad(objImagenFuente.getNivelIntensidad());
+            short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
+            for(int i = 0; i < matrizGris.length; i++) {
+                for(int j = 0; j < matrizGris[0].length; j++) {
+                    matrizGris[i][j] = objImagenFuente.getMatrizGris()[i][j];
+                }
+            }
+            objImagenProcesado.setMatrizGris(matrizGris);
+            // objeto de filtrado
+            objFiltro = new FiltroNoise(objImagenProcesado);
+            // aplica el filtro de sobel
+            objFiltro.filtroSobel(56);
+            AxpherPicture.barraProgreso.setValue(80);
+            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+            AxpherPicture.barraProgreso.setValue(100);
+            try {
+                sleep(512);
+            } catch (InterruptedException ex) {
+                System.err.println("Error al dormir Hilo umbralizacion");
+            }
+            AxpherPicture.barraProgreso.setValue(0);
         }
     }
 }

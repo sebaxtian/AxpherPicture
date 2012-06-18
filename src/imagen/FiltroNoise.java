@@ -15,6 +15,7 @@ public class FiltroNoise {
     //private String formato;
     private Imagen imagen;
     private short[][] matrizGris = null;
+    private double[][] matrizDireccion = null;
     private short[][] matrizGrisOriginal=null;
     //para imagenes tipo P3
     private short matrizR[][] = null;
@@ -32,9 +33,12 @@ public class FiltroNoise {
         this.imagen = imagen;
         this.matrizGrisOriginal = new short[imagen.getMatrizGris().length][imagen.getMatrizGris()[0].length];
         this.matrizGris = new short[imagen.getMatrizGris().length][imagen.getMatrizGris()[0].length];
+        this.matrizDireccion = new double[imagen.getMatrizGris().length][imagen.getMatrizGris()[0].length];
+        
         for (int i = 0; i < imagen.getMatrizGris().length; i++) 
             for (int j = 0; j < imagen.getMatrizGris()[0].length; j++) {
                 this.matrizGrisOriginal[i][j] = imagen.getMatrizGris()[i][j];
+                this.matrizDireccion[i][j] = 0;
             }
     }
     
@@ -453,6 +457,10 @@ public class FiltroNoise {
     }
     
     /* Filtro GAUSIANO */
+    /**
+     * 
+     * @param tamanoMascara 
+     */
     public void filtroGausiano(int tamanoMascara){
         
         if(tamanoMascara%2 == 0 || tamanoMascara==1){
@@ -481,6 +489,138 @@ public class FiltroNoise {
         }
         this.imagen.setMatrizGris(this.matrizGris);
     }
+    
+    
+    
+    /**
+     * 
+     * @param delta 
+     */
+    public void filtroRuidoLineas(int delta){
+        this.filtroRuidoLineasHorizontal(delta);
+        for(int i=0; i<this.matrizGris.length; i++){
+            for(int j=0; j<this.matrizGris[0].length;j++){
+                this.matrizGrisOriginal[i][j]=this.imagen.getMatrizGris()[i][j];
+            }
+        }
+        this.filtroRuidoLineasVertical(delta);
+    }
+    
+    
+    
+    /**
+     * 
+     * @param delta 
+     */
+    public void filtroRuidoLineasHorizontal(int delta){
+        for(int i=0; i<this.matrizGris.length; i++){
+            for(int j=0; j<this.matrizGris[0].length;j++){
+                this.matrizGris[i][j]=this.matrizGrisOriginal[i][j];
+            }
+        }
+        
+        for(int i=1; i<this.matrizGris.length-1; i++){
+            for(int j=0; j<this.matrizGris[0].length;j++){
+                //double DNneighbors = (matrizGris[i-1][j]+matrizGris[i+1][j]+matrizGris[i-2][j]+matrizGris[i+2][j])/4; 
+                double DNneighbors = (matrizGris[i-1][j]+matrizGris[i+1][j])/2; 
+                if(Math.abs(matrizGris[i][j]-DNneighbors)>delta){
+                    matrizGris[i][j] = (short)DNneighbors;
+                    //System.out.println("Ruido en lineas Horzintal" + matrizGris[i][j] );
+                }
+            }
+        }
+        this.imagen.setMatrizGris(this.matrizGris);
+    }
+
+    
+    
+    /**
+     * 
+     * @param delta 
+     */
+    public void filtroRuidoLineasVertical(int delta){
+        for(int i=0; i<this.matrizGris.length; i++){
+            for(int j=0; j<this.matrizGris[0].length;j++){
+                this.matrizGris[i][j]=this.matrizGrisOriginal[i][j];
+            }
+        }
+        
+        for(int i=0; i<this.matrizGris.length; i++){
+            for(int j=1; j<this.matrizGris[0].length-1;j++){
+                //double DNneighbors = (matrizGris[i][j-1]+matrizGris[i][j+1]+matrizGris[i][j-2]+matrizGris[i][j+2])/4; 
+                double DNneighbors = (matrizGris[i][j-1]+matrizGris[i][j+1])/2; 
+                if(Math.abs(matrizGris[i][j]-DNneighbors)>delta){
+                    matrizGris[i][j] = (short)DNneighbors;
+                    //System.out.println("Ruido en lineas vertical " + matrizGris[i][j] );
+                }
+            }
+        }
+        this.imagen.setMatrizGris(this.matrizGris);
+    }
+    
+    /**
+     * 
+     * @param delta 
+     */
+    public void filtroSalPimienta(int delta){
+       
+        for(int i=0; i<this.matrizGris.length; i++){
+            for(int j=0; j<this.matrizGris[0].length;j++){
+            this.matrizGris[i][j]=this.matrizGrisOriginal[i][j];
+            }
+        }
+        for(int i=1; i<this.matrizGris.length-1; i++){
+            for(int j=1; j<this.matrizGris[0].length-1;j++){
+                double DNneighbors = (matrizGris[i+1][j]+ matrizGris[i+1][j+1]+matrizGris[i][j+1]+ matrizGris[i-1][j+1]+matrizGris[i-1][j]+ matrizGris[i-1][j-1]+matrizGris[i][j-1]+ matrizGris[i+1][j-1])/8; 
+                if(Math.abs(matrizGris[i][j]-DNneighbors)>delta){
+                    matrizGris[i][j] = (short)DNneighbors;
+                    //System.out.println("Sal y pimienta " + matrizGris[i][j] );
+                }
+            }
+        }
+        this.imagen.setMatrizGris(this.matrizGris);
+    }
+    
+    
+    
+    /* Filtro SOBEL */
+    /**
+     * 
+     * @param umbral 
+     */
+     public void filtroSobel(int umbral){
+     
+         Convolucion cv = new Convolucion();
+         //inicializacion de los datos de la matriz gris
+            for (int i = 0; i < this.matrizGris.length; i++) {
+                for (int j = 0; j < this.matrizGris[0].length; j++) {
+                    this.matrizGris[i][j] = this.matrizGrisOriginal[i][j];
+                }
+            }
+            
+            //mascara h1 seleccionada para realizar el filtro
+            short[][] mascaraH1 = {{1,2,1},{0,0,0},{-1,-2,-1}};    
+            
+             //mascara h2 seleccionada para realizar el filtro
+            short[][] mascaraH2 = {{1,0,-1},{2,0,-2},{1,0,-1}};   
+            
+            int tope = 3 / 2; //variable que sirve de control para evitar que se desborde la mascara de la matriz
+            //JOptionPane.showMessageDialog(null, "tope: "+tope);   
+
+            for (int i = tope; i < this.imagen.getMatrizGris().length - tope; i++) {
+                for (int j = tope; j < this.imagen.getMatrizGris()[0].length - tope; j++) {
+                    int x = cv.convolucionar(this.matrizGrisOriginal, mascaraH1, i, j);
+                    int y = cv.convolucionar(this.matrizGrisOriginal, mascaraH2, i, j);
+                    
+                    this.matrizGris[i][j] = (short) Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));             
+                    if(this.matrizGris[i][j]>255)
+                        this.matrizGris[i][j]=255;
+                    
+                    this.matrizDireccion[i][j] = ((Math.atan2(y, x)*180)/ Math.PI);
+                }
+            }
+            this.imagen.setMatrizGris(this.matrizGris);
+     }
     
     
     private short[][] multiplicaVector(short [] A){
@@ -584,5 +724,36 @@ public class FiltroNoise {
     public short[][] getMatrizGris() {
         return matrizGris;
     }
+
+    /**
+     * @return the matrizDireccion
+     */
+    public double[][] getMatrizDireccion() {
+        return matrizDireccion;
+    }
+
+    /**
+     * @param matrizDireccion the matrizDireccion to set
+     */
+    public void setMatrizDireccion(double[][] matrizDireccion) {
+        this.matrizDireccion = matrizDireccion;
+    }
     
+    
+        public static void main(String []arg){
+            
+        //String rutaImgPGM = "ImgFuente/PGM.pgm";
+        String rutaImgPGM = "ImgFuente/lenaL.pgm";
+        Imagen imgPGM = new Imagen(rutaImgPGM);
+        imgPGM.guardarImagen("ImgProcesado/lenaL.pgm");
+        
+        FiltroNoise fl = new FiltroNoise(imgPGM);
+        
+        fl.filtroRuidoLineas(125);
+        fl.getImagen().guardarImagen("ImgProcesado/125lenaL.pgm");
+
+
+        
+        
+    }
 }

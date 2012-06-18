@@ -258,5 +258,335 @@ public class Operaciones {
     }
     
     
+    public Imagen resta(Imagen imgFuente, int cantidad) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizResultado.length; i++) {
+                for(int j = 0; j < matrizResultado[0].length; j++) {
+                    short pixelResultado = (short)(matrizFuente[i][j] - cantidad);
+                    if(pixelResultado < 0) {
+                        matrizResultado[i][j] = 0;
+                    } else {
+                        matrizResultado[i][j] = pixelResultado;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    public Imagen resta(Imagen imgFuente, Imagen imgOperando) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        short[][] matrizOperando = imgOperando.getMatrizGris();
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizResultado.length; i++) {
+                for(int j = 0; j < matrizResultado[0].length; j++) {
+                    short pixelResultado = (short)(matrizFuente[i][j] - matrizOperando[i][j]);
+                    if(pixelResultado < 0) {
+                        matrizResultado[i][j] = 0;
+                    } else {
+                        matrizResultado[i][j] = pixelResultado;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    public Imagen producto(Imagen imgFuente, int cantidad) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizResultado.length; i++) {
+                for(int j = 0; j < matrizResultado[0].length; j++) {
+                    short pixelResultado = (short)(matrizFuente[i][j] * cantidad);
+                    if(pixelResultado > 255) {
+                        matrizResultado[i][j] = 255;
+                    } else {
+                        matrizResultado[i][j] = pixelResultado;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    public Imagen producto(Imagen imgFuente, Imagen imgOperando) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        short[][] matrizOperando = imgOperando.getMatrizGris();
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizResultado.length; i++) {
+                for(int j = 0; j < matrizResultado[0].length; j++) {
+                    short pixelResultado = (short)(matrizFuente[i][j] * matrizOperando[i][j]);
+                    if(pixelResultado > 255 || pixelResultado < 0) {
+                        matrizResultado[i][j] = 255;
+                    } else {
+                        matrizResultado[i][j] = pixelResultado;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    
+    public Imagen traslacion(Imagen imgFuente, double factX, double factY) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    int iPrima = (int)(i + factX);
+                    int jPrima = (int)(j + factY);
+                    short pixelFuente = matrizFuente[i][j];
+                    if(iPrima < 0) {
+                        iPrima = 0;
+                    }
+                    if(jPrima < 0) {
+                        jPrima = 0;
+                    }
+                    if(iPrima < matrizFuente.length && jPrima < matrizFuente[0].length) {
+                        matrizResultado[iPrima][jPrima] = pixelFuente;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    
+    public Imagen reflexionX(Imagen imgFuente) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    short pixelFuente = matrizFuente[i][j];
+                    int jPrima = (matrizFuente[0].length - 1) - j;
+                    matrizResultado[i][jPrima] = pixelFuente;
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    
+    public Imagen reflexionY(Imagen imgFuente) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    short pixelFuente = matrizFuente[i][j];
+                    int iPrima = (matrizFuente.length - 1) - i;
+                    matrizResultado[iPrima][j] = pixelFuente;
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    
+    public Imagen media(Imagen imgFuente, int cantidad) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    short pixelFuente = matrizFuente[i][j];
+                    matrizResultado[i][j] = (short)((pixelFuente + cantidad) / 2);
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    public Imagen media(Imagen imgFuente, Imagen imgOperando) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        short[][] matrizOperando = imgOperando.getMatrizGris();
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    short pixelFuente = matrizFuente[i][j];
+                    short pixelOperando = matrizOperando[i][j];
+                    matrizResultado[i][j] = (short)((pixelFuente + pixelOperando) / 2);
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    public Imagen maximo(Imagen imgFuente, int cantidad) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    short pixelFuente = matrizFuente[i][j];
+                    if(pixelFuente < cantidad) {
+                        matrizResultado[i][j] = (short)cantidad;
+                    } else {
+                        matrizResultado[i][j] = pixelFuente;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    public Imagen maximo(Imagen imgFuente, Imagen imgOperando) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        short[][] matrizOperando = imgOperando.getMatrizGris();
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    short pixelFuente = matrizFuente[i][j];
+                    short pixelOperando = matrizOperando[i][j];
+                    if(pixelFuente < pixelOperando) {
+                        matrizResultado[i][j] = pixelOperando;
+                    } else {
+                        matrizResultado[i][j] = pixelFuente;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    
+    public Imagen minimo(Imagen imgFuente, int cantidad) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    short pixelFuente = matrizFuente[i][j];
+                    if(pixelFuente < cantidad) {
+                        matrizResultado[i][j] = pixelFuente;
+                    } else {
+                        matrizResultado[i][j] = (short)cantidad;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
+    
+    
+    public Imagen minimo(Imagen imgFuente, Imagen imgOperando) {
+        Imagen imgResultado = new Imagen();
+        imgResultado = imgFuente.clone();
+        
+        short[][] matrizFuente = imgFuente.getMatrizGris();
+        short[][] matrizOperando = imgOperando.getMatrizGris();
+        short[][] matrizResultado = new short[imgFuente.getN()][imgFuente.getM()];
+        
+        if(imgFuente.getFormato().equals("P2")) {
+            for(int i = 0; i < matrizFuente.length; i++) {
+                for(int j = 0; j < matrizFuente[0].length; j++) {
+                    short pixelFuente = matrizFuente[i][j];
+                    short pixelOperando = matrizOperando[i][j];
+                    if(pixelFuente < pixelOperando) {
+                        matrizResultado[i][j] = pixelFuente;
+                    } else {
+                        matrizResultado[i][j] = pixelOperando;
+                    }
+                }
+            }
+        }
+        
+        imgResultado.setMatrizGris(matrizResultado);
+        
+        return imgResultado;
+    }
     
 }

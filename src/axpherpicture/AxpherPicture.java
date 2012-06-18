@@ -27,7 +27,7 @@ public class AxpherPicture {
         /**
          * Imagen en formato Dicom
          */
-        
+        /*
         DcmImg objDcmImg = new DcmImg("ImgFuente/ankle.dcm");
         //objDcmImg.guardaY("ImgProcesado/ankle.dcm");
         DicomObject dcmObj;
@@ -63,11 +63,12 @@ public class AxpherPicture {
             //------
             objDcmImg.guardaY("ImgProcesado/binaria3ankle.dcm");
         }
-        
+        */
         
         /**
          * Operaciones
          */
+        /*
         String rutaImgPGM = "ImgFuente/noisy.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
 
@@ -116,163 +117,178 @@ public class AxpherPicture {
         op.OrAndXor(imgPGM1, imgPGM2, "or").guardarImagen("ImgProcesado/pillsOrBirs.pgm");
         op.suma(imgPGM1, imgPGM2).guardarImagen("ImgProcesado/pillsSumaBirs.pgm");
         op.suma(imgPGM1, 128).guardarImagen("ImgProcesado/birsSuma128.pgm");
+        */
         
         
         /*
-        DicomImg objDicomImg = new DicomImg("ImgFuente/ankle.dcm");
-        System.out.println("Imprime Headers De Imagen Dicom");
-        objDicomImg.listDicomHeader(objDicomImg.getDicomObject());
-        Imagen objImagen = objDicomImg.getImagen();
-        objImagen.guardarImagen("ImgProcesado/ankle.pgm");
-        objDicomImg.guardarJPEG();
+         * Bordes
+         */
+        /*
+        Imagen objImg1 = new Imagen("ImgFuente/rects.pgm");
+        FiltroNoise filtroBordes = new FiltroNoise(objImg1);
+        
+        //filtroBordes.filtroMediana(5);
+        filtroBordes.filtroGausiano(5);
+        Imagen imgMediana = filtroBordes.getImagen();
+        
+        filtroBordes = new FiltroNoise(imgMediana);
+        
+        filtroBordes.filtroSobel();
+        filtroBordes.getImagen().guardarImagen("ImgProcesado/sobelRects7.pgm");
+        */
+        
+        /*
+        FiltroNoise f2 = new FiltroNoise(imgPGM2);
+        f2.filtroSobel();
+        f2.getImagen().guardarImagen("ImgProcesado/sobelMadera.pgm");
+        
+        rutaImgPGM2 = "ImgFuente/rects.pgm";
+        imgPGM2 = new Imagen(rutaImgPGM2);
+        f2 = new FiltroNoise(imgPGM2);
+        f2.filtroMediana(5);
+        Imagen imgFil = f2.getImagen();
+        f2 = new FiltroNoise(imgFil);
+        f2.filtroSobel();
+        f2.getImagen().guardarImagen("ImgProcesado/sobelRects.pgm");
+        
+        rutaImgPGM2 = "ImgFuente/rectshose.pgm";
+        imgPGM2 = new Imagen(rutaImgPGM2);
+        f2 = new FiltroNoise(imgPGM2);
+        f2.filtroSobel();
+        imgFil = f2.getImagen();
+        f2 = new FiltroNoise(imgFil);
+        f2.filtroMediana(3);
+        f2.getImagen().guardarImagen("ImgProcesado/sobelRectshose.pgm");
         */
         
         /**
-         * Imagen en formato PGM
+         * Segmentacion
          */
-        /*String rutaImgPGM = "ImgFuente/lena.pgm";
-        Imagen imgPGM = new Imagen(rutaImgPGM);
-        Ecualizacion ecualizador = new Ecualizacion(imgPGM);
-        imgPGM = ecualizador.ecualizar();
-        imgPGM.guardarImagen("ImgProcesado/ecualizadaLena.pgm");
         
-        String rutaImgPPM = "ImgFuente/lena.ppm";
-        Imagen imgPPM = new Imagen(rutaImgPPM);
-        ecualizador = new Ecualizacion(imgPPM);
-        imgPPM = ecualizador.ecualizar();
-        imgPPM.guardarImagen("ImgProcesado/ecualizadaLena.ppm");*/
+        DcmImg objDcmImg = new DcmImg("ImgFuente/brain.dcm");
+        Imagen objImg = objDcmImg.getImagenMR(333, 738);
+        objImg.guardarImagen("ImgProcesado/brain.pgm");
+        
+        objDcmImg.printHeaders(objDcmImg.getDicomObject());
+        
+        SegmentacionBrain objSegBrain = new SegmentacionBrain(objDcmImg);
+        
+        objSegBrain.segmentarMateriaBlanca();
+        objDcmImg = objSegBrain.getDcmImg();
+        objImg = objDcmImg.getImagenMR(333, 738);
+        objImg.guardarImagen("ImgProcesado/brainMB.pgm");
         
         /*
-        String rutaImgPGM = "ImgFuente/lena.pgm";
-        Imagen imgPGM = new Imagen(rutaImgPGM);
-        imgPGM.guardarImagen("ImgProcesado/lenaCopia.pgm");
-        //-->calcula el histograma
-        Histograma histogramaImgPGM = new Histograma(imgPGM);
-        Imagen imgHistogramaPGM = histogramaImgPGM.getImagenHistograma();
-        imgHistogramaPGM.guardarImagen("ImgProcesado/histogramaLena.pgm");
-        //-->calcula el umbral
-        Umbralizacion umbralizacionPGM = new Umbralizacion(histogramaImgPGM, 0);
-        int umbralGris = umbralizacionPGM.getUmbralGris();
-        System.out.println("UmbralGris: "+umbralGris);
-        //-->construye una imagen binaria
-        Imagen imgBinariaPGM = new Imagen();
-        imgBinariaPGM.setFormato("P2");
-        imgBinariaPGM.setNivelIntensidad(1);
-        imgBinariaPGM.setN(imgPGM.getN());
-        imgBinariaPGM.setM(imgPGM.getM());
-        short matrizGris[][] = new short[imgBinariaPGM.getN()][imgBinariaPGM.getM()];
-        for(int i = 0; i < imgBinariaPGM.getN(); i++) {
-            for(int j = 0; j < imgBinariaPGM.getM(); j++) {
-                if(imgPGM.getMatrizGris()[i][j] < umbralGris) {
-                    matrizGris[i][j] = 0;
-                } else {
-                    matrizGris[i][j] = 1;
-                }
-            }
-        }
-        imgBinariaPGM.setMatrizGris(matrizGris);
-        imgBinariaPGM.guardarImagen("ImgProcesado/binariaLena.pgm");
-        //aplica escalacion a la imagen
-        double factorScalarPGM = 2.25;
-        Scalar scalarPGM = new Scalar(imgPGM, factorScalarPGM);
-        scalarPGM.escalacionBicubica();
-        imgPGM.setMatrizGris(scalarPGM.getImagenEscalada());
-        imgPGM.setN(imgPGM.getMatrizGris().length);
-        imgPGM.setM(imgPGM.getMatrizGris()[0].length);
-        imgPGM.guardarImagen("ImgProcesado/scalarLena2.25X.pgm");
-        */
-        /**
-         * Imagen en formato PPM
-         */
-        /*
-        String rutaImgPPM = "ImgFuente/lena.ppm";
-        Imagen imgPPM = new Imagen(rutaImgPPM);
-        imgPPM.guardarImagen("ImgProcesado/lenaCopia.ppm");
-        //calcula escala de grises
-        Imagen imgGrises = imgPPM.getEscalaGrises();
-        imgGrises.guardarImagen("ImgProcesado/lenaGrises.pgm");
-        //calcula el histograma
-        Histograma histogramaImgPPM = new Histograma(imgPPM);
-        Imagen imgHistogramaPPM = histogramaImgPPM.getImagenHistograma();
-        imgHistogramaPPM.guardarImagen("ImgProcesado/histogramaLena.ppm");
-        //calcula el umbral
-        //Umbralizacion umbralizacionPPM = new Umbralizacion(histogramaImgPPM, 0);
-        Umbralizacion umbralizacionPPM = new Umbralizacion(histogramaImgPPM, 1);
-        int umbralR = umbralizacionPPM.getUmbralR();
-        int umbralG = umbralizacionPPM.getUmbralG();
-        int umbralB = umbralizacionPPM.getUmbralB();
-        System.out.println("UmbralR: "+umbralR);
-        System.out.println("UmbralG: "+umbralG);
-        System.out.println("UmbralB: "+umbralB);
-        //construye una imagen binaria
-        Imagen imgBinariaPPM = new Imagen();
-        imgBinariaPPM.setFormato("P3");
-        imgBinariaPPM.setNivelIntensidad(1);
-        imgBinariaPPM.setN(imgPPM.getN());
-        imgBinariaPPM.setM(imgPPM.getM());
-        short matrizR[][] = new short[imgBinariaPPM.getN()][imgBinariaPPM.getM()];
-        short matrizG[][] = new short[imgBinariaPPM.getN()][imgBinariaPPM.getM()];
-        short matrizB[][] = new short[imgBinariaPPM.getN()][imgBinariaPPM.getM()];
-        for(int i = 0; i < imgBinariaPPM.getN(); i++) {
-            for(int j = 0; j < imgBinariaPPM.getM(); j++) {
-                //canal R
-                if(imgPPM.getMatrizR()[i][j] < umbralR) {
-                    matrizR[i][j] = 0;
-                } else {
-                    matrizR[i][j] = 1;
-                }
-                //canal G
-                if(imgPPM.getMatrizG()[i][j] < umbralG) {
-                    matrizG[i][j] = 0;
-                } else {
-                    matrizG[i][j] = 1;
-                }
-                //canal B
-                if(imgPPM.getMatrizB()[i][j] < umbralB) {
-                    matrizB[i][j] = 0;
-                } else {
-                    matrizB[i][j] = 1;
-                }
-            }
-        }
-        imgBinariaPPM.setMatrizR(matrizR);
-        imgBinariaPPM.setMatrizG(matrizG);
-        imgBinariaPPM.setMatrizB(matrizB);
-        imgBinariaPPM.guardarImagen("ImgProcesado/binariaLena.ppm");
-        //aplica escalacion a la imagen
-        double factorScalarPPM = 2.25;
-        Scalar scalarPPM = new Scalar(imgPPM, factorScalarPPM);
-        scalarPPM.escalacionBicubica();
-        imgPPM.setMatrizR(scalarPPM.getMatrizR());
-        imgPPM.setMatrizG(scalarPPM.getMatrizG());
-        imgPPM.setMatrizB(scalarPPM.getMatrizB());
-        imgPPM.setN(imgPPM.getMatrizR().length);
-        imgPPM.setM(imgPPM.getMatrizR()[0].length);
-        imgPPM.guardarImagen("ImgProcesado/scalarLena2.25X.ppm");
-        */
-        /*
-        String rutaImgPGM = "ImgFuente/noisy.pgm";
-        Imagen imgPGM = new Imagen(rutaImgPGM);
-        FiltroNoise fl = new FiltroNoise(imgPGM);
-        fl.filtroSigma((short)100);
-        fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
+        //resta
+        Imagen imgFuente = new Imagen("ImgFuente/lena.pgm");
+        Imagen imgResultado = new Imagen();
+        Operaciones operacion = new Operaciones();
+        imgResultado = operacion.resta(imgFuente, 64);
         
-//        String rutaImgPGM = "ImgFuente/noisy.pgm";
-//        Imagen imgPGM = new Imagen(rutaImgPGM);
-//       
-//        FiltroNoise fl = new FiltroNoise(imgPGM);
-//        fl.filtroSigma((short)100);
-//        fl.getImagen().guardarImagen("ImgProcesado/sigmaNoisy.pgm");
-//        
-//        fl.filtroMediana(3);
-//        fl.getImagen().guardarImagen("ImgProcesado/medianaNoisy.pgm");
-//        
-//        fl.nagaoMatsuyama();
-//        fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");
+        imgResultado.guardarImagen("ImgProcesado/restaLena.pgm");
         
-        fl.nagaoMatsuyama();
-        fl.getImagen().guardarImagen("ImgProcesado/nagaoMatsuyamaNoisy.pgm");
+        //resta
+        imgFuente = new Imagen("ImgFuente/moto.pgm");
+        Imagen imgOperando = new Imagen("ImgFuente/coctel.pgm");
+        imgResultado = operacion.resta(imgFuente, imgOperando);
+        
+        imgResultado.guardarImagen("ImgProcesado/motomenoscoctel.pgm");
+        
+        
+        //producto
+        imgFuente = new Imagen("ImgFuente/lena.pgm");
+        imgResultado = operacion.resta(imgFuente, 64);
+        
+        imgResultado.guardarImagen("ImgProcesado/productoLena.pgm");
+        
+        //producto
+        imgFuente = new Imagen("ImgFuente/birs.pgm");
+        imgOperando = new Imagen("ImgFuente/pills.pgm");
+        imgResultado = operacion.producto(imgFuente, imgOperando);
+        
+        imgResultado.guardarImagen("ImgProcesado/birsproductopills.pgm");
+        
+        //traslacion
+        imgFuente = new Imagen("ImgFuente/lena.pgm");
+        imgResultado = operacion.traslacion(imgFuente, -64, 128);
+        
+        imgResultado.guardarImagen("ImgProcesado/traslacionLena.pgm");
+        
+        //refelxion
+        imgFuente = new Imagen("ImgFuente/lena.pgm");
+        imgResultado = operacion.reflexionX(imgFuente);
+        
+        imgResultado.guardarImagen("ImgProcesado/reflexionXLena.pgm");
+        
+        imgResultado = operacion.reflexionY(imgFuente);
+        
+        imgResultado.guardarImagen("ImgProcesado/reflexionYLena.pgm");
+        
+        
+        //media
+        imgFuente = new Imagen("ImgFuente/lena.pgm");
+        imgResultado = operacion.media(imgFuente, 67);
+        
+        imgResultado.guardarImagen("ImgProcesado/mediaLena.pgm");
+        
+        imgFuente = new Imagen("ImgFuente/moto.pgm");
+        imgOperando = new Imagen("ImgFuente/coctel.pgm");
+        imgResultado = operacion.media(imgFuente, imgOperando);
+        
+        imgResultado.guardarImagen("ImgProcesado/motomediacoctel.pgm");
+        
+        
+        //maximo
+        imgFuente = new Imagen("ImgFuente/lena.pgm");
+        imgResultado = operacion.maximo(imgFuente, 128);
+        
+        imgResultado.guardarImagen("ImgProcesado/maximoLena.pgm");
+        
+        imgFuente = new Imagen("ImgFuente/moto.pgm");
+        imgOperando = new Imagen("ImgFuente/coctel.pgm");
+        imgResultado = operacion.maximo(imgFuente, imgOperando);
+        
+        imgResultado.guardarImagen("ImgProcesado/motomaximococtel.pgm");
+        
+        
+        //minimo
+        imgFuente = new Imagen("ImgFuente/lena.pgm");
+        imgResultado = operacion.minimo(imgFuente, 128);
+        
+        imgResultado.guardarImagen("ImgProcesado/minimoLena.pgm");
+        
+        imgFuente = new Imagen("ImgFuente/moto.pgm");
+        imgOperando = new Imagen("ImgFuente/coctel.pgm");
+        imgResultado = operacion.minimo(imgFuente, imgOperando);
+        
+        imgResultado.guardarImagen("ImgProcesado/motominimococtel.pgm");
+        
+        
+        //cany
+        imgFuente = new Imagen("ImgFuente/rects.pgm");
+        Canny objCany = new Canny();
+        objCany.calculoCanny(imgFuente, 7);
+        imgResultado = objCany.getImagen();
+        
+        imgResultado.guardarImagen("ImgProcesado/canyrects.pgm");
+        
+        
+        //salpimienta
+        imgFuente = new Imagen("ImgFuente/canyrects.pgm");
+        FiltroNoise filtro = new FiltroNoise(imgFuente);
+        filtro.filtroSalPimienta(60);
+        imgResultado = filtro.getImagen();
+        
+        imgResultado.guardarImagen("ImgProcesado/salpimientacanyrects.pgm");
+        
+        
+        //lineas
+        imgFuente = new Imagen("ImgFuente/canyrects.pgm");
+        filtro = new FiltroNoise(imgFuente);
+        filtro.filtroRuidoLineas(60);
+        imgResultado = filtro.getImagen();
+        
+        imgResultado.guardarImagen("ImgProcesado/lineascanyrects.pgm");
         */
-        
     }
 }

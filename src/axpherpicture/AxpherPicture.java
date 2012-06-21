@@ -164,7 +164,7 @@ public class AxpherPicture {
         /**
          * Segmentacion
          */
-        
+        /*
         DcmImg objDcmImg = new DcmImg("ImgFuente/brain.dcm");
         Imagen objImg = objDcmImg.getImagenMR(333, 738);
         objImg.guardarImagen("ImgProcesado/brain.pgm");
@@ -177,6 +177,8 @@ public class AxpherPicture {
         objDcmImg = objSegBrain.getDcmImg();
         objImg = objDcmImg.getImagenMR(333, 738);
         objImg.guardarImagen("ImgProcesado/brainMB.pgm");
+        * 
+        */
         
         /*
         //resta
@@ -290,5 +292,24 @@ public class AxpherPicture {
         
         imgResultado.guardarImagen("ImgProcesado/lineascanyrects.pgm");
         */
+        
+        Imagen imgFuente = new Imagen("ImgFuente/lena.pgm");
+        Operaciones operacion = new Operaciones();
+        Contraste contraste = new Contraste();
+        
+        Imagen imgSuma = operacion.suma(imgFuente, 65);
+        
+        imgSuma.guardarImagen("ImgProcesado/sumaLena.pgm");
+        
+        
+        double valContraste = contraste.getContraste(imgFuente);
+        System.out.println("Valor contraste "+valContraste);
+        
+        Imagen imgSalida = contraste.contrastStretching(imgSuma);
+        imgSalida.guardarImagen("ImgProcesado/lenaContrastStretching.pgm");
+        
+        imgSalida = contraste.correccionGamma(imgFuente, 1.6);
+        imgSalida.guardarImagen("ImgProcesado/lenaCorreccionGamma.pgm");
+        
     }
 }

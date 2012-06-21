@@ -296,7 +296,7 @@ public class DcmImg {
         for (int i = minY; i < alto; i++) {
             for (int j = minX; j < ancho; j++) {
                 short x = (short) rasterDicom.getSample(j, i, 0);
-                System.out.println(""+x);
+                //System.out.println(""+x);
                 if(x <= windowCenter - 0.5 - (windowWidth - 1) / 2 ){
                     y = Ymin;
                 }

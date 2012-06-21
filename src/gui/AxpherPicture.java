@@ -67,11 +67,25 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemSigma = new javax.swing.JMenuItem();
         menuItemMediana = new javax.swing.JMenuItem();
         menuItemMatsuyama = new javax.swing.JMenuItem();
+        jMenu6 = new javax.swing.JMenu();
+        menuItemLineH = new javax.swing.JMenuItem();
+        menuItemLineV = new javax.swing.JMenuItem();
+        menuItemLineHV = new javax.swing.JMenuItem();
+        menuItemSalPiper = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuItemOpAnd = new javax.swing.JMenuItem();
         menuItemOpOr = new javax.swing.JMenuItem();
         menuItemOpXor = new javax.swing.JMenuItem();
         menuItemOpSuma = new javax.swing.JMenuItem();
+        menuItemOpResta = new javax.swing.JMenuItem();
+        menuItemOpProducto = new javax.swing.JMenuItem();
+        menuItemOpTraslacion = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        menuItemOpReflexH = new javax.swing.JMenuItem();
+        menuItemOpReflexV = new javax.swing.JMenuItem();
+        menuItemOpMedia = new javax.swing.JMenuItem();
+        menuItemOpMaximo = new javax.swing.JMenuItem();
+        menuItemOpMinimo = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         menuItemSobel = new javax.swing.JMenuItem();
         menuItemCany = new javax.swing.JMenuItem();
@@ -252,6 +266,22 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemMatsuyama.setText("Matsuyama");
         jMenu1.add(menuItemMatsuyama);
 
+        jMenu6.setText("Lineas");
+
+        menuItemLineH.setText("Horizontal");
+        jMenu6.add(menuItemLineH);
+
+        menuItemLineV.setText("Vertical");
+        jMenu6.add(menuItemLineV);
+
+        menuItemLineHV.setText("Combinado");
+        jMenu6.add(menuItemLineHV);
+
+        jMenu1.add(jMenu6);
+
+        menuItemSalPiper.setText("Sal-Pimienta");
+        jMenu1.add(menuItemSalPiper);
+
         menuImagen.add(jMenu1);
 
         jMenu2.setText("Operaciones");
@@ -267,6 +297,34 @@ public class AxpherPicture extends javax.swing.JFrame {
 
         menuItemOpSuma.setText("Suma");
         jMenu2.add(menuItemOpSuma);
+
+        menuItemOpResta.setText("Resta");
+        jMenu2.add(menuItemOpResta);
+
+        menuItemOpProducto.setText("Producto");
+        jMenu2.add(menuItemOpProducto);
+
+        menuItemOpTraslacion.setText("Traslacion");
+        jMenu2.add(menuItemOpTraslacion);
+
+        jMenu5.setText("Reflexion");
+
+        menuItemOpReflexH.setText("Horizontal");
+        jMenu5.add(menuItemOpReflexH);
+
+        menuItemOpReflexV.setText("Vertical");
+        jMenu5.add(menuItemOpReflexV);
+
+        jMenu2.add(jMenu5);
+
+        menuItemOpMedia.setText("Media");
+        jMenu2.add(menuItemOpMedia);
+
+        menuItemOpMaximo.setText("Maximo");
+        jMenu2.add(menuItemOpMaximo);
+
+        menuItemOpMinimo.setText("Minimo");
+        jMenu2.add(menuItemOpMinimo);
 
         menuImagen.add(jMenu2);
 
@@ -353,6 +411,8 @@ public class AxpherPicture extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
     public javax.swing.JLabel labelAlto;
     public javax.swing.JLabel labelAncho;
     public javax.swing.JLabel labelArchivo;
@@ -366,12 +426,24 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JMenuItem menuItemCuantizar;
     public javax.swing.JMenuItem menuItemEcualizar;
     public javax.swing.JMenuItem menuItemGuardar;
+    public javax.swing.JMenuItem menuItemLineH;
+    public javax.swing.JMenuItem menuItemLineHV;
+    public javax.swing.JMenuItem menuItemLineV;
     public javax.swing.JMenuItem menuItemMatsuyama;
     public javax.swing.JMenuItem menuItemMediana;
     public javax.swing.JMenuItem menuItemOpAnd;
+    public javax.swing.JMenuItem menuItemOpMaximo;
+    public javax.swing.JMenuItem menuItemOpMedia;
+    public javax.swing.JMenuItem menuItemOpMinimo;
     public javax.swing.JMenuItem menuItemOpOr;
+    public javax.swing.JMenuItem menuItemOpProducto;
+    public javax.swing.JMenuItem menuItemOpReflexH;
+    public javax.swing.JMenuItem menuItemOpReflexV;
+    public javax.swing.JMenuItem menuItemOpResta;
     public javax.swing.JMenuItem menuItemOpSuma;
+    public javax.swing.JMenuItem menuItemOpTraslacion;
     public javax.swing.JMenuItem menuItemOpXor;
+    public javax.swing.JMenuItem menuItemSalPiper;
     public javax.swing.JMenuItem menuItemSalir;
     public javax.swing.JMenuItem menuItemSigma;
     public javax.swing.JMenuItem menuItemSignal;

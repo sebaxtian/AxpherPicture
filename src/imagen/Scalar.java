@@ -24,7 +24,7 @@ public class Scalar {
     private short matrizGoriginal[][] = null;
     private short matrizBoriginal[][] = null;
     //*************************
-    private double factor = 1.0;
+    public double factor = 1.0;
     //private Imagen imagenEscalada;
     private char constructor = ' ';
 

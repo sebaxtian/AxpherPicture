@@ -543,7 +543,12 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             if(e.getSource().equals(objPanelMR.btnVisualizar)){
                 int windowCenter = Integer.parseInt(objPanelMR.textFieldWC.getText());
                 int windowWidth = Integer.parseInt(objPanelMR.textFieldWW.getText());
-                objImagenFuente = objDcmImg.getImagenCR(windowCenter,windowWidth);
+                if(objDcmImg.getEstudio().equals("MR")) {
+                    objImagenFuente = objDcmImg.getImagenMR(windowCenter,windowWidth);
+                }
+                if(objDcmImg.getEstudio().equals("CR")) {
+                    objImagenFuente = objDcmImg.getImagenCR(windowCenter,windowWidth);
+                }
                 //copia de objeto imagen fuente
                 objImagenProcesado = objImagenFuente.clone();
                 verAtributosImagen(objImagenFuente);
@@ -684,6 +689,20 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             if(e.getSource().equals(objPanelMR.sliderWW)){
                 objPanelMR.textFieldWW.setText(objPanelMR.sliderWW.getValue()+"");
             }
+            //--------->
+            int windowCenter = Integer.parseInt(objPanelMR.textFieldWC.getText());
+            int windowWidth = Integer.parseInt(objPanelMR.textFieldWW.getText());
+            if(objDcmImg.getEstudio().equals("MR")) {
+                objImagenFuente = objDcmImg.getImagenMR(windowCenter,windowWidth);
+            }
+            if(objDcmImg.getEstudio().equals("CR")) {
+                objImagenFuente = objDcmImg.getImagenCR(windowCenter,windowWidth);
+            }
+            //copia de objeto imagen fuente
+            objImagenProcesado = objImagenFuente.clone();
+            verAtributosImagen(objImagenFuente);
+            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
+            //----------------->
         }
         if(objVentanaSignal != null) {
             if(e.getSource().equals(objVentanaSignal.sliderSignal)) {
@@ -728,6 +747,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             DicomObject dcmObj;
             dcmObj = objDcmImg.getDicomObject();
             objDcmImg.printHeaders(dcmObj);
+            DcmImg.pixelSpacing = objDcmImg.getPixelSpacing();
             String estudio = objDcmImg.getEstudio();
             System.out.println("Estudio "+estudio);
             if(estudio.equals("OT")) {
@@ -768,7 +788,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 objImagenProcesado = objImagenFuente.clone();
                 verAtributosImagen(objImagenFuente);
                 objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
-                // agrega el panel MR
+                // agrega el panel CR
                 objVentanaAxpherPicture.panelOperaciones.removeAll();
                 objPanelMR = new PanelMR();
                 objVentanaAxpherPicture.panelOperaciones.add(objPanelMR);

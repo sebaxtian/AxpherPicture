@@ -314,6 +314,48 @@ public class DcmImg {
         
         return imgObj;
     }
+    
+    public Imagen getImagenCR(int windowCenter, int windowWidth) {
+        Imagen imgObj = new Imagen();
+        int alto = rasterDicom.getHeight();
+        int ancho = rasterDicom.getWidth();
+        int minX = rasterDicom.getMinX();
+        int minY = rasterDicom.getMinY();
+        imgObj.setFormato("P2");
+        imgObj.setM(ancho);
+        imgObj.setN(alto);
+        //imgObj.setNivelIntensidad((int) Math.pow(2, getNumBits()) - 1);
+        imgObj.setNivelIntensidad(255);
+        imgObj.setArchivoImagen(archivoDcm);
+        short matrizGris[][] = new short[alto][ancho];
+        if(windowCenter == 0){
+            windowCenter = getWindowCenter();
+        }
+        if(windowWidth == 0){
+            windowWidth = getWindowWidth();
+        }
+        short y;
+        for (int i = minY; i < alto; i++) {
+            for (int j = minX; j < ancho; j++) {
+                short x = (short) rasterDicom.getSample(j, i, 0);
+                //System.out.println(""+x);
+                if(x <= windowCenter - 0.5 - (windowWidth - 1) / 2 ){
+                    y = Ymin;
+                }
+                else if(x > windowCenter - 0.5 + (windowWidth - 1) / 2 ) {
+                    y = Ymax;
+                }
+                else {
+                    y = (short) ( ( (x - (windowCenter - 0.5) ) / (windowWidth - 1) + 0.5 ) * ( Ymax - Ymin ) + Ymin );
+                }
+                
+                matrizGris[i][j] = (short)(255 - y);
+            }
+        }
+        imgObj.setMatrizGris(matrizGris);
+        
+        return imgObj;
+    }
 
     private Imagen getImagenRGB() {
         Imagen imgObj = new Imagen();

@@ -67,6 +67,7 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemSigma = new javax.swing.JMenuItem();
         menuItemMediana = new javax.swing.JMenuItem();
         menuItemMatsuyama = new javax.swing.JMenuItem();
+        menuItemGausiano = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         menuItemLineH = new javax.swing.JMenuItem();
         menuItemLineV = new javax.swing.JMenuItem();
@@ -266,6 +267,9 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemMatsuyama.setText("Matsuyama");
         jMenu1.add(menuItemMatsuyama);
 
+        menuItemGausiano.setText("Gausiano");
+        jMenu1.add(menuItemGausiano);
+
         jMenu6.setText("Lineas");
 
         menuItemLineH.setText("Horizontal");
@@ -425,6 +429,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JMenuItem menuItemCany;
     public javax.swing.JMenuItem menuItemCuantizar;
     public javax.swing.JMenuItem menuItemEcualizar;
+    public javax.swing.JMenuItem menuItemGausiano;
     public javax.swing.JMenuItem menuItemGuardar;
     public javax.swing.JMenuItem menuItemLineH;
     public javax.swing.JMenuItem menuItemLineHV;

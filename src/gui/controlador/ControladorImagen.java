@@ -63,6 +63,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         this.objVentanaAxpherPicture.menuItemSigma.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemMediana.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemMatsuyama.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemGausiano.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemOpAnd.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemOpOr.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemOpXor.addActionListener(this);
@@ -188,6 +189,11 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             HiloFiltroNoise hiloFiltroNoise = new HiloFiltroNoise(2);
             hiloFiltroNoise.start();
             System.out.println("Filtro Matsuyama");
+        }
+        if(e.getActionCommand().equals("Gausiano")) {
+            HiloFiltroNoise hiloFiltroNoise = new HiloFiltroNoise(7);
+            hiloFiltroNoise.start();
+            System.out.println("Filtro Gausiano");
         }
         if(e.getActionCommand().equals("And")) {
             JFileChooser fileChooser = new JFileChooser();
@@ -537,7 +543,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             if(e.getSource().equals(objPanelMR.btnVisualizar)){
                 int windowCenter = Integer.parseInt(objPanelMR.textFieldWC.getText());
                 int windowWidth = Integer.parseInt(objPanelMR.textFieldWW.getText());
-                objImagenFuente = objDcmImg.getImagenMR(windowCenter,windowWidth);
+                objImagenFuente = objDcmImg.getImagenCR(windowCenter,windowWidth);
                 //copia de objeto imagen fuente
                 objImagenProcesado = objImagenFuente.clone();
                 verAtributosImagen(objImagenFuente);
@@ -754,6 +760,29 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 objPanelMR.btnVisualizar.addActionListener(ControladorImagen.this);
                 objVentanaAxpherPicture.pack();
             }
+            if(estudio.equals("CR")) {
+                int windowCenter = objDcmImg.getWindowCenter();
+                int windowWidth = objDcmImg.getWindowWidth();
+                objImagenFuente = objDcmImg.getImagenCR(windowCenter,windowWidth);
+                //copia de objeto imagen fuente
+                objImagenProcesado = objImagenFuente.clone();
+                verAtributosImagen(objImagenFuente);
+                objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
+                // agrega el panel MR
+                objVentanaAxpherPicture.panelOperaciones.removeAll();
+                objPanelMR = new PanelMR();
+                objVentanaAxpherPicture.panelOperaciones.add(objPanelMR);
+                objPanelMR.textFieldWC.setText(windowCenter+"");
+                objPanelMR.textFieldWW.setText(windowWidth+"");
+                objPanelMR.sliderWC.setMaximum(windowCenter);
+                objPanelMR.sliderWW.setMaximum(windowWidth);
+                objPanelMR.sliderWC.setValue(windowCenter);
+                objPanelMR.sliderWW.setValue(windowWidth);
+                objPanelMR.sliderWC.addChangeListener(ControladorImagen.this);
+                objPanelMR.sliderWW.addChangeListener(ControladorImagen.this);
+                objPanelMR.btnVisualizar.addActionListener(ControladorImagen.this);
+                objVentanaAxpherPicture.pack();
+            }
         }
     }
     
@@ -796,7 +825,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         @Override
         public void run() {
             // --->
-            objVentanaSignal.canvasSignal.pintarSignal(objImagenFuente, objVentanaSignal.sliderSignal.getValue());
+            objVentanaSignal.canvasSignal.pintarSignal(objImagenProcesado, objVentanaSignal.sliderSignal.getValue());
             objVentanaSignal.pack();
             objVentanaSignal.setLocationRelativeTo(objVentanaAxpherPicture);
             objVentanaSignal.setVisible(true);
@@ -831,7 +860,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(25);
-            Histograma objHistograma = new Histograma(objImagenFuente);
+            Histograma objHistograma = new Histograma(objImagenProcesado);
             AxpherPicture.barraProgreso.setValue(50);
             objUmbral = new Umbralizacion(objHistograma, idMetodo);
             if(objImagenFuente.getFormato().equals("P2")) {
@@ -884,7 +913,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             objImagenProcesado.setM(objImagenFuente.getM());
             objImagenProcesado.setN(objImagenFuente.getN());
             objImagenProcesado.setNivelIntensidad(1);
-            if(objImagenProcesado.getFormato().equals("P2")) {
+            if(objImagenFuente.getFormato().equals("P2")) {
                 short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
                 objImagenProcesado.setMatrizGris(matrizGris);
                 int valorUmbral = Integer.parseInt(umbral);
@@ -952,7 +981,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(45);
-            Ecualizacion ecualizador = new Ecualizacion(objImagenFuente);
+            Ecualizacion ecualizador = new Ecualizacion(objImagenProcesado);
             objImagenProcesado = ecualizador.ecualizar();
             AxpherPicture.barraProgreso.setValue(80);
             objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
@@ -976,14 +1005,14 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(45);
-            objImagenProcesado.setFormato(objImagenFuente.getFormato());
-            objImagenProcesado.setM(objImagenFuente.getM());
-            objImagenProcesado.setN(objImagenFuente.getN());
-            objImagenProcesado.setNivelIntensidad(objImagenFuente.getNivelIntensidad());
+            objImagenProcesado.setFormato(objImagenProcesado.getFormato());
+            objImagenProcesado.setM(objImagenProcesado.getM());
+            objImagenProcesado.setN(objImagenProcesado.getN());
+            objImagenProcesado.setNivelIntensidad(objImagenProcesado.getNivelIntensidad());
             short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
             for(int i = 0; i < matrizGris.length; i++) {
                 for(int j = 0; j < matrizGris[0].length; j++) {
-                    matrizGris[i][j] = objImagenFuente.getMatrizGris()[i][j];
+                    matrizGris[i][j] = objImagenProcesado.getMatrizGris()[i][j];
                 }
             }
             objImagenProcesado.setMatrizGris(matrizGris);
@@ -1017,14 +1046,14 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(45);
-            objImagenProcesado.setFormato(objImagenFuente.getFormato());
-            objImagenProcesado.setM(objImagenFuente.getM());
-            objImagenProcesado.setN(objImagenFuente.getN());
-            objImagenProcesado.setNivelIntensidad(objImagenFuente.getNivelIntensidad());
+            objImagenProcesado.setFormato(objImagenProcesado.getFormato());
+            objImagenProcesado.setM(objImagenProcesado.getM());
+            objImagenProcesado.setN(objImagenProcesado.getN());
+            objImagenProcesado.setNivelIntensidad(objImagenProcesado.getNivelIntensidad());
             short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
             for(int i = 0; i < matrizGris.length; i++) {
                 for(int j = 0; j < matrizGris[0].length; j++) {
-                    matrizGris[i][j] = objImagenFuente.getMatrizGris()[i][j];
+                    matrizGris[i][j] = objImagenProcesado.getMatrizGris()[i][j];
                 }
             }
             objImagenProcesado.setMatrizGris(matrizGris);
@@ -1058,6 +1087,11 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             if(filtro == 6) {
                 objFiltro.filtroSalPimienta(constante);
                 objImagenProcesado = objFiltro.getImagen();
+            }
+            if(filtro == 7) {
+                String valor = JOptionPane.showInputDialog(objVentanaAxpherPicture, "Ingrese un tamaño de ventana", "Filtro Gausiano", JOptionPane.INFORMATION_MESSAGE);
+                int sizeVentana = Integer.parseInt(valor);
+                objFiltro.filtroGausiano(sizeVentana);
             }
             AxpherPicture.barraProgreso.setValue(80);
             objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
@@ -1102,28 +1136,28 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         public void run() {
             if(operacion.equals("And")) {
                 Operaciones operaciones = new Operaciones();
-                objImagenProcesado = operaciones.OrAndXor(objImagenFuente, opImg, "and");
+                objImagenProcesado = operaciones.OrAndXor(objImagenProcesado, opImg, "and");
                 objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
             }
             if(operacion.equals("Or")) {
                 Operaciones operaciones = new Operaciones();
-                objImagenProcesado = operaciones.OrAndXor(objImagenFuente, opImg, "or");
+                objImagenProcesado = operaciones.OrAndXor(objImagenProcesado, opImg, "or");
                 objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
             }
             if(operacion.equals("Xor")) {
                 Operaciones operaciones = new Operaciones();
-                objImagenProcesado = operaciones.OrAndXor(objImagenFuente, opImg, "xor");
+                objImagenProcesado = operaciones.OrAndXor(objImagenProcesado, opImg, "xor");
                 objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
             }
             if(operacion.equals("Suma")) {
                 // si no hay operador imagen, suma constante
                 if(opImg == null) {
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.suma(objImagenFuente, constante);
+                    objImagenProcesado = operaciones.suma(objImagenProcesado, constante);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 } else { // si hay operador imagen, suma imagen
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.suma(objImagenFuente, opImg);
+                    objImagenProcesado = operaciones.suma(objImagenProcesado, opImg);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 }
             }
@@ -1131,11 +1165,11 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 // si no hay operador imagen, resta constante
                 if(opImg == null) {
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.resta(objImagenFuente, constante);
+                    objImagenProcesado = operaciones.resta(objImagenProcesado, constante);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 } else { // si hay operador imagen, resta imagen
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.resta(objImagenFuente, opImg);
+                    objImagenProcesado = operaciones.resta(objImagenProcesado, opImg);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 }
             }
@@ -1143,38 +1177,38 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 // si no hay operador imagen, producto constante
                 if(opImg == null) {
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.producto(objImagenFuente, constante);
+                    objImagenProcesado = operaciones.producto(objImagenProcesado, constante);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 } else { // si hay operador imagen, producto imagen
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.producto(objImagenFuente, opImg);
+                    objImagenProcesado = operaciones.producto(objImagenProcesado, opImg);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 }
             }
             if(operacion.equals("Traslacion")) {
                 Operaciones operaciones = new Operaciones();
-                objImagenProcesado = operaciones.traslacion(objImagenFuente, valorY, valorX);
+                objImagenProcesado = operaciones.traslacion(objImagenProcesado, valorY, valorX);
                 objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
             }
             if(operacion.equals("ReflexV")) {
                 Operaciones operaciones = new Operaciones();
-                objImagenProcesado = operaciones.reflexionY(objImagenFuente);
+                objImagenProcesado = operaciones.reflexionY(objImagenProcesado);
                 objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
             }
             if(operacion.equals("ReflexH")) {
                 Operaciones operaciones = new Operaciones();
-                objImagenProcesado = operaciones.reflexionX(objImagenFuente);
+                objImagenProcesado = operaciones.reflexionX(objImagenProcesado);
                 objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
             }
             if(operacion.equals("Media")) {
                 // si no hay operador imagen, media constante
                 if(opImg == null) {
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.media(objImagenFuente, constante);
+                    objImagenProcesado = operaciones.media(objImagenProcesado, constante);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 } else { // si hay operador imagen, media imagen
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.media(objImagenFuente, opImg);
+                    objImagenProcesado = operaciones.media(objImagenProcesado, opImg);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 }
             }
@@ -1182,11 +1216,11 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 // si no hay operador imagen, maximo constante
                 if(opImg == null) {
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.maximo(objImagenFuente, constante);
+                    objImagenProcesado = operaciones.maximo(objImagenProcesado, constante);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 } else { // si hay operador imagen, maximo imagen
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.maximo(objImagenFuente, opImg);
+                    objImagenProcesado = operaciones.maximo(objImagenProcesado, opImg);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 }
             }
@@ -1194,11 +1228,11 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 // si no hay operador imagen, minimo constante
                 if(opImg == null) {
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.minimo(objImagenFuente, constante);
+                    objImagenProcesado = operaciones.minimo(objImagenProcesado, constante);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 } else { // si hay operador imagen, minimo imagen
                     Operaciones operaciones = new Operaciones();
-                    objImagenProcesado = operaciones.minimo(objImagenFuente, opImg);
+                    objImagenProcesado = operaciones.minimo(objImagenProcesado, opImg);
                     objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
                 }
             }
@@ -1209,14 +1243,14 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(45);
-            objImagenProcesado.setFormato(objImagenFuente.getFormato());
-            objImagenProcesado.setM(objImagenFuente.getM());
-            objImagenProcesado.setN(objImagenFuente.getN());
-            objImagenProcesado.setNivelIntensidad(objImagenFuente.getNivelIntensidad());
+            objImagenProcesado.setFormato(objImagenProcesado.getFormato());
+            objImagenProcesado.setM(objImagenProcesado.getM());
+            objImagenProcesado.setN(objImagenProcesado.getN());
+            objImagenProcesado.setNivelIntensidad(objImagenProcesado.getNivelIntensidad());
             short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
             for(int i = 0; i < matrizGris.length; i++) {
                 for(int j = 0; j < matrizGris[0].length; j++) {
-                    matrizGris[i][j] = objImagenFuente.getMatrizGris()[i][j];
+                    matrizGris[i][j] = objImagenProcesado.getMatrizGris()[i][j];
                 }
             }
             objImagenProcesado.setMatrizGris(matrizGris);
@@ -1261,14 +1295,14 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         @Override
         public void run() {
             AxpherPicture.barraProgreso.setValue(45);
-            objImagenProcesado.setFormato(objImagenFuente.getFormato());
-            objImagenProcesado.setM(objImagenFuente.getM());
-            objImagenProcesado.setN(objImagenFuente.getN());
-            objImagenProcesado.setNivelIntensidad(objImagenFuente.getNivelIntensidad());
+            objImagenProcesado.setFormato(objImagenProcesado.getFormato());
+            objImagenProcesado.setM(objImagenProcesado.getM());
+            objImagenProcesado.setN(objImagenProcesado.getN());
+            objImagenProcesado.setNivelIntensidad(objImagenProcesado.getNivelIntensidad());
             short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
             for(int i = 0; i < matrizGris.length; i++) {
                 for(int j = 0; j < matrizGris[0].length; j++) {
-                    matrizGris[i][j] = objImagenFuente.getMatrizGris()[i][j];
+                    matrizGris[i][j] = objImagenProcesado.getMatrizGris()[i][j];
                 }
             }
             objImagenProcesado.setMatrizGris(matrizGris);

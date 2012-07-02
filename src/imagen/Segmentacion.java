@@ -141,8 +141,10 @@ public class Segmentacion {
              
              for(int i=0; i<matriz.length;i++)
                  for(int j=0; j<matriz[0].length;j++){
-                     if(this.getCluster()[i][j]==z)
-                        matriz[i][j]=(short) (this.getImagen().getNivelIntensidad()-1);
+                     if(this.getCluster()[i][j]==z){
+                        matriz[i][j]=(short) (this.getImagen().getNivelIntensidad()-1); //Aqui se resalta con el maximo valor del pixel
+                        //matriz[i][j]= this.getImagen().getMatrizGris()[i][j]; // Se toma el valor real del pixel
+                     }
                  }
              img.setMatrizGris(matriz);
              img.guardarImagen("ImgProcesado/k-means"+z+".pgm");

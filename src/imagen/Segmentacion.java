@@ -142,7 +142,7 @@ public class Segmentacion {
              for(int i=0; i<matriz.length;i++)
                  for(int j=0; j<matriz[0].length;j++){
                      if(this.getCluster()[i][j]==z)
-                        matriz[i][j]=this.getImagen().getMatrizGris()[i][j];
+                        matriz[i][j]=(short) (this.getImagen().getNivelIntensidad()-1);
                  }
              img.setMatrizGris(matriz);
              img.guardarImagen("ImgProcesado/k-means"+z+".pgm");
@@ -200,7 +200,7 @@ public class Segmentacion {
     }
     
     public static void main(String[] arg){
-        String rutaImgPGM = "ImgFuente/bano.pgm";
+        String rutaImgPGM = "ImgFuente/brain1.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         Segmentacion sg = new Segmentacion(imgPGM);
         sg.k_means();

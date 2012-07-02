@@ -36,7 +36,7 @@ public class Segmentacion {
         
         for (int i = 0; i < centroides.length; i++) {
             centroides[i] = (distanciaCentroides * i)+(distanciaCentroides / 2); //OJO se suma 1 tener en cuenta si sucede volcado de memoria
-            JOptionPane.showMessageDialog(null, centroides[i]);
+            //JOptionPane.showMessageDialog(null, centroides[i]);
             centroidesFijos[i]=false;
         }
         
@@ -46,6 +46,8 @@ public class Segmentacion {
                 int posicion = (getImagen().getMatrizGris()[i][j])/distanciaCentroides;//OJO se debe quitar 1, tener en cuenta si sucede volcado de memoria
                 Point puntoC = new Point(i, j);
                 //JOptionPane.showMessageDialog(null, posicion+" ij="+i+"-"+j);
+                if(centroidesFijos.length==posicion)
+                    posicion--;
                 centroidesFijos[posicion]=true;
             }
         }
@@ -62,6 +64,10 @@ public class Segmentacion {
         for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
             for (int j = 0; j <  this.getImagen().getMatrizGris()[0].length; j++) {
                 int posicion = getImagen().getMatrizGris()[i][j]/distanciaCentroides;
+                
+                if(centroidesFijos.length==posicion)
+                    posicion--;
+                
                 if(centroidesFijos[posicion]==true){
                     centroidesFijos[posicion]=false;
                     Point C = new Point(i, j);
@@ -135,8 +141,10 @@ public class Segmentacion {
              
              for(int i=0; i<matriz.length;i++)
                  for(int j=0; j<matriz[0].length;j++){
-                     if(this.getCluster()[i][j]==z)
-                        matriz[i][j]=this.getImagen().getMatrizGris()[i][j];
+                     if(this.getCluster()[i][j]==z){
+                        matriz[i][j]=(short) (this.getImagen().getNivelIntensidad()-1); //Aqui se resalta con el maximo valor del pixel
+                        //matriz[i][j]= this.getImagen().getMatrizGris()[i][j]; // Se toma el valor real del pixel
+                     }
                  }
              img.setMatrizGris(matriz);
              img.guardarImagen("ImgProcesado/k-means"+z+".pgm");

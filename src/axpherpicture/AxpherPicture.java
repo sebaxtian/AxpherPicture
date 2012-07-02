@@ -349,6 +349,15 @@ public class AxpherPicture {
         Imagen materiaBlanca = segmentarMateriaBlanca(imgBrain1, imgBrainKmeans1);
         materiaBlanca.guardarImagen("ImgProcesado/materiaBlanca.pgm");
         
+        // Extraccion de materia Griss
+        Imagen materiaGris = segmentarMateriaGris(imgBrain1, materiaBlanca);
+        materiaGris.guardarImagen("ImgProcesado/materiaGris.pgm");
+        
+        
+        // Suma de materia blanca y gris
+        Imagen imgSuma = operador.suma(materiaBlanca, materiaGris);
+        imgSuma.guardarImagen("ImgProcesado/sumaMateriaBlancaGris.pgm");
+        
         /*objDcmImg.guardarImgRaster();
         
         SegmentacionBrain segBrain = new SegmentacionBrain(objDcmImg);
@@ -393,5 +402,32 @@ public class AxpherPicture {
         materiaBlanca.setMatrizGris(matrizBlanca);
         
         return materiaBlanca;
+    }
+    
+    public static Imagen segmentarMateriaGris(Imagen imgCerebro, Imagen materiaBlanca) {
+        Imagen materiaGris = new Imagen();
+        // Realiza la resta entre la imagen del cerebro y la materia blanca
+        Operaciones operador = new Operaciones();
+        Imagen imgResta = operador.resta(imgCerebro, materiaBlanca);
+        
+        // Imagen de materia gris
+        materiaGris.setN(imgCerebro.getN());
+        materiaGris.setM(imgCerebro.getM());
+        materiaGris.setNivelIntensidad(imgCerebro.getNivelIntensidad());
+        materiaGris.setFormato(imgCerebro.getFormato());
+        short matrizGris[][] = new short[imgCerebro.getN()][imgCerebro.getM()];
+        
+        // Extrae la matriz de materia gris
+        for(int fila = 0; fila < materiaGris.getN(); fila++) {
+            for(int columna = 0; columna < materiaGris.getM(); columna++) {
+                short pixel = imgResta.getMatrizGris()[fila][columna];
+                matrizGris[fila][columna] = pixel;
+            }
+        }
+        
+        // Asigna la matriz de materia gris a la imagen
+        materiaGris.setMatrizGris(matrizGris);
+        
+        return materiaGris;
     }
 }

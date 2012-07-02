@@ -194,7 +194,7 @@ public class Segmentacion {
     }
     
     public static void main(String[] arg){
-        String rutaImgPGM = "ImgFuente/lena.pgm";
+        String rutaImgPGM = "ImgFuente/brain1.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         Segmentacion sg = new Segmentacion(imgPGM);
         sg.k_means();

@@ -17,9 +17,9 @@ import javax.swing.text.Position;
  * @author jhon
  */
 public class Segmentacion {
-    int [][] cluster;
-    Imagen imagen;
-    Imagen [] imagenKmeans;
+    private int [][] cluster;
+    private Imagen imagen;
+    private Imagen [] imagenKmeans;
     public Segmentacion(Imagen imagen){
         this.imagen = imagen.clone();
         this.cluster = new int[imagen.getMatrizGris().length][imagen.getMatrizGris()[0].length];
@@ -27,9 +27,9 @@ public class Segmentacion {
     
     public void k_means(){
         // cantidad de grupos (cluster)
-        int  k =  (int) Math.sqrt(imagen.getNivelIntensidad());
+        int  k =  (int) Math.sqrt(getImagen().getNivelIntensidad());
         //int distanciaCentroides = (int)(imagen.getNivelIntensidad()/k)/2; //espacio automatico entre cada centroide  
-        int distanciaCentroides = (int)(imagen.getNivelIntensidad()/k); //espacio automatico entre cada centroide  
+        int distanciaCentroides = (int)(getImagen().getNivelIntensidad()/k); //espacio automatico entre cada centroide  
     
         boolean[] centroidesFijos =new boolean[k];
         int [] centroides =new int[k];
@@ -41,9 +41,9 @@ public class Segmentacion {
         }
         
         //distanciaCentroides*=2;
-        for (int i = 0; i < this.imagen.getMatrizGris().length; i++) {
-            for (int j = 0; j <  this.imagen.getMatrizGris()[0].length; j++) {
-                int posicion = (imagen.getMatrizGris()[i][j])/distanciaCentroides;//OJO se debe quitar 1, tener en cuenta si sucede volcado de memoria
+        for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
+            for (int j = 0; j <  this.getImagen().getMatrizGris()[0].length; j++) {
+                int posicion = (getImagen().getMatrizGris()[i][j])/distanciaCentroides;//OJO se debe quitar 1, tener en cuenta si sucede volcado de memoria
                 Point puntoC = new Point(i, j);
                 //JOptionPane.showMessageDialog(null, posicion+" ij="+i+"-"+j);
                 centroidesFijos[posicion]=true;
@@ -59,9 +59,9 @@ public class Segmentacion {
         Point [] centroidesCoord =new Point[kCoordenadas];
         
         kCoordenadas = 0;
-        for (int i = 0; i < this.imagen.getMatrizGris().length; i++) {
-            for (int j = 0; j <  this.imagen.getMatrizGris()[0].length; j++) {
-                int posicion = imagen.getMatrizGris()[i][j]/distanciaCentroides;
+        for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
+            for (int j = 0; j <  this.getImagen().getMatrizGris()[0].length; j++) {
+                int posicion = getImagen().getMatrizGris()[i][j]/distanciaCentroides;
                 if(centroidesFijos[posicion]==true){
                     centroidesFijos[posicion]=false;
                     Point C = new Point(i, j);
@@ -81,13 +81,13 @@ public class Segmentacion {
             
             System.out.println("******************************************************************************************");
             int umbral =distanciaCentroides/2;
-            for (int i = 0; i < this.imagen.getMatrizGris().length; i++) {
-                for (int j = 0; j < this.imagen.getMatrizGris()[0].length; j++) {
+            for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
+                for (int j = 0; j < this.getImagen().getMatrizGris()[0].length; j++) {
                     //int posicion = this.imagen.getMatrizGris()[i][j] / distanciaCentroides;
                     for (int z = 0; z < centroidesCoord.length; z++) { // bucle para comparar el centroide con la matriz
                         //JOptionPane.showMessageDialog(null, "centroide "+centroides[z]+" - umblral"+umbral+" - matriz "+this.imagen.getMatrizGris()[i][j]);
                         //if (Math.abs(this.imagen.getMatrizGris()[i][j] - this.imagen.getMatrizGris()[centroidesCoord[z].x][centroidesCoord[z].y]) < umbral) {
-                        if (Math.abs(this.imagen.getMatrizGris()[i][j] - centroides[z]) <= umbral) {
+                        if (Math.abs(this.getImagen().getMatrizGris()[i][j] - centroides[z]) <= umbral) {
                             this.cluster[i][j]=z;
                             this.cluster[centroidesCoord[z].x][centroidesCoord[z].y]=z;
                             z=centroidesCoord.length;
@@ -96,7 +96,7 @@ public class Segmentacion {
                         } 
                     }
                     //System.out.print("i="+i+",j="+j+" "+this.imagen.getMatrizGris()[i][j]+"  ");
-                    System.out.print(this.cluster[i][j]+"  ");
+                    System.out.print(this.getCluster()[i][j]+"  ");
                     //System.out.print("i="+i+",j="+j+" "+this.cluster[i][j]+"  ");
                 }
                 System.out.println();
@@ -108,9 +108,9 @@ public class Segmentacion {
             for (int z = 0; z < centroidesCoord.length; z++) { // bucle para comparar el centroide con la matriz
                 Vector<Point> cent = new Vector<Point>();
                 //JOptionPane.showMessageDialog(null, cent.size());
-                for (int i = 0; i < this.cluster.length; i++) {
-                    for (int j = 0; j < this.cluster[0].length; j++) {
-                        if(this.cluster[i][j]==z)
+                for (int i = 0; i < this.getCluster().length; i++) {
+                    for (int j = 0; j < this.getCluster()[0].length; j++) {
+                        if(this.getCluster()[i][j]==z)
                             cent.add(new Point(i,j));
                     }
                 }
@@ -124,19 +124,19 @@ public class Segmentacion {
         //Vamos a imprimir la imagen arrojada por el proceso k-means
          for (int z = 0; z < centroidesCoord.length; z++) { 
              Imagen img = new Imagen();
-             img.setFormato(this.imagen.getFormato());
-             img.setM(this.imagen.getM());
-             img.setN(this.imagen.getN());
-             img.setNivelIntensidad(this.imagen.getNivelIntensidad());
-             short [][] matriz = new short[this.imagen.getN()][this.imagen.getM()];
+             img.setFormato(this.getImagen().getFormato());
+             img.setM(this.getImagen().getM());
+             img.setN(this.getImagen().getN());
+             img.setNivelIntensidad(this.getImagen().getNivelIntensidad());
+             short [][] matriz = new short[this.getImagen().getN()][this.getImagen().getM()];
              for(int i=0; i<matriz.length;i++)
                  for(int j=0; j<matriz[0].length;j++)
                      matriz[i][j]=0;
              
              for(int i=0; i<matriz.length;i++)
                  for(int j=0; j<matriz[0].length;j++){
-                     if(this.cluster[i][j]==z)
-                        matriz[i][j]=this.imagen.getMatrizGris()[i][j];
+                     if(this.getCluster()[i][j]==z)
+                        matriz[i][j]=this.getImagen().getMatrizGris()[i][j];
                  }
              img.setMatrizGris(matriz);
              img.guardarImagen("ImgProcesado/k-means"+z+".pgm");
@@ -155,7 +155,7 @@ public class Segmentacion {
         short [] grupo = new short[cent.size()];
         
         for( int i=0; i<cent.size() ; i ++ ){ 
-            grupo[i]= this.imagen.getMatrizGris()[cent.elementAt(i).x][cent.elementAt(i).y];
+            grupo[i]= this.getImagen().getMatrizGris()[cent.elementAt(i).x][cent.elementAt(i).y];
         }
         Arrays.sort(grupo);
         short valorMediano =  grupo[(int)Math.ceil(grupo.length/2)]; 
@@ -163,7 +163,7 @@ public class Segmentacion {
         //System.out.println("Valor mediano "+valorMediano);
         
         for( int i=0; i<cent.size() ; i ++ ){ 
-            if(valorMediano==this.imagen.getMatrizGris()[cent.elementAt(i).x][cent.elementAt(i).y]){
+            if(valorMediano==this.getImagen().getMatrizGris()[cent.elementAt(i).x][cent.elementAt(i).y]){
                 pt=cent.elementAt(i);
                 break;      
             }
@@ -198,5 +198,26 @@ public class Segmentacion {
         Imagen imgPGM = new Imagen(rutaImgPGM);
         Segmentacion sg = new Segmentacion(imgPGM);
         sg.k_means();
+    }
+
+    /**
+     * @return the cluster
+     */
+    public int[][] getCluster() {
+        return cluster;
+    }
+
+    /**
+     * @return the imagen
+     */
+    public Imagen getImagen() {
+        return imagen;
+    }
+
+    /**
+     * @return the imagenKmeans
+     */
+    public Imagen[] getImagenKmeans() {
+        return imagenKmeans;
     }
 }

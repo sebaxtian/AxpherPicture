@@ -13,7 +13,7 @@ import javax.swing.SortOrder;
 import javax.swing.text.Position;
 
 /**
- *
+ *a
  * @author jhon
  */
 public class Segmentacion {

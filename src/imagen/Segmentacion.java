@@ -13,7 +13,7 @@ import javax.swing.SortOrder;
 import javax.swing.text.Position;
 
 /**
- *
+ *a
  * @author jhon
  */
 public class Segmentacion {
@@ -202,7 +202,7 @@ public class Segmentacion {
     }
     
     public static void main(String[] arg){
-        String rutaImgPGM = "ImgFuente/danger1.pgm";
+        String rutaImgPGM = "ImgFuente/brainTotal.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         Segmentacion sg = new Segmentacion(imgPGM);
         sg.k_means();

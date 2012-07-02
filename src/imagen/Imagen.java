@@ -282,6 +282,31 @@ public class Imagen implements Cloneable {
         }
         return imgGrises;
     }
+    
+    
+    public void normalizarImagenGris() {
+        // nivel intensidad
+        if(nivelIntensidad > 255) {
+            nivelIntensidad = 255;
+        }
+        if(nivelIntensidad < 0) {
+            nivelIntensidad = 0;
+        }
+        // matriz
+        for(int fila = 0; fila < n; fila++) {
+            for(int columna = 0; columna < m; columna++) {
+                short pixel = matrizGris[fila][columna];
+                // pixeles
+                if(pixel > nivelIntensidad) {
+                    pixel = (short)nivelIntensidad;
+                }
+                if(pixel < 0) {
+                    pixel = 0;
+                }
+                matrizGris[fila][columna] = pixel;
+            }
+        }
+    }
 
     /**
      * @return the formato

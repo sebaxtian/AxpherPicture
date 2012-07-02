@@ -313,10 +313,50 @@ public class AxpherPicture {
         
         
         
-        DcmImg objDcmImg = new DcmImg("ImgFuente/brain.dcm");
+        /*DcmImg objDcmImg = new DcmImg("ImgFuente/brain.dcm");
         objDcmImg.printHeaders(objDcmImg.getDicomObject());
         objDcmImg.getPixelSpacing();
         objDcmImg.getEstudio();
+        
+        Imagen imgDcm = objDcmImg.getImagen();
+        imgDcm.guardarImagen("ImgFuente/brainTotal.pgm");*/
+        
+        // Normaliza la imagen k-means0 del cerebro
+        Imagen imgBrainKmeans0 = new Imagen("ImgFuente/k-means0.pgm");
+        imgBrainKmeans0.normalizarImagenGris();
+        imgBrainKmeans0.guardarImagen("ImgProcesado/k-means0Normal.pgm");
+        
+        // Normaliza la imagen k-means1 del cerebro
+        Imagen imgBrainKmeans1 = new Imagen("ImgFuente/k-means1.pgm");
+        imgBrainKmeans1.normalizarImagenGris();
+        imgBrainKmeans1.guardarImagen("ImgProcesado/k-means1Normal.pgm");
+        
+        // Imagen del cerebro
+        Imagen imgBrain1 = new Imagen("ImgFuente/brain1.pgm");
+        
+        // Operador
+        Operaciones operador = new Operaciones();
+        
+        // Imagen de la resta entre la imagen y el k-means0 del cerebro
+        Imagen imgResta = operador.resta(imgBrain1, imgBrainKmeans0);
+        imgResta.guardarImagen("ImgProcesado/imgRestaBrain1Kmeans0.pgm");
+        
+        // Imagen de la resta entre la imagen y el k-means1 del cerebro
+        imgResta = operador.resta(imgBrain1, imgBrainKmeans1);
+        imgResta.guardarImagen("ImgProcesado/imgRestaBrain1Kmeans1.pgm");
+        
+        // Extraccion de materia blanca
+        Imagen materiaBlanca = segmentarMateriaBlanca(imgBrain1, imgBrainKmeans1);
+        materiaBlanca.guardarImagen("ImgProcesado/materiaBlanca.pgm");
+        
+        // Extraccion de materia Griss
+        Imagen materiaGris = segmentarMateriaGris(imgBrain1, materiaBlanca);
+        materiaGris.guardarImagen("ImgProcesado/materiaGris.pgm");
+        
+        
+        // Suma de materia blanca y gris
+        Imagen imgSuma = operador.suma(materiaBlanca, materiaGris);
+        imgSuma.guardarImagen("ImgProcesado/sumaMateriaBlancaGris.pgm");
         
         /*objDcmImg.guardarImgRaster();
         
@@ -325,5 +365,69 @@ public class AxpherPicture {
         /*segBrain.segmentarMateriaBlanca();
         objDcmImg = segBrain.getDcmImg();
         objDcmImg.guardarImgRaster();*/
+    }
+    
+    public static Imagen segmentarMateriaBlanca(Imagen imgCerebro, Imagen imgKmeans) {
+        Imagen materiaBlanca = new Imagen();
+        // Imagen de la resta entre la imagen y el k-means del cerebro
+        Operaciones operador = new Operaciones();
+        Imagen imgResta = operador.resta(imgCerebro, imgKmeans);
+        
+        Histograma histograma = new Histograma(imgResta);
+        Umbralizacion umbralizar = new Umbralizacion(histograma, 2); // usa metodo Otsu
+        int umbral = umbralizar.getUmbralGris();
+        
+        // Imagen de materia blanca
+        materiaBlanca.setN(imgCerebro.getN());
+        materiaBlanca.setM(imgCerebro.getM());
+        materiaBlanca.setNivelIntensidad(imgCerebro.getNivelIntensidad());
+        materiaBlanca.setFormato(imgCerebro.getFormato());
+        short matrizBlanca[][] = new short[imgCerebro.getN()][imgCerebro.getM()];
+        
+        // Extrae la materia blanca con el umbral
+        for(int fila = 0; fila < imgResta.getN(); fila++) {
+            for(int columna = 0; columna < imgResta.getM(); columna++) {
+                short pixel = imgResta.getMatrizGris()[fila][columna];
+                if(pixel > umbral) {
+                    //pixel = (short)imgResta.getNivelIntensidad();
+                }
+                if(pixel < umbral) {
+                    pixel = 0;
+                }
+                matrizBlanca[fila][columna] = pixel;
+            }
+        }
+        
+        // Asigna la matriz de materia blanca a la imagen
+        materiaBlanca.setMatrizGris(matrizBlanca);
+        
+        return materiaBlanca;
+    }
+    
+    public static Imagen segmentarMateriaGris(Imagen imgCerebro, Imagen materiaBlanca) {
+        Imagen materiaGris = new Imagen();
+        // Realiza la resta entre la imagen del cerebro y la materia blanca
+        Operaciones operador = new Operaciones();
+        Imagen imgResta = operador.resta(imgCerebro, materiaBlanca);
+        
+        // Imagen de materia gris
+        materiaGris.setN(imgCerebro.getN());
+        materiaGris.setM(imgCerebro.getM());
+        materiaGris.setNivelIntensidad(imgCerebro.getNivelIntensidad());
+        materiaGris.setFormato(imgCerebro.getFormato());
+        short matrizGris[][] = new short[imgCerebro.getN()][imgCerebro.getM()];
+        
+        // Extrae la matriz de materia gris
+        for(int fila = 0; fila < materiaGris.getN(); fila++) {
+            for(int columna = 0; columna < materiaGris.getM(); columna++) {
+                short pixel = imgResta.getMatrizGris()[fila][columna];
+                matrizGris[fila][columna] = pixel;
+            }
+        }
+        
+        // Asigna la matriz de materia gris a la imagen
+        materiaGris.setMatrizGris(matrizGris);
+        
+        return materiaGris;
     }
 }

@@ -259,7 +259,8 @@ public class DcmImg {
         imgObj.setFormato("P2");
         imgObj.setM(ancho);
         imgObj.setN(alto);
-        imgObj.setNivelIntensidad((int) Math.pow(2, getNumBits()) - 1);
+        imgObj.setNivelIntensidad((int) Math.pow(2, getNumBits()) - 1);//32,767
+        imgObj.setNivelIntensidad(32767);
         imgObj.setArchivoImagen(archivoDcm);
         short matrizGris[][] = new short[alto][ancho];
         for (int i = minY; i < alto; i++) {

@@ -318,6 +318,9 @@ public class AxpherPicture {
         objDcmImg.getPixelSpacing();
         objDcmImg.getEstudio();
         
+        Imagen imgDcm = objDcmImg.getImagen();
+        imgDcm.guardarImagen("ImgFuente/brainTotal.pgm");
+        
         /*objDcmImg.guardarImgRaster();
         
         SegmentacionBrain segBrain = new SegmentacionBrain(objDcmImg);

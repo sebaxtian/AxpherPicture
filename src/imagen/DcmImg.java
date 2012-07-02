@@ -39,6 +39,7 @@ public class DcmImg {
     private int tagBits;
     private short Ymin = 0;
     private short Ymax = 255;
+    public static double pixelSpacing;
 
     /**
      * Metodo contructor que recibe como argumento la ruta hacia el archivo
@@ -170,6 +171,28 @@ public class DcmImg {
             }
         }
         return numBits;
+    }
+    
+    public double getPixelSpacing() {
+        Iterator<DicomElement> itera = dcmObj.datasetIterator();
+        //busca el numero de bits de la imagen dicom
+        String tagValue;
+        String tagName;
+        String tagAddr;
+        double pixelSpacing = 0;
+        while (itera.hasNext()) {
+            DicomElement dcmElement = itera.next();
+            int tag = dcmElement.tag();
+            tagName = dcmObj.nameOf(tag);
+            tagAddr = TagUtils.toString(tag);
+            if (tagAddr.equals("(0028,0030)")) {
+                tagValue = dcmObj.getString(tag);
+                tagBits = tag;
+                pixelSpacing = Double.parseDouble(tagValue);
+                System.out.println(tagName + " [" + tagValue + "]");
+            }
+        }
+        return pixelSpacing;
     }
     
     public int getWindowCenter() {
@@ -617,6 +640,29 @@ public class DcmImg {
     
     public void setRasterDicom(Raster objRaster) {
         this.rasterDicom = objRaster;
+    }
+    
+    public void guardarImgRaster() {
+        Imagen imgObj = new Imagen();
+        int alto = rasterDicom.getHeight();
+        int ancho = rasterDicom.getWidth();
+        int minX = rasterDicom.getMinX();
+        int minY = rasterDicom.getMinY();
+        imgObj.setFormato("P2");
+        imgObj.setM(ancho);
+        imgObj.setN(alto);
+        imgObj.setNivelIntensidad(255);
+        imgObj.setArchivoImagen(archivoDcm);
+        short matrizGris[][] = new short[alto][ancho];
+        for (int i = minY; i < alto; i++) {
+            for (int j = minX; j < ancho; j++) {
+                short x = (short) rasterDicom.getSample(j, i, 0);
+                matrizGris[i][j] = x;
+            }
+        }
+        imgObj.setMatrizGris(matrizGris);
+        //---
+        imgObj.guardarImagen("ImgProcesado/rasterImg.pgm");
     }
     
 }

@@ -19,6 +19,7 @@ public class SegmentacionBrain {
     
     // Atributos de clase
     private DcmImg objDcmImg;
+    private Imagen imagenDcm;
     
     public SegmentacionBrain() {
         
@@ -30,6 +31,11 @@ public class SegmentacionBrain {
     
     public SegmentacionBrain(DcmImg objDcmImg) {
         this.objDcmImg = objDcmImg;
+        this.imagenDcm = objDcmImg.getImagenMR(0, 0);
+    }
+    
+    public void guardaImagen(String ruta) {
+        this.imagenDcm.guardarImagen(ruta);
     }
     
     public void segmentarMateriaBlanca() {
@@ -45,12 +51,6 @@ public class SegmentacionBrain {
         for (int i = minY; i < alto; i++) {
             for (int j = minX; j < ancho; j++) {
                 int x = objDcmImg.getRasterDicom().getSample(j, i, 0);
-                //System.out.println(""+x);
-                if(x < 700) {
-                    wrtRaster.setSample(j, i, 0, 0);
-                } else {
-                    wrtRaster.setSample(j, i, 0, x);
-                }
                 
             }
         }

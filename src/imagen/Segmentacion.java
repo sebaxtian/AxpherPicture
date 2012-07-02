@@ -19,6 +19,7 @@ import javax.swing.text.Position;
 public class Segmentacion {
     int [][] cluster;
     Imagen imagen;
+    Imagen [] imagenKmeans;
     public Segmentacion(Imagen imagen){
         this.imagen = imagen.clone();
         this.cluster = new int[imagen.getMatrizGris().length][imagen.getMatrizGris()[0].length];
@@ -101,7 +102,7 @@ public class Segmentacion {
                 System.out.println();
             }
             
-            JOptionPane.showMessageDialog(null, "Revisar 104");
+            //JOptionPane.showMessageDialog(null, "Revisar 104");
             
             //Recalculamos los centroides 
             for (int z = 0; z < centroidesCoord.length; z++) { // bucle para comparar el centroide con la matriz
@@ -115,16 +116,31 @@ public class Segmentacion {
                 }
                 // Vamos a recorrer el vector de coordenadas con el fin de realizar un arreglo de coordenadas ordenado
                 centroidesCoord[z] = reCalculoCentroide(cent);
-            }
-            
-            JOptionPane.showMessageDialog(null, "Revisar 120");
+            }            
+            //JOptionPane.showMessageDialog(null, "Revisar 120");
             estado=igualCentroides(centroidesCoord,centroidesCoordAux);
         }while(!estado);
         
-        
-        
-        
-        
+        //Vamos a imprimir la imagen arrojada por el proceso k-means
+         for (int z = 0; z < centroidesCoord.length; z++) { 
+             Imagen img = new Imagen();
+             img.setFormato(this.imagen.getFormato());
+             img.setM(this.imagen.getM());
+             img.setN(this.imagen.getN());
+             img.setNivelIntensidad(this.imagen.getNivelIntensidad());
+             short [][] matriz = new short[this.imagen.getN()][this.imagen.getM()];
+             for(int i=0; i<matriz.length;i++)
+                 for(int j=0; j<matriz[0].length;j++)
+                     matriz[i][j]=0;
+             
+             for(int i=0; i<matriz.length;i++)
+                 for(int j=0; j<matriz[0].length;j++){
+                     if(this.cluster[i][j]==z)
+                        matriz[i][j]=this.imagen.getMatrizGris()[i][j];
+                 }
+             img.setMatrizGris(matriz);
+             img.guardarImagen("ImgProcesado/k-means"+z+".pgm");
+         }
     }
     
     private Point reCalculoCentroide(Vector<Point> cent){

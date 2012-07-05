@@ -4,11 +4,7 @@
  */
 package gui.controlador;
 
-import gui.AxpherPicture;
-import gui.PanelMR;
-import gui.PanelUmbralizacion;
-import gui.VentanaHistograma;
-import gui.VentanaSignal;
+import gui.*;
 import imagen.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -82,6 +78,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         this.objVentanaAxpherPicture.menuItemSalPiper.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemSobel.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemCany.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemCerebro.addActionListener(this);
         this.objVentanaHistograma.btnGuardarHistograma.addActionListener(this);
         this.objVentanaSignal.sliderSignal.addChangeListener(this);
         this.objVentanaAxpherPicture.addWindowListener(new WindowAdapter() {
@@ -595,6 +592,10 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 System.out.println("Solo kernel");
             }
             System.out.println("Canny "+respuesta);
+        }
+        if(e.getActionCommand().equals("Cerebro")) {
+            System.out.println("Menu Cerebro");
+            new SegmentarCerebro(objVentanaAxpherPicture).setVisible(true);
         }
     }
     

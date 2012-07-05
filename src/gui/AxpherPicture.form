@@ -294,6 +294,21 @@
             </MenuItem>
           </SubComponents>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="jMenu7">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Segmentar"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemCerebro">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cerebro"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
         <Menu class="javax.swing.JMenu" name="menuVer">
           <Properties>
             <Property name="text" type="java.lang.String" value="Ver"/>
@@ -389,7 +404,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="panelCanvas" pref="463" max="32767" attributes="0"/>
+                  <Component id="panelCanvas" pref="467" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -439,7 +454,7 @@
               <Group type="102" alignment="1" attributes="0">
                   <Component id="panelPropiedades" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="panelOperaciones" pref="340" max="32767" attributes="0"/>
+                  <Component id="panelOperaciones" pref="346" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>

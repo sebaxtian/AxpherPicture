@@ -5,6 +5,15 @@
 package axpherpicture;
 
 import imagen.*;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.Raster;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageInputStream;
 import org.dcm4che2.data.DicomObject;
 
 /**
@@ -321,6 +330,7 @@ public class AxpherPicture {
         Imagen imgDcm = objDcmImg.getImagen();
         imgDcm.guardarImagen("ImgFuente/brainTotal.pgm");*/
         
+        /*
         // Normaliza la imagen k-means0 del cerebro
         Imagen imgBrainKmeans0 = new Imagen("ImgFuente/k-means0.pgm");
         imgBrainKmeans0.normalizarImagenGris();
@@ -357,6 +367,10 @@ public class AxpherPicture {
         // Suma de materia blanca y gris
         Imagen imgSuma = operador.suma(materiaBlanca, materiaGris);
         imgSuma.guardarImagen("ImgProcesado/sumaMateriaBlancaGris.pgm");
+        */
+        
+        // Pruebas para Android
+        procesaJPG();
         
         /*objDcmImg.guardarImgRaster();
         
@@ -429,5 +443,58 @@ public class AxpherPicture {
         materiaGris.setMatrizGris(matrizGris);
         
         return materiaGris;
+    }
+    
+    public static void procesaJPG() {
+        try {
+            InputStream inS = new FileInputStream("ImgFuente/WonderWoman.jpg");
+            try {
+                BufferedImage bfImg = ImageIO.read(inS);
+                // Espacio de Color
+                ColorSpace colorGrises = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+                ColorConvertOp ccop = new ColorConvertOp(colorGrises, null);
+                BufferedImage bfImgGris = ccop.filter(bfImg, null);
+                // Guarda imagen
+                ImageIO.write(bfImgGris, "jpg", new File("ImgProcesado/WonderWoman.jpg"));
+                // Obtiene objeto imagen de jpg gris
+                Imagen imgJPG = getImagen2JPG(bfImgGris);
+                imgJPG.guardarImagen("ImgProcesado/WonderWoman.pgm");
+                // Aplica Cany
+                Canny bordeCanny = new Canny();
+                bordeCanny.calculoCanny(imgJPG, 3);
+                Imagen imgCanny = bordeCanny.getImagen();
+                imgCanny.guardarImagen("ImgProcesado/WonderWomanCanny.pgm");
+            } catch (IOException ex) {
+                System.err.println("Error: Procesa JPG error al leer archivo");
+            }
+        } catch (FileNotFoundException ex) {
+            System.err.println("Error: Procesa JPG error al abrir archivo");
+        }
+    }
+    
+    public static Imagen getImagen2JPG(BufferedImage bfImg) {
+        Imagen imgJPG = new Imagen();
+        // Objeto que contiene la matriz de pixeles
+        Raster raster = bfImg.getData();
+        int bandas = raster.getNumBands();
+        if (bandas == 1) {
+            int alto = raster.getHeight();
+            int ancho = raster.getWidth();
+            int minX = raster.getMinX();
+            int minY = raster.getMinY();
+            imgJPG.setFormato("P2");
+            imgJPG.setM(ancho);
+            imgJPG.setN(alto);
+            imgJPG.setNivelIntensidad(255);
+            short matrizGris[][] = new short[alto][ancho];
+            for (int i = minY; i < alto; i++) {
+                for (int j = minX; j < ancho; j++) {
+                    short pixel = (short) raster.getSample(j, i, 0);
+                    matrizGris[i][j] = pixel;
+                }
+            }
+            imgJPG.setMatrizGris(matrizGris);
+        }
+        return imgJPG;
     }
 }

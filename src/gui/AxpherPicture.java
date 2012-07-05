@@ -90,6 +90,8 @@ public class AxpherPicture extends javax.swing.JFrame {
         jMenu4 = new javax.swing.JMenu();
         menuItemSobel = new javax.swing.JMenuItem();
         menuItemCany = new javax.swing.JMenuItem();
+        jMenu7 = new javax.swing.JMenu();
+        menuItemCerebro = new javax.swing.JMenuItem();
         menuVer = new javax.swing.JMenu();
         menuItemVerHistograma = new javax.swing.JMenuItem();
         menuItemSignal = new javax.swing.JMenuItem();
@@ -120,7 +122,7 @@ public class AxpherPicture extends javax.swing.JFrame {
             panelEastLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelEastLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addComponent(panelCanvas, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -217,7 +219,7 @@ public class AxpherPicture extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCenterLayout.createSequentialGroup()
                 .addComponent(panelPropiedades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelOperaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                .addComponent(panelOperaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -344,6 +346,13 @@ public class AxpherPicture extends javax.swing.JFrame {
 
         barraMenus.add(jMenu4);
 
+        jMenu7.setText("Segmentar");
+
+        menuItemCerebro.setText("Cerebro");
+        jMenu7.add(menuItemCerebro);
+
+        barraMenus.add(jMenu7);
+
         menuVer.setText("Ver");
 
         menuItemVerHistograma.setText("Histograma");
@@ -417,6 +426,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
+    private javax.swing.JMenu jMenu7;
     public javax.swing.JLabel labelAlto;
     public javax.swing.JLabel labelAncho;
     public javax.swing.JLabel labelArchivo;
@@ -427,6 +437,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JMenuItem menuItemAbrirDICOM;
     public javax.swing.JMenuItem menuItemAbrirPGMPPM;
     public javax.swing.JMenuItem menuItemCany;
+    public javax.swing.JMenuItem menuItemCerebro;
     public javax.swing.JMenuItem menuItemCuantizar;
     public javax.swing.JMenuItem menuItemEcualizar;
     public javax.swing.JMenuItem menuItemGausiano;

@@ -155,6 +155,7 @@ public class Segmentacion {
                  }
              img.setMatrizGris(matriz);
              img.guardarImagen("ImgProcesado/k-means2"+z+".pgm");
+             this.imagenKmeans[z]=img;
              //img.guardarImagen("ImgProcesado/k-means"+z+".pgm");
          }
     }
@@ -320,7 +321,8 @@ public class Segmentacion {
                      }
                  }
              img.setMatrizGris(matriz);
-             //img.guardarImagen("ImgProcesado/k-means2"+z+".pgm");
+             this.imagenKmeans[z]=img;
+             img.guardarImagen("ImgProcesado/k-means2"+z+".pgm");
          }
     } 
     
@@ -378,7 +380,7 @@ public class Segmentacion {
         String rutaImgPGM = "ImgFuente/brain1.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         Segmentacion sg = new Segmentacion(imgPGM);
-        sg.k_means();
+        sg.k_means(20);
     }
 
     /**

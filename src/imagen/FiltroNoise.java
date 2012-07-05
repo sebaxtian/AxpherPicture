@@ -483,7 +483,14 @@ public class FiltroNoise {
 
             for (int i = tope; i < this.imagen.getMatrizGris().length - tope; i++) {
                 for (int j = tope; j < this.imagen.getMatrizGris()[0].length - tope; j++) {
-                    this.matrizGris[i][j] = cv.convolucionar(this.matrizGrisOriginal, mascara, i, j);             
+                   // this.matrizGris[i][j] = cv.convolucionar(this.matrizGrisOriginal, mascara, i, j);              
+                    short intensidad = cv.convolucionar(this.matrizGrisOriginal, mascara, i, j);  
+                    if(255<intensidad)
+                        this.matrizGris[i][j] = (short)this.imagen.getNivelIntensidad();
+                    else if (intensidad<0)
+                        this.matrizGris[i][j] = 0;
+                    else
+                        this.matrizGris[i][j] = intensidad;
                 }
             }
         }

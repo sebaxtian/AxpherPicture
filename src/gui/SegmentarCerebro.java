@@ -7,6 +7,7 @@ package gui;
 import gui.controlador.ControladorSegmentacion;
 import imagen.Imagen;
 import imagen.Segmentacion;
+import java.awt.BorderLayout;
 
 /**
  *
@@ -15,11 +16,17 @@ import imagen.Segmentacion;
 public class SegmentarCerebro extends javax.swing.JFrame {
 
     public AxpherPicture ventanaPrincipal;
+    public CanvasImagenSegmen canvasKmeans;
+    public CanvasImagenSegmen canvasMateria;
     /**
      * Creates new form SegmentarCerebro
      */
     public SegmentarCerebro(AxpherPicture ventanaPrincipal) {
         initComponents();
+        canvasKmeans = new CanvasImagenSegmen();
+        canvasMateria = new CanvasImagenSegmen();
+        this.panelCanvasKmeans.add(canvasKmeans, BorderLayout.CENTER);
+        this.panelCanvasSegmentacion.add(canvasMateria, BorderLayout.CENTER);
         this.ventanaPrincipal = ventanaPrincipal;
         setLocationRelativeTo(ventanaPrincipal);
         new ControladorSegmentacion(this);
@@ -50,25 +57,16 @@ public class SegmentarCerebro extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Segmentacion de Cerebro");
-        setPreferredSize(new java.awt.Dimension(1024, 512));
+        setPreferredSize(new java.awt.Dimension(1024, 600));
         setResizable(false);
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jPanel5.setBackground(new java.awt.Color(234, 77, 116));
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "K-Means", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         jPanel5.setPreferredSize(new java.awt.Dimension(512, 512));
 
-        javax.swing.GroupLayout panelCanvasKmeansLayout = new javax.swing.GroupLayout(panelCanvasKmeans);
-        panelCanvasKmeans.setLayout(panelCanvasKmeansLayout);
-        panelCanvasKmeansLayout.setHorizontalGroup(
-            panelCanvasKmeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 515, Short.MAX_VALUE)
-        );
-        panelCanvasKmeansLayout.setVerticalGroup(
-            panelCanvasKmeansLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 498, Short.MAX_VALUE)
-        );
+        panelCanvasKmeans.setBackground(new java.awt.Color(254, 254, 254));
+        panelCanvasKmeans.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -76,33 +74,24 @@ public class SegmentarCerebro extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelCanvasKmeans, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelCanvasKmeans, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelCanvasKmeans, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelCanvasKmeans, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jPanel2.add(jPanel5, java.awt.BorderLayout.CENTER);
 
-        jPanel3.setBackground(new java.awt.Color(104, 184, 84));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Segmentacion", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         jPanel3.setPreferredSize(new java.awt.Dimension(512, 512));
 
-        javax.swing.GroupLayout panelCanvasSegmentacionLayout = new javax.swing.GroupLayout(panelCanvasSegmentacion);
-        panelCanvasSegmentacion.setLayout(panelCanvasSegmentacionLayout);
-        panelCanvasSegmentacionLayout.setHorizontalGroup(
-            panelCanvasSegmentacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 476, Short.MAX_VALUE)
-        );
-        panelCanvasSegmentacionLayout.setVerticalGroup(
-            panelCanvasSegmentacionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 498, Short.MAX_VALUE)
-        );
+        panelCanvasSegmentacion.setBackground(new java.awt.Color(254, 254, 254));
+        panelCanvasSegmentacion.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -110,22 +99,21 @@ public class SegmentarCerebro extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelCanvasSegmentacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelCanvasSegmentacion, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelCanvasSegmentacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelCanvasSegmentacion, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jPanel2.add(jPanel3, java.awt.BorderLayout.EAST);
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        jPanel1.setBackground(new java.awt.Color(237, 206, 50));
         jPanel1.setPreferredSize(new java.awt.Dimension(666, 40));
 
         jLabel1.setText("Seleccionar K-Means");
@@ -149,7 +137,7 @@ public class SegmentarCerebro extends javax.swing.JFrame {
         btnGuardar.setText("Guardar");
         jPanel1.add(btnGuardar);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.NORTH);
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -207,7 +195,7 @@ public class SegmentarCerebro extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel panelCanvasKmeans;
-    private javax.swing.JPanel panelCanvasSegmentacion;
+    public javax.swing.JPanel panelCanvasKmeans;
+    public javax.swing.JPanel panelCanvasSegmentacion;
     // End of variables declaration//GEN-END:variables
 }

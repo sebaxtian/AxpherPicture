@@ -42,6 +42,8 @@ public class ControladorImagen implements ActionListener, ChangeListener {
     private Umbralizacion objUmbral;
     private FiltroNoise objFiltro;
     private DcmImg objDcmImg;
+    public static Segmentacion segmentacionKmeans;
+    public static Imagen imgCerebro;
     
     public ControladorImagen(AxpherPicture objVentana) {
         this.objVentanaAxpherPicture = objVentana;
@@ -734,7 +736,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 objPanelMR.textFieldWW.setText(objPanelMR.sliderWW.getValue()+"");
             }
             //--------->
-            int windowCenter = Integer.parseInt(objPanelMR.textFieldWC.getText());
+            /*int windowCenter = Integer.parseInt(objPanelMR.textFieldWC.getText());
             int windowWidth = Integer.parseInt(objPanelMR.textFieldWW.getText());
             if(objDcmImg.getEstudio().equals("MR")) {
                 objImagenFuente = objDcmImg.getImagenMR(windowCenter,windowWidth);
@@ -745,7 +747,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             //copia de objeto imagen fuente
             objImagenProcesado = objImagenFuente.clone();
             verAtributosImagen(objImagenFuente);
-            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);
+            objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenFuente);*/
             //----------------->
         }
         if(objVentanaSignal != null) {
@@ -1410,18 +1412,14 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         
         @Override
         public void run() {
-            Segmentacion segmentacionKmeans;
             if(automatico) {
                 segmentacionKmeans = new Segmentacion(objImagenProcesado);
                 segmentacionKmeans.k_means();
-                int cosa = segmentacionKmeans.getImagenKmeans().length;
-                System.out.println("Segmentacion !! Automatico");
             } else {
                 String valor = JOptionPane.showInputDialog(objVentanaAxpherPicture, "Ingrese el numero de centroides", "Segmentacion Kmeans", JOptionPane.INFORMATION_MESSAGE);
                 int k = Integer.parseInt(valor);
                 segmentacionKmeans = new Segmentacion(objImagenProcesado);
                 segmentacionKmeans.k_means(k);
-                System.out.println("Segmentacion !! Manual");
             }
             AxpherPicture.barraProgreso.setValue(100);
             try {
@@ -1430,7 +1428,8 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 System.err.println("Error al dormir Hilo canny");
             }
             AxpherPicture.barraProgreso.setValue(0);
-            new SegmentarCerebro(objVentanaAxpherPicture);
+            imgCerebro = objImagenProcesado;
+            new SegmentarCerebro(objVentanaAxpherPicture).setVisible(true);
         }
     }
 }

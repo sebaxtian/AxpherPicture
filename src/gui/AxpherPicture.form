@@ -299,9 +299,17 @@
             <Property name="text" type="java.lang.String" value="Segmentar"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="menuItemCerebro">
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemAutomatico">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Cerebro"/>
+                <Property name="text" type="java.lang.String" value="Automatico"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemManual">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Manual"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>

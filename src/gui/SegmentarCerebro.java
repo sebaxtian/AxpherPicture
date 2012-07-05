@@ -5,6 +5,8 @@
 package gui;
 
 import gui.controlador.ControladorSegmentacion;
+import imagen.Imagen;
+import imagen.Segmentacion;
 
 /**
  *
@@ -198,7 +200,7 @@ public class SegmentarCerebro extends javax.swing.JFrame {
     public javax.swing.JButton btnMateriaBlanca;
     public javax.swing.JButton btnMateriaGris;
     public javax.swing.JButton btnVisualizar;
-    private javax.swing.JComboBox comboKmeans;
+    public javax.swing.JComboBox comboKmeans;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

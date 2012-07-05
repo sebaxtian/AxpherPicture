@@ -80,7 +80,8 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         this.objVentanaAxpherPicture.menuItemSalPiper.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemSobel.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemCany.addActionListener(this);
-        this.objVentanaAxpherPicture.menuItemCerebro.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemAutomatico.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemManual.addActionListener(this);
         this.objVentanaHistograma.btnGuardarHistograma.addActionListener(this);
         this.objVentanaSignal.sliderSignal.addChangeListener(this);
         this.objVentanaAxpherPicture.addWindowListener(new WindowAdapter() {
@@ -629,9 +630,15 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             }
             System.out.println("Canny "+respuesta);
         }
-        if(e.getActionCommand().equals("Cerebro")) {
-            System.out.println("Menu Cerebro");
-            new SegmentarCerebro(objVentanaAxpherPicture).setVisible(true);
+        if(e.getActionCommand().equals("Automatico")) {
+            System.out.println("Menu Segmentar Automatico");
+            HiloSegmentarKmeans hiloSegmentarKmeans = new HiloSegmentarKmeans(true);
+            hiloSegmentarKmeans.start();
+        }
+        if(e.getActionCommand().equals("Manual")) {
+            System.out.println("Menu Segmentar Manual");
+            HiloSegmentarKmeans hiloSegmentarKmeans = new HiloSegmentarKmeans(false);
+            hiloSegmentarKmeans.start();
         }
     }
     
@@ -1390,6 +1397,40 @@ public class ControladorImagen implements ActionListener, ChangeListener {
                 System.err.println("Error al dormir Hilo canny");
             }
             AxpherPicture.barraProgreso.setValue(0);
+        }
+    }
+    
+    class HiloSegmentarKmeans extends Thread {
+        
+        private boolean automatico;
+        
+        public HiloSegmentarKmeans(boolean automatico) {
+            this.automatico = automatico;
+        }
+        
+        @Override
+        public void run() {
+            Segmentacion segmentacionKmeans;
+            if(automatico) {
+                segmentacionKmeans = new Segmentacion(objImagenProcesado);
+                segmentacionKmeans.k_means();
+                int cosa = segmentacionKmeans.getImagenKmeans().length;
+                System.out.println("Segmentacion !! Automatico");
+            } else {
+                String valor = JOptionPane.showInputDialog(objVentanaAxpherPicture, "Ingrese el numero de centroides", "Segmentacion Kmeans", JOptionPane.INFORMATION_MESSAGE);
+                int k = Integer.parseInt(valor);
+                segmentacionKmeans = new Segmentacion(objImagenProcesado);
+                segmentacionKmeans.k_means(k);
+                System.out.println("Segmentacion !! Manual");
+            }
+            AxpherPicture.barraProgreso.setValue(100);
+            try {
+                sleep(512);
+            } catch (InterruptedException ex) {
+                System.err.println("Error al dormir Hilo canny");
+            }
+            AxpherPicture.barraProgreso.setValue(0);
+            new SegmentarCerebro(objVentanaAxpherPicture);
         }
     }
 }

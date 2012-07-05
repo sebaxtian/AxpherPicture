@@ -91,7 +91,8 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemSobel = new javax.swing.JMenuItem();
         menuItemCany = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
-        menuItemCerebro = new javax.swing.JMenuItem();
+        menuItemAutomatico = new javax.swing.JMenuItem();
+        menuItemManual = new javax.swing.JMenuItem();
         menuVer = new javax.swing.JMenu();
         menuItemVerHistograma = new javax.swing.JMenuItem();
         menuItemSignal = new javax.swing.JMenuItem();
@@ -349,8 +350,11 @@ public class AxpherPicture extends javax.swing.JFrame {
 
         jMenu7.setText("Segmentar");
 
-        menuItemCerebro.setText("Cerebro");
-        jMenu7.add(menuItemCerebro);
+        menuItemAutomatico.setText("Automatico");
+        jMenu7.add(menuItemAutomatico);
+
+        menuItemManual.setText("Manual");
+        jMenu7.add(menuItemManual);
 
         barraMenus.add(jMenu7);
 
@@ -441,8 +445,8 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JMenuItem menuItemAbrirDICOM;
     public javax.swing.JMenuItem menuItemAbrirPGMPPM;
     public javax.swing.JMenuItem menuItemAtras;
+    public javax.swing.JMenuItem menuItemAutomatico;
     public javax.swing.JMenuItem menuItemCany;
-    public javax.swing.JMenuItem menuItemCerebro;
     public javax.swing.JMenuItem menuItemCuantizar;
     public javax.swing.JMenuItem menuItemEcualizar;
     public javax.swing.JMenuItem menuItemGausiano;
@@ -450,6 +454,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     public javax.swing.JMenuItem menuItemLineH;
     public javax.swing.JMenuItem menuItemLineHV;
     public javax.swing.JMenuItem menuItemLineV;
+    public javax.swing.JMenuItem menuItemManual;
     public javax.swing.JMenuItem menuItemMatsuyama;
     public javax.swing.JMenuItem menuItemMediana;
     public javax.swing.JMenuItem menuItemOpAnd;

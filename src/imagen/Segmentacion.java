@@ -77,7 +77,7 @@ public class Segmentacion {
             }
         }
         
-        imprimirCentroides(centroidesCoord);
+        //imprimirCentroides(centroidesCoord);
         boolean estado =true;
         do{
             Point [] centroidesCoordAux =new Point[kCoordenadas]; 
@@ -85,7 +85,7 @@ public class Segmentacion {
                 centroidesCoordAux[i]=centroidesCoord[i];
             } 
             
-            System.out.println("******************************************************************************************");
+            //System.out.println("******************************************************************************************");
             int umbral =distanciaCentroides/2;
             for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
                 for (int j = 0; j < this.getImagen().getMatrizGris()[0].length; j++) {
@@ -102,10 +102,10 @@ public class Segmentacion {
                         } 
                     }
                     //System.out.print("i="+i+",j="+j+" "+this.imagen.getMatrizGris()[i][j]+"  ");
-                    System.out.print(this.getCluster()[i][j]+"  ");
+                    //System.out.print(this.getCluster()[i][j]+"  ");//esta es
                     //System.out.print("i="+i+",j="+j+" "+this.cluster[i][j]+"  ");
                 }
-                System.out.println();
+                //System.out.println();
             }
             
             //JOptionPane.showMessageDialog(null, "Revisar 104");
@@ -147,9 +147,141 @@ public class Segmentacion {
                      }
                  }
              img.setMatrizGris(matriz);
-             img.guardarImagen("ImgProcesado/k-means0"+z+".pgm");
+             img.guardarImagen("ImgProcesado/k-means1"+z+".pgm");
          }
     }
+    
+    
+    // metodo igual que el anterior con diferencia de que asignamos la cantidad de k(centroides)
+    public void k_means(int k){
+        int distanciaCentroides = (int)(getImagen().getNivelIntensidad()/k); //espacio automatico entre cada centroide  
+    
+        boolean[] centroidesFijos =new boolean[k];
+        int [] centroides =new int[k];
+        
+        for (int i = 0; i < centroides.length; i++) {
+            centroides[i] = (distanciaCentroides * i)+(distanciaCentroides / 2); //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            //JOptionPane.showMessageDialog(null, centroides[i]);
+            centroidesFijos[i]=false;
+        }
+        
+        //distanciaCentroides*=2;
+        for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
+            for (int j = 0; j <  this.getImagen().getMatrizGris()[0].length; j++) {
+                int posicion = (getImagen().getMatrizGris()[i][j])/distanciaCentroides;//OJO se debe quitar 1, tener en cuenta si sucede volcado de memoria
+                Point puntoC = new Point(i, j);
+                //JOptionPane.showMessageDialog(null, posicion+" ij="+i+"-"+j);
+                if(centroidesFijos.length==posicion)
+                    posicion--;
+                centroidesFijos[posicion]=true;
+            }
+        }
+        
+        int kCoordenadas = 0;
+        for (int i = 0; i < centroidesFijos.length; i++) {
+            if(centroidesFijos[i]==true)
+                kCoordenadas++;
+        }
+        
+        Point [] centroidesCoord =new Point[kCoordenadas];
+        
+        kCoordenadas = 0;
+        for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
+            for (int j = 0; j <  this.getImagen().getMatrizGris()[0].length; j++) {
+                int posicion = getImagen().getMatrizGris()[i][j]/distanciaCentroides;
+                
+                if(centroidesFijos.length==posicion)
+                    posicion--;
+                
+                if(centroidesFijos[posicion]==true){
+                    centroidesFijos[posicion]=false;
+                    Point C = new Point(i, j);
+                    centroidesCoord[kCoordenadas]=C;
+                    kCoordenadas++;
+                }
+            }
+        }
+        
+        //imprimirCentroides(centroidesCoord);
+        boolean estado =true;
+        do{
+            Point [] centroidesCoordAux =new Point[kCoordenadas]; 
+            for (int i = 0; i < centroidesCoordAux.length; i++) {
+                centroidesCoordAux[i]=centroidesCoord[i];
+            } 
+            
+            //System.out.println("******************************************************************************************");
+            int umbral =distanciaCentroides/2;
+            for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
+                for (int j = 0; j < this.getImagen().getMatrizGris()[0].length; j++) {
+                    //int posicion = this.imagen.getMatrizGris()[i][j] / distanciaCentroides;
+                    for (int z = 0; z < centroidesCoord.length; z++) { // bucle para comparar el centroide con la matriz
+                        //JOptionPane.showMessageDialog(null, "centroide "+centroides[z]+" - umblral"+umbral+" - matriz "+this.imagen.getMatrizGris()[i][j]);
+                        //if (Math.abs(this.imagen.getMatrizGris()[i][j] - this.imagen.getMatrizGris()[centroidesCoord[z].x][centroidesCoord[z].y]) < umbral) {
+                        if (Math.abs(this.getImagen().getMatrizGris()[i][j] - centroides[z]) <= umbral) {
+                            this.cluster[i][j]=z;
+                            this.cluster[centroidesCoord[z].x][centroidesCoord[z].y]=z;
+                            z=centroidesCoord.length;
+                            //System.out.print(this.cluster[i][j]+"  ");
+                            //break;
+                        } 
+                    }
+                    //System.out.print("i="+i+",j="+j+" "+this.imagen.getMatrizGris()[i][j]+"  ");
+                    //System.out.print(this.getCluster()[i][j]+"  ");//esta es
+                    //System.out.print("i="+i+",j="+j+" "+this.cluster[i][j]+"  ");
+                }
+                //System.out.println();
+            }
+            
+            //JOptionPane.showMessageDialog(null, "Revisar 104");
+            
+            //Recalculamos los centroides 
+            for (int z = 0; z < centroidesCoord.length; z++) { // bucle para comparar el centroide con la matriz
+                Vector<Point> cent = new Vector<Point>();
+                //JOptionPane.showMessageDialog(null, cent.size());
+                for (int i = 0; i < this.getCluster().length; i++) {
+                    for (int j = 0; j < this.getCluster()[0].length; j++) {
+                        if(this.getCluster()[i][j]==z)
+                            cent.add(new Point(i,j));
+                    }
+                }
+                // Vamos a recorrer el vector de coordenadas con el fin de realizar un arreglo de coordenadas ordenado
+                centroidesCoord[z] = reCalculoCentroide(cent);
+            }            
+            //JOptionPane.showMessageDialog(null, "Revisar 120");
+            estado=igualCentroides(centroidesCoord,centroidesCoordAux);
+        }while(!estado);
+        
+        //Vamos a imprimir la imagen arrojada por el proceso k-means
+         for (int z = 0; z < centroidesCoord.length; z++) { 
+             Imagen img = new Imagen();
+             img.setFormato(this.getImagen().getFormato());
+             img.setM(this.getImagen().getM());
+             img.setN(this.getImagen().getN());
+             img.setNivelIntensidad(this.getImagen().getNivelIntensidad());
+             short [][] matriz = new short[this.getImagen().getN()][this.getImagen().getM()];
+             for(int i=0; i<matriz.length;i++)
+                 for(int j=0; j<matriz[0].length;j++)
+                     matriz[i][j]=0;
+             
+             for(int i=0; i<matriz.length;i++)
+                 for(int j=0; j<matriz[0].length;j++){
+                     if(this.getCluster()[i][j]==z){
+                        matriz[i][j]=(short) (this.getImagen().getNivelIntensidad()-1); //Aqui se resalta con el maximo valor del pixel
+                        //matriz[i][j]= this.getImagen().getMatrizGris()[i][j]; // Se toma el valor real del pixel
+                     }
+                 }
+             img.setMatrizGris(matriz);
+             img.guardarImagen("ImgProcesado/k-means1"+z+".pgm");
+         }
+    }
+    
+    
+    
+    
+    
+    
+    
     
     private Point reCalculoCentroide(Vector<Point> cent){
         //vamos a imprimir todos las coordenadas capturadas
@@ -202,10 +334,10 @@ public class Segmentacion {
     }
     
     public static void main(String[] arg){
-        String rutaImgPGM = "ImgFuente/brainTotal.pgm";
+        String rutaImgPGM = "ImgFuente/brain1.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         Segmentacion sg = new Segmentacion(imgPGM);
-        sg.k_means();
+        sg.k_means(60);
     }
 
     /**

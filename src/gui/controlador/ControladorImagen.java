@@ -37,6 +37,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
     private File archivoImagen;
     private Imagen objImagenFuente;
     private Imagen objImagenProcesado;
+    private Imagen objImagenAtras;
     private Histograma objHistograma;
     private Umbralizacion objUmbral;
     private FiltroNoise objFiltro;
@@ -53,6 +54,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         this.objVentanaAxpherPicture.menuItemVerHistograma.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemSignal.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemVerImagen.addActionListener(this);
+        this.objVentanaAxpherPicture.menuItemAtras.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemUmbral.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemEcualizar.addActionListener(this);
         this.objVentanaAxpherPicture.menuItemCuantizar.addActionListener(this);
@@ -89,6 +91,36 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             }
         });
     }
+    
+    private void setAtras() {
+        objImagenAtras = new Imagen();
+        objImagenAtras.setFormato(objImagenProcesado.getFormato());
+        objImagenAtras.setM(objImagenProcesado.getM());
+        objImagenAtras.setN(objImagenProcesado.getN());
+        objImagenAtras.setNivelIntensidad(objImagenProcesado.getNivelIntensidad());
+        short matrizGris[][] = new short[objImagenProcesado.getN()][objImagenProcesado.getM()];
+        for(int i = 0; i < matrizGris.length; i++) {
+            for(int j = 0; j < matrizGris[0].length; j++) {
+                matrizGris[i][j] = objImagenProcesado.getMatrizGris()[i][j];
+            }
+        }
+        objImagenAtras.setMatrizGris(matrizGris);
+    }
+    
+    private void pasoAtras() {
+        objImagenProcesado.setFormato(objImagenAtras.getFormato());
+        objImagenProcesado.setM(objImagenAtras.getM());
+        objImagenProcesado.setN(objImagenAtras.getN());
+        objImagenProcesado.setNivelIntensidad(objImagenAtras.getNivelIntensidad());
+        short matrizGris[][] = new short[objImagenAtras.getN()][objImagenAtras.getM()];
+        for(int i = 0; i < matrizGris.length; i++) {
+            for(int j = 0; j < matrizGris[0].length; j++) {
+                matrizGris[i][j] = objImagenAtras.getMatrizGris()[i][j];
+            }
+        }
+        objImagenProcesado.setMatrizGris(matrizGris);
+        objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -121,6 +153,10 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         if(e.getActionCommand().equals("Imagen")) {
             System.out.println("Ver imagen");
             verImagenFuente();
+        }
+        if(e.getActionCommand().equals("Atras")) {
+            System.out.println("Atras");
+            pasoAtras();
         }
         if(e.getSource().equals(objVentanaHistograma.btnGuardarHistograma)) {
             System.out.println("Guardar histograma");
@@ -929,6 +965,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         
         @Override
         public void run() {
+            setAtras();
             AxpherPicture.barraProgreso.setValue(25);
             objImagenProcesado.setFormato(objImagenFuente.getFormato());
             objImagenProcesado.setM(objImagenFuente.getM());
@@ -987,7 +1024,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
             }
             objVentanaAxpherPicture.canvasImagen.pintarImagen(objImagenProcesado);
             AxpherPicture.barraProgreso.setValue(90);
-            verAtributosImagen(objImagenProcesado);
+            verAtributosImagen(objImagenFuente);
             AxpherPicture.barraProgreso.setValue(100);
             try {
                 sleep(512);
@@ -1001,6 +1038,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
     class HiloEcualizacion extends Thread {
         @Override
         public void run() {
+            setAtras();
             AxpherPicture.barraProgreso.setValue(45);
             Ecualizacion ecualizador = new Ecualizacion(objImagenProcesado);
             objImagenProcesado = ecualizador.ecualizar();
@@ -1025,6 +1063,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         
         @Override
         public void run() {
+            setAtras();
             AxpherPicture.barraProgreso.setValue(45);
             objImagenProcesado.setFormato(objImagenProcesado.getFormato());
             objImagenProcesado.setM(objImagenProcesado.getM());
@@ -1066,6 +1105,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         
         @Override
         public void run() {
+            setAtras();
             AxpherPicture.barraProgreso.setValue(45);
             objImagenProcesado.setFormato(objImagenProcesado.getFormato());
             objImagenProcesado.setM(objImagenProcesado.getM());
@@ -1155,6 +1195,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         
         @Override
         public void run() {
+            setAtras();
             if(operacion.equals("And")) {
                 Operaciones operaciones = new Operaciones();
                 objImagenProcesado = operaciones.OrAndXor(objImagenProcesado, opImg, "and");
@@ -1263,6 +1304,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
     class HiloBordeSobel extends Thread {
         @Override
         public void run() {
+            setAtras();
             AxpherPicture.barraProgreso.setValue(45);
             objImagenProcesado.setFormato(objImagenProcesado.getFormato());
             objImagenProcesado.setM(objImagenProcesado.getM());
@@ -1315,6 +1357,7 @@ public class ControladorImagen implements ActionListener, ChangeListener {
         
         @Override
         public void run() {
+            setAtras();
             AxpherPicture.barraProgreso.setValue(45);
             objImagenProcesado.setFormato(objImagenProcesado.getFormato());
             objImagenProcesado.setM(objImagenProcesado.getM());

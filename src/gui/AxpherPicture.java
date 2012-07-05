@@ -96,6 +96,7 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemVerHistograma = new javax.swing.JMenuItem();
         menuItemSignal = new javax.swing.JMenuItem();
         menuItemVerImagen = new javax.swing.JMenuItem();
+        menuItemAtras = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("AxpherPicture");
@@ -364,6 +365,9 @@ public class AxpherPicture extends javax.swing.JFrame {
         menuItemVerImagen.setText("Imagen");
         menuVer.add(menuItemVerImagen);
 
+        menuItemAtras.setText("Atras");
+        menuVer.add(menuItemAtras);
+
         barraMenus.add(menuVer);
 
         setJMenuBar(barraMenus);
@@ -436,6 +440,7 @@ public class AxpherPicture extends javax.swing.JFrame {
     private javax.swing.JMenu menuImagen;
     public javax.swing.JMenuItem menuItemAbrirDICOM;
     public javax.swing.JMenuItem menuItemAbrirPGMPPM;
+    public javax.swing.JMenuItem menuItemAtras;
     public javax.swing.JMenuItem menuItemCany;
     public javax.swing.JMenuItem menuItemCerebro;
     public javax.swing.JMenuItem menuItemCuantizar;

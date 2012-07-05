@@ -26,10 +26,17 @@ public class Segmentacion {
     }
     
     public void k_means(){
+        int mayorNivel=1;
+         for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
+            for (int j = 0; j <  this.getImagen().getMatrizGris()[0].length; j++) {
+                if(mayorNivel < this.getImagen().getMatrizGris()[i][j])
+                    mayorNivel =this.getImagen().getMatrizGris()[i][j];        
+            }
+        }
         // cantidad de grupos (cluster)
         int  k =  (int) Math.sqrt(getImagen().getNivelIntensidad());
         //int distanciaCentroides = (int)(imagen.getNivelIntensidad()/k)/2; //espacio automatico entre cada centroide  
-        int distanciaCentroides = (int)(getImagen().getNivelIntensidad()/k); //espacio automatico entre cada centroide  
+        int distanciaCentroides = (int)(mayorNivel/k); //espacio automatico entre cada centroide  
     
         boolean[] centroidesFijos =new boolean[k];
         int [] centroides =new int[k];
@@ -147,24 +154,65 @@ public class Segmentacion {
                      }
                  }
              img.setMatrizGris(matriz);
+             img.guardarImagen("ImgProcesado/k-means2"+z+".pgm");
              //img.guardarImagen("ImgProcesado/k-means"+z+".pgm");
          }
     }
     
     // metodo igual que el anterior con diferencia de que asignamos la cantidad de k(centroides)
     public void k_means(int k){
+        int mayorNivel=1;
+         for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
+            for (int j = 0; j <  this.getImagen().getMatrizGris()[0].length; j++) {
+                if(mayorNivel < this.getImagen().getMatrizGris()[i][j])
+                    mayorNivel =this.getImagen().getMatrizGris()[i][j];        
+            }
+        }
         
-        int distanciaCentroides = (int)(getImagen().getNivelIntensidad()/k); //espacio automatico entre cada centroide  
+        
+        int distanciaCentroides = (int)mayorNivel/k; //espacio automatico entre cada centroide  
     
         boolean[] centroidesFijos =new boolean[k];
         int [] centroides =new int[k];
         
-        for (int i = 0; i < centroides.length; i++) {
-            centroides[i] = (distanciaCentroides * i)+(distanciaCentroides / 2); //OJO se suma 1 tener en cuenta si sucede volcado de memoria
-            //JOptionPane.showMessageDialog(null, centroides[i]);
-            centroidesFijos[i]=false;
+        if (k==1||k==0){
+            centroides[0] = 15; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[0] = false;
         }
-        
+        if (k==2){
+            centroides[0] = 10; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[0] = false;
+            
+            centroides[1] =20; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[1] = false;
+        }else if(k==3){
+            centroides[0] = 5; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[0] = false;
+            
+            centroides[1] = 15; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[1] = false;
+            
+            centroides[2] = 30; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[2] = false;
+        }else if(k==4){
+            centroides[0] = 5; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[0] = false;
+            
+            centroides[1] = 12; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[1] = false;
+            
+            centroides[2] = 19; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[2] = false;
+            
+            centroides[3] = 28; //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+            centroidesFijos[3] = false;
+        }else{
+            for (int i = 0; i < centroides.length; i++) {
+                centroides[i] = (distanciaCentroides * i) + (distanciaCentroides / 2); //OJO se suma 1 tener en cuenta si sucede volcado de memoria
+                //JOptionPane.showMessageDialog(null, centroides[i]);
+                centroidesFijos[i] = false;
+            }
+        }
         //distanciaCentroides*=2;
         for (int i = 0; i < this.getImagen().getMatrizGris().length; i++) {
             for (int j = 0; j <  this.getImagen().getMatrizGris()[0].length; j++) {
@@ -202,7 +250,7 @@ public class Segmentacion {
             }
         }
         
-        imprimirCentroides(centroidesCoord);
+        //imprimirCentroides(centroidesCoord);
         boolean estado =true;
         do{
             Point [] centroidesCoordAux =new Point[kCoordenadas]; 
@@ -272,7 +320,7 @@ public class Segmentacion {
                      }
                  }
              img.setMatrizGris(matriz);
-             //img.guardarImagen("ImgProcesado/k-means"+z+".pgm");
+             //img.guardarImagen("ImgProcesado/k-means2"+z+".pgm");
          }
     } 
     
@@ -327,7 +375,7 @@ public class Segmentacion {
     }
     
     public static void main(String[] arg){
-        String rutaImgPGM = "ImgFuente/brainTotal.pgm";
+        String rutaImgPGM = "ImgFuente/brain1.pgm";
         Imagen imgPGM = new Imagen(rutaImgPGM);
         Segmentacion sg = new Segmentacion(imgPGM);
         sg.k_means();

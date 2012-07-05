@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  */
 public class FiltroNoise {
 
-    //private String formato;
+    //private String formato;,
     private Imagen imagen;
     private short[][] matrizGris = null;
     private double[][] matrizDireccion = null;
